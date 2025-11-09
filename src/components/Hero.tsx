@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
-import bmwLogo from "@/assets/bmw-logo.png";
+import logo from "@/assets/sell-my-car-newcastle-logo.png";
 
 export const Hero = () => {
   return (
@@ -14,10 +14,9 @@ export const Hero = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               {/* Left Content */}
               <div className="space-y-6 relative z-10">
-                {/* BMW Logo */}
-                <div className="flex items-center gap-3 mb-4">
-                  <img src={bmwLogo} alt="BMW" className="w-12 h-12 md:w-16 md:h-16" />
-                  <span className="text-xl md:text-2xl font-bold text-foreground">Newcastle</span>
+                {/* Logo */}
+                <div className="flex items-center mb-4">
+                  <img src={logo} alt="Sell My Car Newcastle" className="h-12 md:h-16 w-auto" />
                 </div>
 
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight">

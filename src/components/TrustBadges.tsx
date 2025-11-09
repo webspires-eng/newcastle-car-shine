@@ -25,7 +25,7 @@ export const TrustBadges = () => {
   ];
 
   return (
-    <section className="py-16 bg-primary text-primary-foreground">
+    <section className="py-16 bg-muted/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -36,7 +36,7 @@ export const TrustBadges = () => {
             </div>
             <span className="text-xl font-bold">Rated 'Excellent'</span>
           </div>
-          <p className="text-primary-foreground/90">
+          <p className="text-muted-foreground">
             Rated 4.4/5 based on 92,400 reviews. Showing our 5 star reviews.
           </p>
         </div>
@@ -45,17 +45,17 @@ export const TrustBadges = () => {
           {reviews.map((review, index) => (
             <div 
               key={index} 
-              className="bg-primary-foreground/10 backdrop-blur-sm rounded-lg p-6 hover:bg-primary-foreground/15 transition-colors duration-300"
+              className="bg-card border-2 border-border rounded-lg p-6 hover:border-secondary/30 transition-colors duration-300"
             >
               <div className="flex items-center gap-1 mb-3">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} className="w-4 h-4 fill-secondary text-secondary" />
                 ))}
               </div>
-              <p className="text-sm text-primary-foreground/90 mb-4 leading-relaxed">
+              <p className="text-sm text-foreground/80 mb-4 leading-relaxed">
                 {review.text}
               </p>
-              <div className="text-xs text-primary-foreground/70">
+              <div className="text-xs text-muted-foreground">
                 <p className="font-semibold">{review.author}</p>
                 <p>{review.time}</p>
               </div>

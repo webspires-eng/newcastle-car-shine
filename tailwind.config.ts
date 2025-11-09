@@ -22,11 +22,14 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+        },
+        "hero-yellow": {
+          DEFAULT: "hsl(var(--hero-yellow))",
+          light: "hsl(var(--hero-yellow-light))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",

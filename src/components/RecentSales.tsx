@@ -1,67 +1,48 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle2 } from "lucide-react";
 
 export const RecentSales = () => {
   const sales = [
-    {
-      seller: "Gurdeep",
-      car: "Tesla Model 3",
-      price: "£16,138",
-      time: "8 hours ago"
-    },
-    {
-      seller: "Iain",
-      car: "Audi A3",
-      price: "£4,888",
-      time: "8 hours ago"
-    },
-    {
-      seller: "Jodi",
-      car: "Nissan Qashqai",
-      price: "£7,745",
-      time: "8 hours ago"
-    },
-    {
-      seller: "David",
-      car: "Mercedes C180",
-      price: "£2,160",
-      time: "8 hours ago"
-    }
+    { seller: "Lucy", car: "Fiat 500 for £5,126", time: "4 mins ago" },
+    { seller: "Helen", car: "BMW M1 for £20,939", time: "5 hours ago" },
+    { seller: "Sam", car: "Audi Q2 for £10,609", time: "5 hours ago" },
+    { seller: "Kate", car: "Porsche 911 for £44,501", time: "5 hours ago" },
+    { seller: "Velina", car: "Mercedes GLA 220 D 4MAT AMG", time: "6 hours ago" },
   ];
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section className="py-20 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Join 500,000+ people who've sold with us
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
+            Join 500,000+ people who've
+            <br />
+            sold with us
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Recent sales from Newcastle and surrounding areas
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {sales.map((sale, index) => (
-            <Card key={index} className="hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Sold by {sale.seller}</p>
-                    <p className="font-semibold text-foreground">{sale.car}</p>
+        {/* Horizontal Scrolling Container */}
+        <div className="overflow-x-auto pb-4 -mx-4 px-4">
+          <div className="flex gap-6 min-w-max">
+            {sales.map((sale, index) => (
+              <Card 
+                key={index} 
+                className="w-80 hover:shadow-lg transition-all duration-300 rounded-2xl border-2"
+              >
+                <CardContent className="p-6">
+                  {/* Car Image Placeholder */}
+                  <div className="w-full h-48 bg-muted rounded-xl mb-4 flex items-center justify-center">
+                    <span className="text-muted-foreground text-sm">Car Image</span>
                   </div>
-                  <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-2xl font-bold text-primary">{sale.price}</p>
-                  <Badge variant="secondary" className="text-xs">
-                    {sale.time}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">Sold by {sale.seller}</p>
+                    <p className="font-semibold text-foreground text-lg">{sale.car}</p>
+                    <p className="text-xs text-muted-foreground">{sale.time}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -30,7 +30,7 @@ export const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">

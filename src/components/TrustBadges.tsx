@@ -25,7 +25,7 @@ export const TrustBadges = () => {
   ];
 
   return (
-    <section className="py-16 bg-muted/50">
+    <section className="py-20 bg-muted/50 rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">

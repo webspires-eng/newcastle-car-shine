@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, User } from "lucide-react";
+import logo from "@/assets/sell-my-car-newcastle-logo.png";
 
 export const Header = () => {
   return (
@@ -8,7 +9,7 @@ export const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <span className="text-2xl font-bold text-foreground">Sell My Car Newcastle</span>
+            <img src={logo} alt="Sell My Car Newcastle" className="h-12 w-auto" />
           </div>
 
           {/* Navigation */}

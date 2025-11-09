@@ -5,7 +5,9 @@ import { Testimonials } from "@/components/Testimonials";
 import { CtaSection } from "@/components/CtaSection";
 import { RecentSales } from "@/components/RecentSales";
 import { TrustBadges } from "@/components/TrustBadges";
+import { SellingConfidence } from "@/components/SellingConfidence";
 import { FAQ } from "@/components/FAQ";
+import { GuidesSection } from "@/components/GuidesSection";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -18,7 +20,9 @@ const Index = () => {
       <CtaSection />
       <RecentSales />
       <TrustBadges />
+      <SellingConfidence />
       <FAQ />
+      <GuidesSection />
       <Footer />
     </div>
   );

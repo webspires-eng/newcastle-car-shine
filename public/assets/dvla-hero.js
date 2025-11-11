@@ -585,7 +585,15 @@
   }
 
   function fetchVehicle(vrm) {
-    return fetch(`/api/dvla?vrm=${encodeURIComponent(vrm)}`, { credentials: 'include' }).then((response) => {
+    const supabaseUrl = 'https://ggarxjzwywppoqtehvhb.supabase.co';
+    const endpoint = `${supabaseUrl}/functions/v1/dvla-lookup?vrm=${encodeURIComponent(vrm)}&env=test`;
+    
+    return fetch(endpoint, { 
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then((response) => {
       if (!response.ok) {
         const error = new Error('DVLA lookup failed');
         error.status = response.status;

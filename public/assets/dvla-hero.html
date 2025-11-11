@@ -1,0 +1,129 @@
+<div class="dvla-hero" data-dvla-hero>
+  <div class="dvla-hero__inner">
+    <div class="dvla-hero__content">
+      <p class="dvla-hero__eyebrow">DVLA-backed valuation</p>
+      <h2 class="dvla-hero__headline">Motorway-style offer in three quick steps</h2>
+      <p class="dvla-hero__subhead">We validate your reg with the DVLA, confirm your mileage, then connect you to 7,500+ vetted buyers.</p>
+
+      <div class="dvla-hero__trustpilot" aria-hidden="true">
+        <div class="dvla-hero__trust-stars" role="img" aria-label="Trustpilot rating: Excellent">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="dvla-hero__trust-copy">
+          <strong>Excellent</strong>
+          <span>Trustpilot</span>
+        </div>
+      </div>
+
+      <ol class="dvla-hero__progress" aria-hidden="true">
+        <li data-step="1">VRM</li>
+        <li data-step="2">Mileage</li>
+        <li data-step="3">Email</li>
+      </ol>
+
+      <div class="dvla-hero__steps" data-current-step="1">
+        <form class="dvla-hero__step" data-step="1" novalidate>
+          <div class="dvla-hero__field">
+            <label class="dvla-hero__label" for="dvla-hero-vrm-input">Enter your reg</label>
+            <div class="dvla-hero__plate">
+              <span class="dvla-hero__plate-tag">UK</span>
+              <input
+                id="dvla-hero-vrm-input"
+                name="vrm"
+                type="text"
+                inputmode="text"
+                maxlength="8"
+                autocomplete="off"
+                placeholder="OO07 HAD"
+                aria-describedby="dvla-hero-vrm-help"
+                required
+              />
+            </div>
+            <p id="dvla-hero-vrm-help" class="dvla-hero__help">We only use this to fetch the official DVLA record.</p>
+          </div>
+          <div class="dvla-hero__actions">
+            <button type="submit" class="dvla-hero__cta">
+              <span>Value your car →</span>
+            </button>
+          </div>
+          <div class="dvla-hero__error" role="status" aria-live="polite"></div>
+        </form>
+
+        <form class="dvla-hero__step is-hidden" data-step="2" novalidate>
+          <div class="dvla-hero__vehicle" aria-live="polite">
+            <div class="dvla-hero__plate-badge" aria-hidden="true">
+              <span class="dvla-hero__plate-flag">UK</span>
+              <span class="dvla-hero__plate-value" data-vrm>VRM</span>
+            </div>
+            <p class="dvla-hero__vehicle-line" data-vehicle-line>MAKE MODEL • YEAR • COLOUR • BODY • FUEL</p>
+          </div>
+
+          <div class="dvla-hero__field">
+            <label class="dvla-hero__label" for="dvla-hero-mileage-input">Enter current mileage</label>
+            <div class="dvla-hero__mileage">
+              <input
+                id="dvla-hero-mileage-input"
+                name="mileage"
+                inputmode="numeric"
+                autocapitalize="off"
+                autocomplete="off"
+                placeholder="79,000"
+                required
+              />
+              <span class="dvla-hero__tick" aria-hidden="true">✓</span>
+            </div>
+            <p class="dvla-hero__help">1 - 400,000 miles. Add commas if you like.</p>
+          </div>
+
+          <div class="dvla-hero__actions">
+            <button type="submit" class="dvla-hero__cta" disabled>
+              <span>Confirm mileage →</span>
+            </button>
+            <button type="button" class="dvla-hero__link" data-reset>Not your car?</button>
+          </div>
+          <div class="dvla-hero__error" role="status" aria-live="polite"></div>
+        </form>
+
+        <form class="dvla-hero__step is-hidden" data-step="3" novalidate>
+          <div class="dvla-hero__summary">
+            <div>
+              <p class="dvla-hero__summary-label">Vehicle</p>
+              <p class="dvla-hero__summary-value" data-summary-vehicle>—</p>
+            </div>
+            <div>
+              <p class="dvla-hero__summary-label">Mileage</p>
+              <p class="dvla-hero__summary-value" data-summary-mileage>—</p>
+            </div>
+          </div>
+
+          <div class="dvla-hero__field">
+            <label class="dvla-hero__label" for="dvla-hero-email-input">Email address</label>
+            <input
+              id="dvla-hero-email-input"
+              name="email"
+              type="email"
+              placeholder="name@email.com"
+              autocomplete="email"
+              required
+            />
+            <p class="dvla-hero__help">We’ll send your valuation and next steps.</p>
+          </div>
+
+          <div class="dvla-hero__actions">
+            <button type="submit" class="dvla-hero__cta">
+              <span>Get my valuation →</span>
+            </button>
+          </div>
+          <div class="dvla-hero__error" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="dvla-hero__visual" aria-hidden="true">
+      <div class="dvla-hero__glow"></div>
+      <div class="dvla-hero__car">
+        <span></span>
+      </div>
+    </div>
+  </div>
+</div>

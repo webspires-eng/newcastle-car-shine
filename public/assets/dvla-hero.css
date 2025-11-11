@@ -1,0 +1,408 @@
+.dvla-hero {
+  --dvla-yellow: #ffeb10;
+  --dvla-black: #111;
+  --dvla-text: #111;
+  --dvla-cta-bg: #111;
+  --dvla-cta-text: #fff;
+  --dvla-border: rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+  color: var(--dvla-text);
+  background: var(--dvla-yellow);
+  border-radius: 32px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--dvla-border);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.08);
+}
+
+.dvla-hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dvla-hero__content {
+  flex: 1;
+}
+
+.dvla-hero__visual {
+  position: relative;
+  min-height: 200px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(17, 17, 17, 0.7));
+  overflow: hidden;
+}
+
+.dvla-hero__glow {
+  position: absolute;
+  inset: 15% 10% auto;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 235, 16, 0.8), transparent 70%);
+  filter: blur(20px);
+}
+
+.dvla-hero__car {
+  position: absolute;
+  inset: auto 10% 15% 10%;
+  height: 120px;
+  background: linear-gradient(135deg, #5f8df6, #3b5ccd);
+  border-radius: 999px 999px 40px 40px;
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+}
+
+.dvla-hero__car span {
+  position: absolute;
+  inset: 20% 15% 35% 15%;
+  border-radius: 999px;
+  border: 4px solid rgba(255, 255, 255, 0.65);
+}
+
+.dvla-hero__eyebrow {
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.dvla-hero__headline {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.dvla-hero__subhead {
+  font-size: 1rem;
+  max-width: 36ch;
+  color: rgba(17, 17, 17, 0.85);
+  margin-bottom: 1.25rem;
+}
+
+.dvla-hero__trustpilot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.dvla-hero__trust-stars span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  background: #00b67a;
+  clip-path: polygon(50% 0%, 61% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 39% 38%);
+}
+
+.dvla-hero__trust-copy {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.dvla-hero__progress {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.dvla-hero__progress li {
+  flex: 1;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.dvla-hero__progress li.is-active {
+  background: var(--dvla-black);
+  color: var(--dvla-yellow);
+}
+
+.dvla-hero__steps {
+  position: relative;
+  min-height: 320px;
+}
+
+.dvla-hero__step {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  padding: 1.25rem;
+  border: 1px solid var(--dvla-border);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  position: relative;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.dvla-hero__steps .dvla-hero__step {
+  position: absolute;
+  inset: 0;
+}
+
+.dvla-hero__step.is-hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.dvla-hero__field {
+  margin-bottom: 1rem;
+}
+
+.dvla-hero__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.dvla-hero__plate,
+.dvla-hero__mileage,
+.dvla-hero__field input {
+  width: 100%;
+}
+
+.dvla-hero__plate {
+  display: flex;
+  align-items: center;
+  border-radius: 16px;
+  border: 2px solid rgba(17, 17, 17, 0.2);
+  background: #fffbcc;
+  overflow: hidden;
+}
+
+.dvla-hero__plate-tag {
+  background: linear-gradient(180deg, #0051ff, #002b8b);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.75rem 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.dvla-hero__plate input {
+  border: none;
+  flex: 1;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  outline: none;
+}
+
+.dvla-hero__field input {
+  border-radius: 16px;
+  border: 2px solid rgba(17, 17, 17, 0.15);
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  background: #fff;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.dvla-hero__field input:focus-visible {
+  border-color: #0051ff;
+  box-shadow: 0 0 0 3px rgba(0, 81, 255, 0.25);
+  outline: none;
+}
+
+.dvla-hero__help {
+  font-size: 0.85rem;
+  color: rgba(17, 17, 17, 0.7);
+  margin-top: 0.4rem;
+}
+
+.dvla-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dvla-hero__cta {
+  background: var(--dvla-cta-bg);
+  color: var(--dvla-cta-text);
+  border: none;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.9rem 1.4rem;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.dvla-hero__cta:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.dvla-hero__cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dvla-hero__cta:focus-visible,
+.dvla-hero__link:focus-visible,
+.dvla-hero__retry:focus-visible {
+  outline: 3px solid rgba(0, 81, 255, 0.4);
+  outline-offset: 3px;
+}
+
+.dvla-hero__link {
+  border: none;
+  background: none;
+  color: var(--dvla-black);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dvla-hero__error {
+  min-height: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #b42318;
+}
+
+.dvla-hero__retry {
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: #0051ff;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 0.35rem;
+}
+
+.dvla-hero__vehicle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dvla-hero__plate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fffbcc;
+  border-radius: 16px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 700;
+}
+
+.dvla-hero__plate-flag {
+  background: linear-gradient(180deg, #0051ff, #002b8b);
+  color: #fff;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.dvla-hero__vehicle-line {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.dvla-hero__mileage {
+  display: flex;
+  align-items: center;
+  border: 2px solid rgba(17, 17, 17, 0.15);
+  border-radius: 16px;
+  padding: 0.4rem 0.75rem;
+  background: #fff;
+}
+
+.dvla-hero__mileage input {
+  flex: 1;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.dvla-hero__tick {
+  font-size: 1.4rem;
+  color: #0f9d58;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.dvla-hero__step.has-valid-mileage .dvla-hero__tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dvla-hero__summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dvla-hero__summary-label {
+  font-size: 0.85rem;
+  color: rgba(17, 17, 17, 0.6);
+}
+
+.dvla-hero__summary-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dvla-hero .is-hidden {
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  .dvla-hero {
+    padding: 2rem;
+  }
+
+  .dvla-hero__inner {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .dvla-hero__content {
+    flex: 3;
+  }
+
+  .dvla-hero__visual {
+    flex: 2;
+    min-height: 100%;
+  }
+
+  .dvla-hero__steps {
+    min-height: 340px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dvla-hero {
+    padding: 2.5rem;
+  }
+
+  .dvla-hero__visual {
+    min-height: 400px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dvla-hero__step,
+  .dvla-hero__cta {
+    transition: none;
+  }
+}

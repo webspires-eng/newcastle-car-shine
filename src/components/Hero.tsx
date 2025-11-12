@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
 import logo from "@/assets/sell-my-car-newcastle-logo.png";
 
-const DVLA_ENV_SUFFIX = import.meta.env.PROD ? "" : "&env=test";
+const DVLA_ENV_SUFFIX = "";
 
 export const Hero = () => {
   const [regValue, setRegValue] = useState("");

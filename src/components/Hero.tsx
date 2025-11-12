@@ -134,8 +134,8 @@ export const Hero = () => {
           }
         }
 
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+        const supabaseUrl = "https://ggarxjzwywppoqtehvhb.supabase.co";
+        const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU";
         const endpoint = `${supabaseUrl}/functions/v1/dvla-lookup?vrm=${encodeURIComponent(normalized)}${DVLA_ENV_SUFFIX}`;
         setIsFetchingVehicle(true);
         setError("vrm", "");

@@ -371,23 +371,21 @@ export const Hero = () => {
                         }`}
                       />
                       {activeError && (
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold text-red-600">{activeError}</p>
-                          {lookupFailed && step === 1 && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setShowManualEntry(true)}
-                              className="text-sm"
-                            >
-                              Enter details manually instead
-                            </Button>
-                          )}
-                        </div>
+                        <p className="text-sm font-semibold text-red-600">{activeError}</p>
                       )}
                     </div>
                     <div className="flex gap-2 sm:gap-3">
+                      {lookupFailed && step === 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setShowManualEntry(true)}
+                          className="h-14 px-6 text-base font-semibold rounded-xl border-2 hover:bg-accent"
+                        >
+                          Enter Manually
+                        </Button>
+                      )}
                       {step > 1 && (
                         <Button
                           type="button"

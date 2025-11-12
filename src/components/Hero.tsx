@@ -134,11 +134,20 @@ export const Hero = () => {
           }
         }
 
-        const url = `/api/dvla?vrm=${encodeURIComponent(normalized)}${DVLA_ENV_SUFFIX}`;
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+        const endpoint = `${supabaseUrl}/functions/v1/dvla-lookup?vrm=${encodeURIComponent(normalized)}${DVLA_ENV_SUFFIX}`;
         setIsFetchingVehicle(true);
         setError("vrm", "");
 
-        fetch(url, { credentials: "include" })
+        fetch(endpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${anonKey}`,
+          },
+        })
           .then(async (response) => {
             if (!response.ok) {
               const status = response.status;

@@ -586,12 +586,15 @@
 
   function fetchVehicle(vrm) {
     const supabaseUrl = 'https://ggarxjzwywppoqtehvhb.supabase.co';
+    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU';
     const endpoint = `${supabaseUrl}/functions/v1/dvla-lookup?vrm=${encodeURIComponent(vrm)}&env=test`;
     
     return fetch(endpoint, { 
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'apikey': anonKey,
+        'Authorization': `Bearer ${anonKey}`,
       }
     }).then((response) => {
       if (!response.ok) {

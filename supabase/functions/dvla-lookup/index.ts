@@ -104,6 +104,16 @@ serve(async (req) => {
           }
         );
       }
+      if (dvlaResponse.status === 403) {
+        console.error('DVLA API key unauthorized or invalid');
+        return new Response(
+          JSON.stringify({ error: 'DVLA API key invalid or unauthorized. Please check your API credentials.' }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
       if (dvlaResponse.status === 429) {
         return new Response(
           JSON.stringify({ error: 'Rate limit exceeded' }),

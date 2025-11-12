@@ -375,17 +375,6 @@ export const Hero = () => {
                       )}
                     </div>
                     <div className="flex gap-2 sm:gap-3">
-                      {lookupFailed && step === 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="lg"
-                          onClick={() => setShowManualEntry(true)}
-                          className="h-14 px-6 text-base font-semibold rounded-xl border-2 hover:bg-accent"
-                        >
-                          Enter Manually
-                        </Button>
-                      )}
                       {step > 1 && (
                         <Button
                           type="button"
@@ -408,6 +397,18 @@ export const Hero = () => {
                       </Button>
                     </div>
                   </div>
+
+                  {lookupFailed && step === 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setShowManualEntry(true)}
+                      className="w-full h-14 text-base font-semibold rounded-xl border-2 hover:bg-accent"
+                    >
+                      Enter Vehicle Details Manually
+                    </Button>
+                  )}
 
                   {step >= 2 && (
                     <div className="rounded-xl border border-border/60 bg-background/70 px-4 py-3">

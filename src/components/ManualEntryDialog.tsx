@@ -15,7 +15,6 @@ interface ManualEntryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: ManualVehicleData) => void;
-  initialReg?: string;
 }
 
 export interface ManualVehicleData {
@@ -32,14 +31,13 @@ export interface ManualVehicleData {
 export const ManualEntryDialog = ({ 
   open, 
   onOpenChange, 
-  onSubmit,
-  initialReg = "" 
+  onSubmit
 }: ManualEntryDialogProps) => {
   const [formData, setFormData] = useState<ManualVehicleData>({
     name: "",
     email: "",
     phone: "",
-    registrationNumber: initialReg,
+    registrationNumber: "",
     make: "",
     model: "",
     mileage: "",

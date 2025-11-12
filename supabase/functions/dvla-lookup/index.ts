@@ -45,17 +45,11 @@ serve(async (req) => {
 
     // Select credentials based on environment
     const envOverride = url.searchParams.get('env')?.toLowerCase() || '';
-    const testPreferred = envOverride === 'test' || Deno.env.get('DVLA_API_TEST_KEY');
-    
-    const endpoint = (testPreferred && Deno.env.get('DVLA_API_TEST_KEY')) 
-      ? TEST_ENDPOINT 
-      : LIVE_ENDPOINT;
-    
-    const apiKey = (testPreferred && Deno.env.get('DVLA_API_TEST_KEY'))
-      ? Deno.env.get('DVLA_API_TEST_KEY')
-      : Deno.env.get('DVLA_API_KEY');
+    const useTest = envOverride === 'test';
 
-    const context = testPreferred ? 'test' : 'live';
+    const endpoint = useTest ? TEST_ENDPOINT : LIVE_ENDPOINT;
+    const apiKey = useTest ? Deno.env.get('DVLA_API_TEST_KEY') : Deno.env.get('DVLA_API_KEY');
+    const context = useTest ? 'test' : 'live';
 
     if (!apiKey) {
       console.error('DVLA API key missing for context:', context);
@@ -84,12 +78,15 @@ serve(async (req) => {
 
     // Call DVLA API
     console.log('Calling DVLA API for VRM:', vrm, 'context:', context);
+    const correlationId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
     const dvlaResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'x-api-key': apiKey,
+        'X-Correlation-Id': correlationId,
       },
       body: JSON.stringify({ registrationNumber: vrm }),
     });

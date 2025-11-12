@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, User } from "lucide-react";
 import logo from "@/assets/sell-my-car-newcastle-logo.png";
-
 export const Header = () => {
-  return (
-    <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
+  return <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <img src={logo} alt="Sell My Car Newcastle" className="h-16 w-auto" />
+            <img src={logo} alt="Sell My Car Newcastle" className="h-12 w-auto" />
           </div>
 
           {/* Navigation */}
@@ -37,6 +35,5 @@ export const Header = () => {
           </Button>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };

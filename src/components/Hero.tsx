@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
 import logo from "@/assets/sell-my-car-newcastle-logo.png";
+import { ManualEntryDialog, ManualVehicleData } from "@/components/ManualEntryDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const DVLA_ENV_SUFFIX = "";
 
@@ -16,6 +18,9 @@ export const Hero = () => {
   const [vehicleSummary, setVehicleSummary] = useState<{ title: string; details: string } | null>(null);
   const [vehicleData, setVehicleData] = useState<Record<string, unknown> | null>(null);
   const [isFetchingVehicle, setIsFetchingVehicle] = useState(false);
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [lookupFailed, setLookupFailed] = useState(false);
+  const { toast } = useToast();
 
   const cleanVRM = useCallback((value: string) => value.toUpperCase().replace(/\s+/g, ""), []);
   const validVRM = useCallback((value: string) => /^[A-Z0-9]{1,8}$/.test(value), []);
@@ -195,6 +200,7 @@ export const Hero = () => {
           })
           .catch((error: Error) => {
             setError("vrm", error.message || "DVLA lookup failed. Please try again.");
+            setLookupFailed(true);
           })
           .finally(() => {
             setIsFetchingVehicle(false);
@@ -267,6 +273,17 @@ export const Hero = () => {
       return next;
     });
   }, []);
+
+  const handleManualEntry = useCallback((data: ManualVehicleData) => {
+    toast({
+      title: "Vehicle details submitted",
+      description: "We'll get back to you with a valuation within 24 hours.",
+    });
+    
+    console.log("Manual vehicle entry:", data);
+    setLookupFailed(false);
+    setShowManualEntry(false);
+  }, [toast]);
 
   const primaryCtaLabel = useMemo(() => {
     if (step === 1) return "Next: confirm mileage →";
@@ -353,7 +370,22 @@ export const Hero = () => {
                           step === 1 ? "uppercase" : ""
                         }`}
                       />
-                      {activeError && <p className="text-sm font-semibold text-red-600">{activeError}</p>}
+                      {activeError && (
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold text-red-600">{activeError}</p>
+                          {lookupFailed && step === 1 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowManualEntry(true)}
+                              className="text-sm"
+                            >
+                              Enter details manually instead
+                            </Button>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="flex gap-2 sm:gap-3">
                       {step > 1 && (
@@ -428,6 +460,14 @@ export const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Manual Entry Dialog */}
+      <ManualEntryDialog
+        open={showManualEntry}
+        onOpenChange={setShowManualEntry}
+        onSubmit={handleManualEntry}
+        initialReg={regValue}
+      />
     </section>
   );
 };

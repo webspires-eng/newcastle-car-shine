@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import womanPhoneYellow from "@/assets/woman-phone-yellow.jpg";
-import houseSunset from "@/assets/house-sunset.jpg";
-import womanPhoneGreen from "@/assets/woman-phone-green.jpg";
+import carAppPhone from "@/assets/car-app-phone.jpg";
+import dealershipInterior from "@/assets/dealership-interior.jpg";
+import carHandshake from "@/assets/car-handshake.jpg";
 
 export const SellingConfidence = () => {
   const cards = [
@@ -11,21 +11,21 @@ export const SellingConfidence = () => {
       badgeColor: "bg-[#4FC3F7]",
       title: "Sell easily with our app",
       link: "Download app",
-      image: womanPhoneYellow
+      image: carAppPhone
     },
     {
       badge: "News",
       badgeColor: "bg-[#BA68C8]",
-      title: "Have you seen our new ad?",
-      link: "Watch ad",
-      image: houseSunset
+      title: "Visit our showroom in Newcastle",
+      link: "Find location",
+      image: dealershipInterior
     },
     {
       badge: "Guides",
       badgeColor: "bg-[#4DB6AC]",
       title: "How to sell a car: a step by step guide",
       link: "Read guide",
-      image: womanPhoneGreen
+      image: carHandshake
     }
   ];
 

@@ -38,13 +38,13 @@ export const Testimonials = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0 rounded-3xl">
-              <CardContent className="p-8 text-center">
+            <Card key={index} className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0 rounded-3xl bg-card flex flex-col h-full">
+              <CardContent className="p-8 flex flex-col h-full">
                 {/* Avatar */}
-                <div className="flex justify-center mb-6 -mt-16">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-background shadow-lg">
+                <div className="flex justify-center mb-6">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-background shadow-lg">
                     <img 
                       src={testimonial.image} 
                       alt={testimonial.author}
@@ -53,16 +53,16 @@ export const Testimonials = () => {
                   </div>
                 </div>
 
-                <blockquote className="text-lg text-foreground mb-6 leading-relaxed">
+                <blockquote className="text-lg text-card-foreground mb-6 leading-relaxed flex-grow text-center font-medium">
                   "{testimonial.quote}"
                 </blockquote>
                 
-                <div className="border-t border-border pt-4 mb-4">
-                  <p className="font-semibold text-foreground">{testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.car}</p>
+                <div className="border-t border-border pt-4 mb-4 text-center">
+                  <p className="font-bold text-card-foreground text-lg">{testimonial.author}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{testimonial.car}</p>
                 </div>
 
-                <Button variant="outline" size="sm" className="rounded-full">
+                <Button variant="outline" size="sm" className="rounded-full w-full bg-background hover:bg-background/80">
                   More money stories
                 </Button>
               </CardContent>

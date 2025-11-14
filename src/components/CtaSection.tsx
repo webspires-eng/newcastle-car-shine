@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
-import houseSunset from "@/assets/house-sunset.jpg";
+import luxuryCarsRow from "@/assets/luxury-cars-row.jpg";
 
 export const CtaSection = () => {
   return (
@@ -11,20 +11,18 @@ export const CtaSection = () => {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src={houseSunset} 
-              alt="Beautiful house at sunset"
+              src={luxuryCarsRow} 
+              alt="Luxury cars ready for sale"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 to-foreground/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 to-foreground/50"></div>
           </div>
 
           {/* Content */}
           <div className="relative z-10 py-20 px-8 md:px-16 lg:px-20">
             <div className="max-w-2xl">
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-background mb-6 leading-tight">
-                It's not magic.
-                <br />
-                It's Newcastle.
+                Join 500,000+ people who sold with us
               </h2>
               
               <p className="text-lg text-background/90 mb-8 leading-relaxed">

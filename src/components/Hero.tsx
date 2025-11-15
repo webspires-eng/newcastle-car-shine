@@ -4,23 +4,20 @@ import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
 import { ManualEntryDialog, ManualVehicleData } from "@/components/ManualEntryDialog";
 import { useToast } from "@/hooks/use-toast";
-
 export const Hero = () => {
   const [showManualEntry, setShowManualEntry] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleManualEntry = (data: ManualVehicleData) => {
     toast({
       title: "Vehicle details submitted",
-      description: "We'll get back to you with a valuation within 24 hours.",
+      description: "We'll get back to you with a valuation within 24 hours."
     });
-    
     console.log("Manual vehicle entry:", data);
     setShowManualEntry(false);
   };
-
-  return (
-    <section id="hero" className="relative overflow-hidden bg-background py-12 md:py-20">
+  return <section id="hero" className="relative overflow-hidden bg-background py-12 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Centered Yellow Background Container with rounded corners */}
@@ -29,7 +26,7 @@ export const Hero = () => {
               {/* Left Content */}
               <div className="space-y-6 relative z-10">
                
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
+                <h1 className="sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight text-3xl text-left">
                   Sell my car.
                   <br />
                   Fast, fair and
@@ -43,13 +40,7 @@ export const Hero = () => {
                 </p>
 
                 <div className="max-w-2xl space-y-3">
-                  <Button
-                    type="button"
-                    variant="default"
-                    size="lg"
-                    onClick={() => setShowManualEntry(true)}
-                    className="h-16 px-8 text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl"
-                  >
+                  <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 px-8 text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl">
                     Get Your Free Valuation
                   </Button>
                   <p className="text-xs text-foreground/70">Enter your vehicle details to get an instant valuation from 7,500+ dealers.</p>
@@ -62,9 +53,7 @@ export const Hero = () => {
                     <span className="font-bold text-foreground">Trustpilot</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />
-                    ))}
+                    {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />)}
                   </div>
                   <span className="text-sm text-foreground/80">92,250+ reviews</span>
                 </div>
@@ -72,14 +61,9 @@ export const Hero = () => {
 
               {/* Right Content - Car Image */}
               <div className="relative flex items-center justify-center">
-                <img 
-                  src={blueCar}
-                  alt="Blue BMW car"
-                  className="w-full h-auto relative z-10"
-                  style={{
-                    filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
-                  }}
-                />
+                <img src={blueCar} alt="Blue BMW car" className="w-full h-auto relative z-10" style={{
+                filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
+              }} />
               </div>
             </div>
           </div>
@@ -87,11 +71,6 @@ export const Hero = () => {
       </div>
 
       {/* Manual Entry Dialog */}
-      <ManualEntryDialog
-        open={showManualEntry}
-        onOpenChange={setShowManualEntry}
-        onSubmit={handleManualEntry}
-      />
-    </section>
-  );
+      <ManualEntryDialog open={showManualEntry} onOpenChange={setShowManualEntry} onSubmit={handleManualEntry} />
+    </section>;
 };

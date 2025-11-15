@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
+import personWithCar from "@/assets/person-with-car-nobg.png";
 import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 export const Hero = () => {
   const [showManualEntry, setShowManualEntry] = useState(false);
@@ -52,11 +53,26 @@ export const Hero = () => {
                 </div>
               </div>
 
-              {/* Right Content - Car Image */}
+              {/* Right Content - Car Image with Person */}
               <div className="relative flex items-center justify-center">
-                <img src={blueCar} alt="Blue BMW car" className="w-full h-auto relative z-10" style={{
-                filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
-              }} />
+                {/* Person image positioned absolutely */}
+                <img 
+                  src={personWithCar} 
+                  alt="Professional car dealer" 
+                  className="absolute left-0 bottom-0 w-1/3 h-auto z-20 animate-fade-in"
+                  style={{
+                    filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2))'
+                  }} 
+                />
+                {/* Car image */}
+                <img 
+                  src={blueCar} 
+                  alt="Blue BMW car" 
+                  className="w-full h-auto relative z-10" 
+                  style={{
+                    filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
+                  }} 
+                />
               </div>
             </div>
           </div>

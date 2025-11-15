@@ -14,8 +14,8 @@ export const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Centered Yellow Background Container with rounded corners */}
-          <div className="relative rounded-[3rem] md:rounded-[4rem] overflow-hidden bg-hero-yellow p-8 md:p-12 lg:p-16">
-            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 items-center">
+          <div className="relative rounded-[3rem] md:rounded-[4rem] overflow-hidden bg-hero-yellow p-6 md:p-8 lg:p-10">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 items-center">
               {/* Left Content */}
               <div className="space-y-2 relative z-10 order-1 lg:order-1">
                
@@ -40,9 +40,7 @@ export const Hero = () => {
               </div>
 
               {/* Right Content - Car Image with Person */}
-              <div className="relative flex items-center justify-center order-2 lg:order-2">
-                {/* Person image positioned absolutely */}
-                
+              <div className="relative order-2 lg:order-2">
                 {/* Car image */}
                 <img src={heroCar} alt="Dark blue sedan car" className="w-full h-auto relative z-10 animate-fade-in" style={{
                 filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'

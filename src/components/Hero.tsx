@@ -42,9 +42,7 @@ export const Hero = () => {
               {/* Right Content - Car Image with Person */}
               <div className="relative flex items-center justify-center order-2 lg:order-2">
                 {/* Person image positioned absolutely */}
-                <img src={personWithCar} alt="Professional car dealer" className="absolute left-0 bottom-0 w-1/3 h-auto z-20 animate-fade-in" style={{
-                filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2))'
-              }} />
+                
                 {/* Car image */}
                 <img src={blueCar} alt="Blue BMW car" className="w-full h-auto relative z-10" style={{
                 filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'

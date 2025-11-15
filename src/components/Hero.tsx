@@ -14,10 +14,10 @@ export const Hero = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Centered Yellow Background Container with rounded corners */}
-          <div className="relative rounded-[3rem] md:rounded-[4rem] overflow-hidden bg-hero-yellow p-6 md:p-8 lg:p-10">
-            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 items-center">
+          <div className="relative rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 md:p-8 lg:p-10">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 md:gap-4 items-center">
               {/* Left Content */}
-              <div className="space-y-2 relative z-10 order-1 lg:order-1">
+              <div className="space-y-1 md:space-y-2 relative z-10 order-1 lg:order-1">
                
                 <h1 className="sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight text-3xl text-left">
                   Sell my car.
@@ -48,7 +48,7 @@ export const Hero = () => {
               </div>
 
               {/* Mobile-only content below image */}
-              <div className="lg:hidden order-3 space-y-4 w-full">
+              <div className="lg:hidden order-3 space-y-3 w-full">
                 <p className="text-xs md:text-xs text-foreground/70 text-center">
                   Enter your vehicle details to get an instant valuation from 7,500+ dealers.
                 </p>

@@ -16,9 +16,9 @@ export const Hero = () => {
         <div className="max-w-7xl mx-auto">
           {/* Centered Yellow Background Container with rounded corners */}
           <div className="relative rounded-[3rem] md:rounded-[4rem] overflow-hidden bg-hero-yellow p-8 md:p-12 lg:p-16">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 items-center">
               {/* Left Content */}
-              <div className="space-y-2 relative z-10">
+              <div className="space-y-2 relative z-10 order-1 lg:order-1">
                
                 <h1 className="sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight text-3xl text-left">
                   Sell my car.
@@ -43,24 +43,11 @@ export const Hero = () => {
                   >
                     Get Your Free Valuation
                   </Button>
-                  <p className="text-xs md:text-xs text-foreground/70">Enter your vehicle details to get an instant valuation from 7,500+ dealers.</p>
-                </div>
-
-                {/* Trustpilot Badge */}
-                <div className="flex items-center gap-3 pt-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-5 h-5 fill-[#00B67A] text-[#00B67A]" />
-                    <span className="font-bold text-foreground">Trustpilot</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />)}
-                  </div>
-                  <span className="text-sm text-foreground/80">92,250+ reviews</span>
                 </div>
               </div>
 
               {/* Right Content - Car Image with Person */}
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center order-2 lg:order-2">
                 {/* Person image positioned absolutely */}
                 <img 
                   src={personWithCar} 
@@ -79,6 +66,37 @@ export const Hero = () => {
                     filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
                   }} 
                 />
+              </div>
+
+              {/* Mobile-only content below image */}
+              <div className="lg:hidden order-3 space-y-4 w-full">
+                <p className="text-xs md:text-xs text-foreground/70 text-center">
+                  Enter your vehicle details to get an instant valuation from 7,500+ dealers.
+                </p>
+
+                {/* Trustpilot Badge */}
+                <div className="flex items-center justify-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-5 h-5 fill-[#00B67A] text-[#00B67A]" />
+                    <span className="font-bold text-foreground">Trustpilot</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />)}
+                  </div>
+                  <span className="text-sm text-foreground/80">92,250+ reviews</span>
+                </div>
+              </div>
+
+              {/* Desktop-only Trustpilot in original position */}
+              <div className="hidden lg:flex items-center gap-3 pt-4 order-1">
+                <div className="flex items-center gap-1">
+                  <Star className="w-5 h-5 fill-[#00B67A] text-[#00B67A]" />
+                  <span className="font-bold text-foreground">Trustpilot</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />)}
+                </div>
+                <span className="text-sm text-foreground/80">92,250+ reviews</span>
               </div>
             </div>
           </div>

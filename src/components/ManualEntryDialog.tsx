@@ -14,10 +14,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Car, User, Mail, Phone, Gauge } from "lucide-react";
 import confetti from "canvas-confetti";
+import { useSwipeable } from "react-swipeable";
 
-// Initialize Supabase client with safe fallbacks to avoid crashes when envs are missing
+// Initialize Supabase client with safe fallbacks
 const FALLBACK_URL = "https://ggarxjzwywppoqtehvhb.supabase.co";
 const FALLBACK_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU";
@@ -25,57 +26,19 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || FALLBACK_URL;
 const SUPABASE_PUBLISHABLE_KEY =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || FALLBACK_KEY;
 if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) {
-  console.warn(
-    "Supabase env variables missing; using safe fallbacks to keep the app running."
-  );
+  console.warn("Supabase env variables missing; using safe fallbacks.");
 }
-const supabase = createClient<Database>(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
+const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const vehicleInquirySchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Name is required")
-    .max(100, "Name must be less than 100 characters"),
-  email: z
-    .string()
-    .trim()
-    .email("Invalid email address")
-    .max(255, "Email must be less than 255 characters"),
-  phone: z
-    .string()
-    .trim()
-    .min(10, "Phone number must be at least 10 characters")
-    .max(20, "Phone number must be less than 20 characters")
-    .regex(/^[\d\s+()-]+$/, "Invalid phone number format"),
-  registrationNumber: z
-    .string()
-    .trim()
-    .min(1, "Registration number is required")
-    .max(20, "Registration number must be less than 20 characters"),
-  make: z
-    .string()
-    .trim()
-    .min(1, "Make is required")
-    .max(50, "Make must be less than 50 characters"),
-  model: z
-    .string()
-    .trim()
-    .min(1, "Model is required")
-    .max(50, "Model must be less than 50 characters"),
-  mileage: z
-    .string()
-    .trim()
-    .min(1, "Mileage is required")
-    .regex(/^\d+(,\d+)*$/, "Invalid mileage format"),
-  notes: z
-    .string()
-    .trim()
-    .max(1000, "Notes must be less than 1000 characters")
-    .optional(),
+  name: z.string().trim().min(1, "Name is required").max(100),
+  email: z.string().trim().email("Invalid email address").max(255),
+  phone: z.string().trim().min(10, "Phone must be at least 10 characters").max(20).regex(/^[\d\s+()-]+$/, "Invalid phone format"),
+  registrationNumber: z.string().trim().min(1, "Registration number is required").max(20),
+  make: z.string().trim().min(1, "Make is required").max(50),
+  model: z.string().trim().min(1, "Model is required").max(50),
+  mileage: z.string().trim().min(1, "Mileage is required").regex(/^\d+(,\d+)*$/, "Invalid mileage format"),
+  notes: z.string().trim().max(1000).optional(),
 });
 
 interface ManualEntryDialogProps {
@@ -95,11 +58,7 @@ export interface ManualVehicleData {
   notes: string;
 }
 
-export const ManualEntryDialog = ({
-  open,
-  onOpenChange,
-  onSubmit,
-}: ManualEntryDialogProps) => {
+export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryDialogProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<ManualVehicleData>({
     name: "",
@@ -111,43 +70,26 @@ export const ManualEntryDialog = ({
     mileage: "",
     notes: "",
   });
-
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof ManualVehicleData, string>>
-  >({});
+  const [errors, setErrors] = useState<Partial<Record<keyof ManualVehicleData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
 
-  const totalSteps = 3;
+  const totalSteps = 4;
 
-  // Confetti celebration function
+  // Confetti celebration
   const celebrate = () => {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-
-    const randomInRange = (min: number, max: number) => {
-      return Math.random() * (max - min) + min;
-    };
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
     const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
+      if (timeLeft <= 0) return clearInterval(interval);
 
       const particleCount = 50 * (timeLeft / duration);
-
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-      });
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-      });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
     }, 250);
   };
 
@@ -160,11 +102,9 @@ export const ManualEntryDialog = ({
     const newErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
     let fieldsToValidate: (keyof ManualVehicleData)[] = [];
 
-    if (step === 1) {
-      fieldsToValidate = ["name", "email", "phone"];
-    } else if (step === 2) {
-      fieldsToValidate = ["registrationNumber", "make", "model", "mileage"];
-    }
+    if (step === 1) fieldsToValidate = ["registrationNumber"];
+    else if (step === 2) fieldsToValidate = ["make", "model", "mileage"];
+    else if (step === 3) fieldsToValidate = ["name", "email", "phone"];
 
     const partialSchema = z.object(
       fieldsToValidate.reduce((acc, field) => {
@@ -178,14 +118,12 @@ export const ManualEntryDialog = ({
         acc[field] = formData[field];
         return acc;
       }, {} as any);
-      
       partialSchema.parse(dataToValidate);
       return true;
     } catch (err: any) {
       if (err?.issues) {
         for (const issue of err.issues as Array<{ path: (keyof ManualVehicleData)[]; message: string }>) {
-          const field = issue.path[0];
-          newErrors[field] = issue.message;
+          newErrors[issue.path[0]] = issue.message;
         }
         setErrors(newErrors);
       }
@@ -195,17 +133,32 @@ export const ManualEntryDialog = ({
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
+      setSlideDirection("right");
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
     }
   };
 
   const handleBack = () => {
+    setSlideDirection("left");
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
+  // Swipe handlers
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (currentStep < totalSteps && !isSubmitting) handleNext();
+    },
+    onSwipedRight: () => {
+      if (currentStep > 1 && !isSubmitting) handleBack();
+    },
+    trackMouse: false,
+    trackTouch: true,
+    delta: 50,
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (currentStep < totalSteps) {
       handleNext();
       return;
@@ -232,31 +185,24 @@ export const ManualEntryDialog = ({
       if (error) throw error;
 
       try {
-        const { error: emailError } = await supabase.functions.invoke(
-          "send-inquiry-email",
-          {
-            body: {
-              name: validatedData.name,
-              email: validatedData.email,
-              phone: validatedData.phone,
-              registrationNumber: validatedData.registrationNumber,
-              make: validatedData.make,
-              model: validatedData.model,
-              mileage: mileageInt,
-              notes: validatedData.notes || undefined,
-            },
-          }
-        );
-
-        if (emailError) {
-          console.error("Failed to send email notification:", emailError);
-        }
+        await supabase.functions.invoke("send-inquiry-email", {
+          body: {
+            name: validatedData.name,
+            email: validatedData.email,
+            phone: validatedData.phone,
+            registrationNumber: validatedData.registrationNumber,
+            make: validatedData.make,
+            model: validatedData.model,
+            mileage: mileageInt,
+            notes: validatedData.notes || undefined,
+          },
+        });
       } catch (emailError) {
-        console.error("Error sending email notification:", emailError);
+        console.error("Email notification error:", emailError);
       }
 
       toast.success("Inquiry submitted successfully!");
-      celebrate(); // Trigger confetti celebration
+      celebrate();
       onSubmit();
       onOpenChange(false);
       setFormData({
@@ -274,8 +220,7 @@ export const ManualEntryDialog = ({
       if (err?.issues) {
         const formattedErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
         for (const issue of err.issues as Array<{ path: (keyof ManualVehicleData)[]; message: string }>) {
-          const field = issue.path[0];
-          formattedErrors[field] = issue.message;
+          formattedErrors[issue.path[0]] = issue.message;
         }
         setErrors(formattedErrors);
       } else {
@@ -287,17 +232,108 @@ export const ManualEntryDialog = ({
     }
   };
 
+  const getAnimationClass = () => {
+    return slideDirection === "right"
+      ? "animate-[slideInRight_0.3s_ease-out]"
+      : "animate-[slideInLeft_0.3s_ease-out]";
+  };
+
   const renderStepContent = () => {
+    const animClass = getAnimationClass();
+
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-5 md:space-y-4 animate-fade-in">
-            <div className="text-center mb-6">
-              <h3 className="text-xl md:text-lg font-semibold text-foreground">Your Contact Information</h3>
-              <p className="text-base md:text-sm text-muted-foreground mt-2">We'll use this to get back to you</p>
+          <div className={`space-y-6 ${animClass}`}>
+            <div className="text-center mb-8">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 animate-scale-in">
+                <Car className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl md:text-xl font-bold text-foreground">What's Your Registration?</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-3">Enter your UK vehicle registration number</p>
             </div>
             <div>
-              <Label htmlFor="name" className="text-base md:text-sm">Full Name</Label>
+              <Label htmlFor="registrationNumber" className="text-lg md:text-base font-medium">Registration Number</Label>
+              <Input
+                id="registrationNumber"
+                value={formData.registrationNumber}
+                onChange={(e) => handleChange("registrationNumber", e.target.value.toUpperCase())}
+                placeholder="AB12 CDE"
+                className="mt-3 h-14 md:h-12 text-lg text-center font-semibold tracking-wider"
+                autoFocus
+              />
+              {errors.registrationNumber && (
+                <p className="text-destructive text-sm mt-2 animate-fade-in">{errors.registrationNumber}</p>
+              )}
+            </div>
+            <p className="text-xs text-center text-muted-foreground">💡 Swipe left or tap Next to continue</p>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className={`space-y-6 md:space-y-5 ${animClass}`}>
+            <div className="text-center mb-6">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 animate-scale-in">
+                <Gauge className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl md:text-xl font-bold text-foreground">Tell Us About Your Car</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-3">Vehicle specifications</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
+              <div>
+                <Label htmlFor="make" className="text-base md:text-sm font-medium">Make</Label>
+                <Input
+                  id="make"
+                  value={formData.make}
+                  onChange={(e) => handleChange("make", e.target.value)}
+                  placeholder="e.g., BMW"
+                  className="mt-2 h-12 md:h-10 text-base"
+                />
+                {errors.make && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.make}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="model" className="text-base md:text-sm font-medium">Model</Label>
+                <Input
+                  id="model"
+                  value={formData.model}
+                  onChange={(e) => handleChange("model", e.target.value)}
+                  placeholder="e.g., 3 Series"
+                  className="mt-2 h-12 md:h-10 text-base"
+                />
+                {errors.model && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.model}</p>}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="mileage" className="text-base md:text-sm font-medium">Mileage</Label>
+              <Input
+                id="mileage"
+                value={formData.mileage}
+                onChange={(e) => handleChange("mileage", e.target.value)}
+                placeholder="e.g., 45,000"
+                className="mt-2 h-12 md:h-10 text-base"
+              />
+              {errors.mileage && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.mileage}</p>}
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className={`space-y-6 md:space-y-5 ${animClass}`}>
+            <div className="text-center mb-6">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 animate-scale-in">
+                <User className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl md:text-xl font-bold text-foreground">Your Contact Details</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-3">So we can send you the valuation</p>
+            </div>
+
+            <div>
+              <Label htmlFor="name" className="text-base md:text-sm font-medium">Full Name</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -305,13 +341,11 @@ export const ManualEntryDialog = ({
                 placeholder="John Doe"
                 className="mt-2 h-12 md:h-10 text-base"
               />
-              {errors.name && (
-                <p className="text-destructive text-sm mt-2">{errors.name}</p>
-              )}
+              {errors.name && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.name}</p>}
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-base md:text-sm">Email Address</Label>
+              <Label htmlFor="email" className="text-base md:text-sm font-medium">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -320,13 +354,11 @@ export const ManualEntryDialog = ({
                 placeholder="john@example.com"
                 className="mt-2 h-12 md:h-10 text-base"
               />
-              {errors.email && (
-                <p className="text-destructive text-sm mt-2">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.email}</p>}
             </div>
 
             <div>
-              <Label htmlFor="phone" className="text-base md:text-sm">Phone Number</Label>
+              <Label htmlFor="phone" className="text-base md:text-sm font-medium">Phone Number</Label>
               <Input
                 id="phone"
                 value={formData.phone}
@@ -334,123 +366,52 @@ export const ManualEntryDialog = ({
                 placeholder="+44 20 7946 0958"
                 className="mt-2 h-12 md:h-10 text-base"
               />
-              {errors.phone && (
-                <p className="text-destructive text-sm mt-2">{errors.phone}</p>
-              )}
+              {errors.phone && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.phone}</p>}
             </div>
           </div>
         );
 
-      case 2:
+      case 4:
         return (
-          <div className="space-y-5 md:space-y-4 animate-fade-in">
+          <div className={`space-y-6 md:space-y-5 ${animClass}`}>
             <div className="text-center mb-6">
-              <h3 className="text-xl md:text-lg font-semibold text-foreground">Vehicle Details</h3>
-              <p className="text-base md:text-sm text-muted-foreground mt-2">Tell us about your car</p>
-            </div>
-            <div>
-              <Label htmlFor="registrationNumber" className="text-base md:text-sm">Registration Number</Label>
-              <Input
-                id="registrationNumber"
-                value={formData.registrationNumber}
-                onChange={(e) =>
-                  handleChange("registrationNumber", e.target.value.toUpperCase())
-                }
-                placeholder="AB12 CDE"
-                className="mt-2 h-12 md:h-10 text-base"
-              />
-              {errors.registrationNumber && (
-                <p className="text-destructive text-sm mt-2">
-                  {errors.registrationNumber}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
-              <div>
-                <Label htmlFor="make" className="text-base md:text-sm">Make</Label>
-                <Input
-                  id="make"
-                  value={formData.make}
-                  onChange={(e) => handleChange("make", e.target.value)}
-                  placeholder="BMW"
-                  className="mt-2 h-12 md:h-10 text-base"
-                />
-                {errors.make && (
-                  <p className="text-destructive text-sm mt-2">{errors.make}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="model" className="text-base md:text-sm">Model</Label>
-                <Input
-                  id="model"
-                  value={formData.model}
-                  onChange={(e) => handleChange("model", e.target.value)}
-                  placeholder="3 Series"
-                  className="mt-2 h-12 md:h-10 text-base"
-                />
-                {errors.model && (
-                  <p className="text-destructive text-sm mt-2">{errors.model}</p>
-                )}
-              </div>
+              <h3 className="text-2xl md:text-xl font-bold text-foreground">Almost Done!</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-3">Add any extra details (optional)</p>
             </div>
 
             <div>
-              <Label htmlFor="mileage" className="text-base md:text-sm">Mileage</Label>
-              <Input
-                id="mileage"
-                value={formData.mileage}
-                onChange={(e) => handleChange("mileage", e.target.value)}
-                placeholder="45,000"
-                className="mt-2 h-12 md:h-10 text-base"
-              />
-              {errors.mileage && (
-                <p className="text-destructive text-sm mt-2">{errors.mileage}</p>
-              )}
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-5 md:space-y-4 animate-fade-in">
-            <div className="text-center mb-6">
-              <h3 className="text-xl md:text-lg font-semibold text-foreground">Almost Done!</h3>
-              <p className="text-base md:text-sm text-muted-foreground mt-2">Any additional details? (optional)</p>
-            </div>
-            <div>
-              <Label htmlFor="notes" className="text-base md:text-sm">Additional Notes</Label>
+              <Label htmlFor="notes" className="text-base md:text-sm font-medium">Additional Notes</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => handleChange("notes", e.target.value)}
                 placeholder="Service history, recent repairs, condition notes..."
-                className="mt-2 min-h-[140px] md:min-h-[120px] text-base"
+                className="mt-2 min-h-[100px] text-base"
               />
-              {errors.notes && (
-                <p className="text-destructive text-sm mt-2">{errors.notes}</p>
-              )}
+              {errors.notes && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.notes}</p>}
             </div>
 
-            <div className="bg-muted/50 rounded-lg p-5 md:p-4 mt-6">
-              <h4 className="font-semibold text-base md:text-sm mb-4 md:mb-3">Summary</h4>
-              <div className="space-y-3 md:space-y-2 text-base md:text-sm">
-                <div className="flex justify-between items-start gap-4">
-                  <span className="text-muted-foreground">Name:</span>
-                  <span className="font-medium text-right">{formData.name}</span>
-                </div>
-                <div className="flex justify-between items-start gap-4">
-                  <span className="text-muted-foreground">Vehicle:</span>
-                  <span className="font-medium text-right">{formData.make} {formData.model}</span>
-                </div>
-                <div className="flex justify-between items-start gap-4">
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 md:p-5 border border-primary/20 animate-fade-in">
+              <h4 className="font-semibold text-lg md:text-base mb-4 flex items-center gap-2">
+                <Car className="w-5 h-5" />
+                Summary
+              </h4>
+              <div className="space-y-3 text-base md:text-sm">
+                <div className="flex justify-between items-center gap-4 pb-2 border-b border-primary/10">
                   <span className="text-muted-foreground">Registration:</span>
-                  <span className="font-medium text-right">{formData.registrationNumber}</span>
+                  <span className="font-bold text-primary">{formData.registrationNumber}</span>
                 </div>
-                <div className="flex justify-between items-start gap-4">
+                <div className="flex justify-between items-center gap-4">
+                  <span className="text-muted-foreground">Vehicle:</span>
+                  <span className="font-semibold">{formData.make} {formData.model}</span>
+                </div>
+                <div className="flex justify-between items-center gap-4">
                   <span className="text-muted-foreground">Mileage:</span>
-                  <span className="font-medium text-right">{formData.mileage}</span>
+                  <span className="font-semibold">{formData.mileage}</span>
+                </div>
+                <div className="flex justify-between items-center gap-4">
+                  <span className="text-muted-foreground">Contact:</span>
+                  <span className="font-semibold">{formData.name}</span>
                 </div>
               </div>
             </div>
@@ -464,44 +425,42 @@ export const ManualEntryDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="space-y-3">
-          <DialogTitle className="text-xl md:text-lg">Get Your Free Valuation</DialogTitle>
+      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto" {...swipeHandlers}>
+        <DialogHeader className="space-y-3 pb-2">
+          <DialogTitle className="text-2xl md:text-xl">Get Your Free Valuation</DialogTitle>
           <DialogDescription className="text-base md:text-sm">
             Step {currentStep} of {totalSteps}
           </DialogDescription>
         </DialogHeader>
 
         {/* Progress Bar */}
-        <div className="w-full bg-muted rounded-full h-3 md:h-2 mb-4">
+        <div className="w-full bg-muted rounded-full h-2.5 mb-6 overflow-hidden">
           <div
-            className="bg-primary h-3 md:h-2 rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-primary to-primary/70 h-2.5 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
         </div>
 
-        <form onSubmit={handleSubmit}>
-          {renderStepContent()}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="min-h-[300px]">{renderStepContent()}</div>
 
-          <div className="flex justify-between gap-3 mt-8 md:mt-6 pt-6 md:pt-4 border-t">
-            {currentStep > 1 && (
+          <div className="flex justify-between gap-3 pt-6 border-t">
+            {currentStep > 1 ? (
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleBack}
-                className="flex-1 h-12 md:h-10 text-base md:text-sm"
+                className="flex-1 h-12 md:h-11 text-base md:text-sm touch-manipulation"
               >
                 <ChevronLeft className="w-5 h-5 md:w-4 md:h-4 mr-2" />
                 Back
               </Button>
-            )}
-            
-            {currentStep === 1 && (
+            ) : (
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="flex-1 h-12 md:h-10 text-base md:text-sm"
+                className="flex-1 h-12 md:h-11 text-base md:text-sm touch-manipulation"
               >
                 Cancel
               </Button>
@@ -510,7 +469,7 @@ export const ManualEntryDialog = ({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 h-12 md:h-10 text-base md:text-sm"
+              className="flex-1 h-12 md:h-11 text-base md:text-sm font-semibold touch-manipulation"
             >
               {isSubmitting ? (
                 "Submitting..."

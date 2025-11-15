@@ -5,8 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const LIVE_ENDPOINT = 'https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles';
-const TEST_ENDPOINT = 'https://uat.driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles';
+const DVLA_ENDPOINT = 'https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles';
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 const vrmCache = new Map<string, { payload: any; expiresAt: number }>();
@@ -18,20 +17,22 @@ serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
     let rawVrm = '';
     
-    // Try to get VRM from body first, then fall back to query params
+    // Get VRM from body
     if (req.method === 'POST') {
       try {
         const body = await req.json();
         rawVrm = body.vrm?.trim() || '';
       } catch {
-        // If body parsing fails, try query params
-        rawVrm = url.searchParams.get('vrm')?.trim() || '';
+        return new Response(
+          JSON.stringify({ error: 'Invalid request body' }),
+          { 
+            status: 400, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
       }
-    } else {
-      rawVrm = url.searchParams.get('vrm')?.trim() || '';
     }
     
     if (!rawVrm) {
@@ -56,16 +57,9 @@ serve(async (req) => {
       );
     }
 
-    // Select credentials based on environment
-    const envOverride = url.searchParams.get('env')?.toLowerCase() || '';
-    const useTest = envOverride === 'test';
-
-    const endpoint = useTest ? TEST_ENDPOINT : LIVE_ENDPOINT;
-    const apiKey = useTest ? Deno.env.get('DVLA_API_TEST_KEY') : Deno.env.get('DVLA_API_KEY');
-    const context = useTest ? 'test' : 'live';
-
+    const apiKey = Deno.env.get('DVLA_API_KEY');
     if (!apiKey) {
-      console.error('DVLA API key missing for context:', context);
+      console.error('DVLA API key not configured');
       return new Response(
         JSON.stringify({ error: 'DVLA API key not configured' }),
         { 
@@ -76,8 +70,7 @@ serve(async (req) => {
     }
 
     // Check cache
-    const cacheKey = `${context}:${vrm}`;
-    const cached = vrmCache.get(cacheKey);
+    const cached = vrmCache.get(vrm);
     if (cached && cached.expiresAt > Date.now()) {
       console.log('Returning cached result for VRM:', vrm);
       return new Response(
@@ -90,9 +83,9 @@ serve(async (req) => {
     }
 
     // Call DVLA API
-    console.log('Calling DVLA API for VRM:', vrm, 'context:', context);
+    console.log('Calling DVLA API for VRM:', vrm);
 
-    const dvlaResponse = await fetch(endpoint, {
+    const dvlaResponse = await fetch(DVLA_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,9 +105,9 @@ serve(async (req) => {
         );
       }
       if (dvlaResponse.status === 403) {
-        console.error('DVLA API key unauthorized or invalid');
+        console.error('DVLA API key unauthorized');
         return new Response(
-          JSON.stringify({ error: 'DVLA API key invalid or unauthorized. Please check your API credentials.' }),
+          JSON.stringify({ error: 'DVLA API key unauthorized' }),
           { 
             status: 500, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -161,7 +154,7 @@ serve(async (req) => {
     };
 
     // Cache the result
-    vrmCache.set(cacheKey, {
+    vrmCache.set(vrm, {
       payload: normalized,
       expiresAt: Date.now() + CACHE_TTL_MS,
     });

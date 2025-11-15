@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 interface VehicleData {
@@ -39,9 +39,6 @@ const Seller = () => {
     setVehicleData(null);
 
     try {
-      // Call edge function using Supabase client
-      const { supabase } = await import("@/integrations/supabase/client");
-      
       const { data, error } = await supabase.functions.invoke('dvla-lookup', {
         body: { vrm: vrm.trim() }
       });

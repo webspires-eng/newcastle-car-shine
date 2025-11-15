@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+
 import { Loader2 } from "lucide-react";
 
 interface VehicleData {
@@ -39,13 +39,21 @@ const Seller = () => {
     setVehicleData(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('dvla-lookup', {
-        body: { vrm: vrm.trim() }
+      const baseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || "https://ggarxjzwywppoqtehvhb.supabase.co";
+      const anonKey = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU";
+      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": anonKey,
+        },
+        body: JSON.stringify({ vrm: vrm.trim() }),
       });
-
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || `Request failed with status ${response.status}`);
       }
+      const data: VehicleData = await response.json();
 
       setVehicleData(data);
       toast({

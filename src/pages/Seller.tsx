@@ -41,7 +41,8 @@ const Seller = () => {
     try {
       const baseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || "https://ggarxjzwywppoqtehvhb.supabase.co";
       const anonKey = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU";
-      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup`, {
+      // Use test environment for now to verify API setup
+      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup?env=test`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

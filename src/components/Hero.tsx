@@ -44,7 +44,7 @@ export const Hero = () => {
                 {/* Person image positioned absolutely */}
                 
                 {/* Car image */}
-                <img src={heroCar} alt="Dark blue sedan car" className="w-full h-auto relative z-10 animate-slide-in-right opacity-0 [animation-fill-mode:forwards]" style={{
+                <img src={heroCar} alt="Dark blue sedan car" className="w-full h-auto relative z-10 animate-fade-in" style={{
                 filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
               }} />
               </div>

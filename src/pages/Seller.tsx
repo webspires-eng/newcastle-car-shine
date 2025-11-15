@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 interface VehicleData {
@@ -44,17 +43,28 @@ const Seller = () => {
     setVehicleImageUrl(null);
 
     try {
-      // Check if Supabase client is properly configured
-      if (!import.meta.env.VITE_SUPABASE_URL) {
-        throw new Error('Supabase configuration is missing. Please refresh the page.');
-      }
+      let data: any = null;
 
-      const { data, error } = await supabase.functions.invoke('dvla-lookup', {
-        body: { vrm: vrm.trim() }
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to lookup vehicle');
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const resp = await supabase.functions.invoke('dvla-lookup', {
+          body: { vrm: vrm.trim() }
+        });
+        if (resp.error) throw new Error(resp.error.message || 'Failed to lookup vehicle');
+        data = resp.data;
+      } catch (clientErr) {
+        console.warn('Supabase client unavailable, using direct function URL', clientErr);
+        const functionsUrl = 'https://ggarxjzwywppoqtehvhb.supabase.co/functions/v1/dvla-lookup';
+        const response = await fetch(functionsUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ vrm: vrm.trim() })
+        });
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || `Lookup failed with status ${response.status}`);
+        }
+        data = await response.json();
       }
 
       if (!data) {
@@ -62,7 +72,7 @@ const Seller = () => {
       }
 
       const vehicleInfo = {
-        ...data as VehicleData,
+        ...(data as VehicleData),
         mileage: mileage ? parseInt(mileage) : undefined
       };
 
@@ -93,12 +103,26 @@ const Seller = () => {
     try {
       const prompt = `A professional photo of a ${colour} ${make} ${model} car, studio lighting, side view, high quality, detailed`;
       
-      const { data, error } = await supabase.functions.invoke('generate-vehicle-image', {
-        body: { prompt }
-      });
+      let data: any = null;
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const resp = await supabase.functions.invoke('generate-vehicle-image', {
+          body: { prompt }
+        });
+        if (resp.error) throw resp.error;
+        data = resp.data;
+      } catch (clientErr) {
+        console.warn('Supabase client unavailable for image generation, using direct URL', clientErr);
+        const functionsUrl = 'https://ggarxjzwywppoqtehvhb.supabase.co/functions/v1/generate-vehicle-image';
+        const response = await fetch(functionsUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        if (!response.ok) throw new Error(`Image generation failed: ${response.status}`);
+        data = await response.json();
+      }
 
-      if (error) throw error;
-      
       if (data?.image) {
         setVehicleImageUrl(data.image);
       }

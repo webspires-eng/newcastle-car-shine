@@ -2,19 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import blueCar from "@/assets/blue-bmw-car.png";
-import { ManualEntryDialog, ManualVehicleData } from "@/components/ManualEntryDialog";
-import { useToast } from "@/hooks/use-toast";
+import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 export const Hero = () => {
   const [showManualEntry, setShowManualEntry] = useState(false);
-  const {
-    toast
-  } = useToast();
-  const handleManualEntry = (data: ManualVehicleData) => {
-    toast({
-      title: "Vehicle details submitted",
-      description: "We'll get back to you with a valuation within 24 hours."
-    });
-    console.log("Manual vehicle entry:", data);
+
+  const handleManualEntry = () => {
+    // Success handling is now done within ManualEntryDialog
     setShowManualEntry(false);
   };
   return <section id="hero" className="relative overflow-hidden bg-background py-12 md:py-20">

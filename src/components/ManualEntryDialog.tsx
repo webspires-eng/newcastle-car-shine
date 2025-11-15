@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +11,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+// Server-side validation schema
+const vehicleInquirySchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  phone: z.string().trim().min(10, "Phone number must be at least 10 characters").max(20, "Phone number must be less than 20 characters").regex(/^[\d\s+()-]+$/, "Invalid phone number format"),
+  registrationNumber: z.string().trim().min(1, "Registration number is required").max(20, "Registration number must be less than 20 characters"),
+  make: z.string().trim().min(1, "Make is required").max(50, "Make must be less than 50 characters"),
+  model: z.string().trim().min(1, "Model is required").max(50, "Model must be less than 50 characters"),
+  mileage: z.string().trim().min(1, "Mileage is required").regex(/^\d+(,\d+)*$/, "Invalid mileage format"),
+  notes: z.string().trim().max(1000, "Notes must be less than 1000 characters").optional(),
+});
 
 interface ManualEntryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: ManualVehicleData) => void;
+  onSubmit: () => void;
 }
 
 export interface ManualVehicleData {
@@ -45,45 +60,45 @@ export const ManualEntryDialog = ({
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof ManualVehicleData, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field: keyof ManualVehicleData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setErrors(prev => ({ ...prev, [field]: "" }));
   };
 
-  const validateForm = () => {
-    const newErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
-
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email address";
-    }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
-    } else if (!/^[\d\s+()-]{10,}$/.test(formData.phone)) {
-      newErrors.phone = "Invalid phone number";
-    }
-    if (!formData.registrationNumber.trim()) {
-      newErrors.registrationNumber = "Registration number is required";
-    }
-    if (!formData.make.trim()) newErrors.make = "Make is required";
-    if (!formData.model.trim()) newErrors.model = "Model is required";
-    if (!formData.mileage.trim()) {
-      newErrors.mileage = "Mileage is required";
-    } else if (!/^\d+$/.test(formData.mileage.replace(/,/g, ""))) {
-      newErrors.mileage = "Invalid mileage";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      onSubmit(formData);
+    setIsSubmitting(true);
+    setErrors({});
+
+    try {
+      // Validate with zod schema
+      const validatedData = vehicleInquirySchema.parse(formData);
+
+      // Convert mileage string to integer
+      const mileageInt = parseInt(validatedData.mileage.replace(/,/g, ""), 10);
+
+      // Insert into Supabase
+      const { error } = await supabase
+        .from("vehicle_inquiries")
+        .insert({
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          registration_number: validatedData.registrationNumber,
+          make: validatedData.make,
+          model: validatedData.model,
+          mileage: mileageInt,
+          notes: validatedData.notes || null,
+        });
+
+      if (error) throw error;
+
+      // Success
+      toast.success("Vehicle inquiry submitted successfully! We'll get back to you soon.");
+      
+      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -94,7 +109,25 @@ export const ManualEntryDialog = ({
         mileage: "",
         notes: "",
       });
+      
       onOpenChange(false);
+      onSubmit();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Handle validation errors
+        const fieldErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
+        error.errors.forEach((err) => {
+          const field = err.path[0] as keyof ManualVehicleData;
+          fieldErrors[field] = err.message;
+        });
+        setErrors(fieldErrors);
+      } else {
+        // Handle database errors
+        console.error("Error submitting inquiry:", error);
+        toast.error("Failed to submit inquiry. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -220,10 +253,13 @@ export const ManualEntryDialog = ({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button type="submit">Submit Vehicle Details</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit Vehicle Details"}
+            </Button>
           </div>
         </form>
       </DialogContent>

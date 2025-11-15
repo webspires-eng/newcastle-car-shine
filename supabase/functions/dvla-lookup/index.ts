@@ -19,7 +19,20 @@ serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const rawVrm = url.searchParams.get('vrm')?.trim() || '';
+    let rawVrm = '';
+    
+    // Try to get VRM from body first, then fall back to query params
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        rawVrm = body.vrm?.trim() || '';
+      } catch {
+        // If body parsing fails, try query params
+        rawVrm = url.searchParams.get('vrm')?.trim() || '';
+      }
+    } else {
+      rawVrm = url.searchParams.get('vrm')?.trim() || '';
+    }
     
     if (!rawVrm) {
       return new Response(

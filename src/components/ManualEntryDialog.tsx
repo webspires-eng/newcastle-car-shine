@@ -95,6 +95,30 @@ export const ManualEntryDialog = ({
 
       if (error) throw error;
 
+      // Send email notification to sales team
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-inquiry-email', {
+          body: {
+            name: validatedData.name,
+            email: validatedData.email,
+            phone: validatedData.phone,
+            registrationNumber: validatedData.registrationNumber,
+            make: validatedData.make,
+            model: validatedData.model,
+            mileage: mileageInt,
+            notes: validatedData.notes || undefined,
+          },
+        });
+
+        if (emailError) {
+          console.error('Failed to send email notification:', emailError);
+          // Don't fail the submission if email fails
+        }
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
+        // Don't fail the submission if email fails
+      }
+
       // Success
       toast.success("Vehicle inquiry submitted successfully! We'll get back to you soon.");
       

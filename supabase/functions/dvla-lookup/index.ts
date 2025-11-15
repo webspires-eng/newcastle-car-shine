@@ -10,6 +10,25 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 const vrmCache = new Map<string, { payload: any; expiresAt: number }>();
 
+async function fetchWithRetry(url: string, init: RequestInit, attempts = 3) {
+  let lastErr: any = null;
+  for (let i = 0; i < attempts; i++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      clearTimeout(timeout);
+      return res;
+    } catch (err) {
+      clearTimeout(timeout);
+      lastErr = err;
+      const backoff = 300 * Math.pow(2, i);
+      await new Promise((r) => setTimeout(r, backoff));
+    }
+  }
+  throw lastErr;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -85,10 +104,11 @@ serve(async (req) => {
     // Call DVLA API
     console.log('Calling DVLA API for VRM:', vrm);
 
-    const dvlaResponse = await fetch(DVLA_ENDPOINT, {
+    const dvlaResponse = await fetchWithRetry(DVLA_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'x-api-key': apiKey,
       },
       body: JSON.stringify({ registrationNumber: vrm }),

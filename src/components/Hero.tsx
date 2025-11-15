@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import blueCar from "@/assets/blue-bmw-car.png";
+import blueCar from "@/assets/dark-blue-sedan.png";
 import personWithCar from "@/assets/person-with-car-nobg.png";
 import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 export const Hero = () => {
@@ -60,7 +60,7 @@ export const Hero = () => {
                 {/* Car image */}
                 <img 
                   src={blueCar} 
-                  alt="Blue BMW car" 
+                  alt="Dark blue sedan car"
                   className="w-full h-auto relative z-10" 
                   style={{
                     filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'

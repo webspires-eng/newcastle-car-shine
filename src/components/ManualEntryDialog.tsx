@@ -14,7 +14,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-// Server-side validation schema
 const vehicleInquirySchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
@@ -73,13 +72,9 @@ export const ManualEntryDialog = ({
     setErrors({});
 
     try {
-      // Validate with zod schema
       const validatedData = vehicleInquirySchema.parse(formData);
-
-      // Convert mileage string to integer
       const mileageInt = parseInt(validatedData.mileage.replace(/,/g, ""), 10);
 
-      // Insert into Supabase
       const { error } = await supabase
         .from("vehicle_inquiries")
         .insert({
@@ -95,7 +90,6 @@ export const ManualEntryDialog = ({
 
       if (error) throw error;
 
-      // Send email notification to sales team
       try {
         const { error: emailError } = await supabase.functions.invoke('send-inquiry-email', {
           body: {
@@ -112,17 +106,13 @@ export const ManualEntryDialog = ({
 
         if (emailError) {
           console.error('Failed to send email notification:', emailError);
-          // Don't fail the submission if email fails
         }
       } catch (emailError) {
         console.error('Error sending email notification:', emailError);
-        // Don't fail the submission if email fails
       }
 
-      // Success
       toast.success("Vehicle inquiry submitted successfully! We'll get back to you soon.");
       
-      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -138,16 +128,16 @@ export const ManualEntryDialog = ({
       onSubmit();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // Handle validation errors
         const fieldErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
         error.errors.forEach((err) => {
-          const field = err.path[0] as keyof ManualVehicleData;
-          fieldErrors[field] = err.message;
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as keyof ManualVehicleData] = err.message;
+          }
         });
         setErrors(fieldErrors);
+        toast.error("Please check the form for errors");
       } else {
-        // Handle database errors
-        console.error("Error submitting inquiry:", error);
+        console.error("Error submitting vehicle inquiry:", error);
         toast.error("Failed to submit inquiry. Please try again.");
       }
     } finally {
@@ -157,70 +147,67 @@ export const ManualEntryDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Manual Vehicle Entry</DialogTitle>
+          <DialogTitle>Enter Vehicle Details Manually</DialogTitle>
           <DialogDescription>
-            Enter your vehicle details manually. We'll get back to you with a valuation.
+            Please provide your vehicle and contact information below.
           </DialogDescription>
         </DialogHeader>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                placeholder="John Smith"
-              />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="name">Your Name *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              placeholder="John Smith"
+              disabled={isSubmitting}
+            />
+            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                placeholder="john@example.com"
-              />
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address *</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              placeholder="john@example.com"
+              disabled={isSubmitting}
+            />
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="07700 900000"
-              />
-              {errors.phone && (
-                <p className="text-sm text-destructive">{errors.phone}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number *</Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+              placeholder="07XXX XXXXXX"
+              disabled={isSubmitting}
+            />
+            {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="registrationNumber">Registration Number *</Label>
-              <Input
-                id="registrationNumber"
-                value={formData.registrationNumber}
-                onChange={(e) => handleChange("registrationNumber", e.target.value.toUpperCase())}
-                placeholder="OO07 HAD"
-              />
-              {errors.registrationNumber && (
-                <p className="text-sm text-destructive">{errors.registrationNumber}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="registrationNumber">Registration Number *</Label>
+            <Input
+              id="registrationNumber"
+              value={formData.registrationNumber}
+              onChange={(e) => handleChange("registrationNumber", e.target.value.toUpperCase())}
+              placeholder="AB12 CDE"
+              disabled={isSubmitting}
+            />
+            {errors.registrationNumber && (
+              <p className="text-sm text-destructive">{errors.registrationNumber}</p>
+            )}
+          </div>
 
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="make">Make *</Label>
               <Input
@@ -228,10 +215,9 @@ export const ManualEntryDialog = ({
                 value={formData.make}
                 onChange={(e) => handleChange("make", e.target.value)}
                 placeholder="BMW"
+                disabled={isSubmitting}
               />
-              {errors.make && (
-                <p className="text-sm text-destructive">{errors.make}</p>
-              )}
+              {errors.make && <p className="text-sm text-destructive">{errors.make}</p>}
             </div>
 
             <div className="space-y-2">
@@ -241,24 +227,22 @@ export const ManualEntryDialog = ({
                 value={formData.model}
                 onChange={(e) => handleChange("model", e.target.value)}
                 placeholder="3 Series"
+                disabled={isSubmitting}
               />
-              {errors.model && (
-                <p className="text-sm text-destructive">{errors.model}</p>
-              )}
+              {errors.model && <p className="text-sm text-destructive">{errors.model}</p>}
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="mileage">Mileage *</Label>
-              <Input
-                id="mileage"
-                value={formData.mileage}
-                onChange={(e) => handleChange("mileage", e.target.value)}
-                placeholder="50,000"
-              />
-              {errors.mileage && (
-                <p className="text-sm text-destructive">{errors.mileage}</p>
-              )}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="mileage">Mileage *</Label>
+            <Input
+              id="mileage"
+              value={formData.mileage}
+              onChange={(e) => handleChange("mileage", e.target.value)}
+              placeholder="50000"
+              disabled={isSubmitting}
+            />
+            {errors.mileage && <p className="text-sm text-destructive">{errors.mileage}</p>}
           </div>
 
           <div className="space-y-2">
@@ -268,23 +252,15 @@ export const ManualEntryDialog = ({
               value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
               placeholder="Any additional information about your vehicle..."
-              rows={3}
+              className="min-h-[100px]"
+              disabled={isSubmitting}
             />
+            {errors.notes && <p className="text-sm text-destructive">{errors.notes}</p>}
           </div>
 
-          <div className="flex gap-3 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit Vehicle Details"}
-            </Button>
-          </div>
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

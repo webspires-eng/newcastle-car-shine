@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const ELASTIC_EMAIL_API_KEY = Deno.env.get('ELASTIC_EMAIL_API_KEY');
 
@@ -6,6 +7,18 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const inquirySchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  phone: z.string().trim().min(10, "Phone must be at least 10 characters").max(20, "Phone must be less than 20 characters").regex(/^[\d\s+()-]+$/, "Phone contains invalid characters"),
+  registrationNumber: z.string().trim().min(1, "Registration number is required").max(20, "Registration number must be less than 20 characters"),
+  make: z.string().trim().min(1, "Make is required").max(50, "Make must be less than 50 characters"),
+  model: z.string().trim().min(1, "Model is required").max(50, "Model must be less than 50 characters"),
+  mileage: z.number().int("Mileage must be an integer").positive("Mileage must be positive"),
+  notes: z.string().trim().max(1000, "Notes must be less than 1000 characters").optional(),
+});
 
 interface InquiryData {
   name: string;
@@ -18,6 +31,18 @@ interface InquiryData {
   notes?: string;
 }
 
+// HTML escape function to prevent XSS
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -25,7 +50,23 @@ serve(async (req) => {
   }
 
   try {
-    const inquiryData: InquiryData = await req.json();
+    const rawData = await req.json();
+    
+    // Validate input data
+    const validationResult = inquirySchema.safeParse(rawData);
+    
+    if (!validationResult.success) {
+      console.error('Validation error:', validationResult.error);
+      return new Response(
+        JSON.stringify({ error: 'Invalid input data', details: validationResult.error.issues }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
+    const inquiryData: InquiryData = validationResult.data;
     console.log('Received inquiry email request for:', inquiryData.email);
 
     // Format the email body with inquiry details
@@ -51,38 +92,38 @@ serve(async (req) => {
               <h2>Customer Information</h2>
               <div class="field">
                 <span class="label">Name:</span>
-                <span class="value">${inquiryData.name}</span>
+                <span class="value">${escapeHtml(inquiryData.name)}</span>
               </div>
               <div class="field">
                 <span class="label">Email:</span>
-                <span class="value">${inquiryData.email}</span>
+                <span class="value">${escapeHtml(inquiryData.email)}</span>
               </div>
               <div class="field">
                 <span class="label">Phone:</span>
-                <span class="value">${inquiryData.phone}</span>
+                <span class="value">${escapeHtml(inquiryData.phone)}</span>
               </div>
               
               <h2>Vehicle Details</h2>
               <div class="field">
                 <span class="label">Registration:</span>
-                <span class="value">${inquiryData.registrationNumber}</span>
+                <span class="value">${escapeHtml(inquiryData.registrationNumber)}</span>
               </div>
               <div class="field">
                 <span class="label">Make:</span>
-                <span class="value">${inquiryData.make}</span>
+                <span class="value">${escapeHtml(inquiryData.make)}</span>
               </div>
               <div class="field">
                 <span class="label">Model:</span>
-                <span class="value">${inquiryData.model}</span>
+                <span class="value">${escapeHtml(inquiryData.model)}</span>
               </div>
               <div class="field">
                 <span class="label">Mileage:</span>
-                <span class="value">${inquiryData.mileage.toLocaleString()} miles</span>
+                <span class="value">${escapeHtml(inquiryData.mileage.toLocaleString())} miles</span>
               </div>
               ${inquiryData.notes ? `
               <div class="field">
                 <span class="label">Additional Notes:</span>
-                <div class="value">${inquiryData.notes}</div>
+                <div class="value">${escapeHtml(inquiryData.notes)}</div>
               </div>
               ` : ''}
             </div>

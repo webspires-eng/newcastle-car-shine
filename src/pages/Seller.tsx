@@ -15,12 +15,16 @@ interface VehicleData {
   colour: string;
   body: string;
   fuel: string;
+  mileage?: number;
 }
 
 const Seller = () => {
   const [vrm, setVrm] = useState("");
+  const [mileage, setMileage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
+  const [vehicleImageUrl, setVehicleImageUrl] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const { toast } = useToast();
 
   const handleLookup = async (e: React.FormEvent) => {
@@ -37,8 +41,14 @@ const Seller = () => {
 
     setIsLoading(true);
     setVehicleData(null);
+    setVehicleImageUrl(null);
 
     try {
+      // Check if Supabase client is properly configured
+      if (!import.meta.env.VITE_SUPABASE_URL) {
+        throw new Error('Supabase configuration is missing. Please refresh the page.');
+      }
+
       const { data, error } = await supabase.functions.invoke('dvla-lookup', {
         body: { vrm: vrm.trim() }
       });
@@ -51,11 +61,21 @@ const Seller = () => {
         throw new Error('No data returned from lookup');
       }
 
-      setVehicleData(data as VehicleData);
+      const vehicleInfo = {
+        ...data as VehicleData,
+        mileage: mileage ? parseInt(mileage) : undefined
+      };
+
+      setVehicleData(vehicleInfo);
       toast({
         title: "Success",
         description: "Vehicle details retrieved successfully",
       });
+
+      // Generate vehicle image
+      if (vehicleInfo.make && vehicleInfo.model) {
+        generateVehicleImage(vehicleInfo.make, vehicleInfo.model, vehicleInfo.colour);
+      }
     } catch (error: any) {
       console.error("DVLA lookup error:", error);
       toast({
@@ -65,6 +85,28 @@ const Seller = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const generateVehicleImage = async (make: string, model: string, colour: string) => {
+    setIsGeneratingImage(true);
+    try {
+      const prompt = `A professional photo of a ${colour} ${make} ${model} car, studio lighting, side view, high quality, detailed`;
+      
+      const { data, error } = await supabase.functions.invoke('generate-vehicle-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      
+      if (data?.image) {
+        setVehicleImageUrl(data.image);
+      }
+    } catch (error) {
+      console.error("Image generation error:", error);
+      // Silently fail - image is optional
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -96,6 +138,17 @@ const Seller = () => {
                   disabled={isLoading}
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="mileage">Current Mileage (optional)</Label>
+                <Input
+                  id="mileage"
+                  type="number"
+                  placeholder="e.g., 45000"
+                  value={mileage}
+                  onChange={(e) => setMileage(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -109,36 +162,61 @@ const Seller = () => {
             </form>
 
             {vehicleData && (
-              <div className="mt-6 p-4 bg-muted rounded-lg space-y-2">
-                <h3 className="font-semibold text-lg mb-3">Vehicle Details</h3>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="font-medium">Registration:</span>
-                    <p className="text-muted-foreground">{vehicleData.vrm}</p>
+              <div className="mt-6 space-y-4">
+                {vehicleImageUrl && (
+                  <div className="relative rounded-lg overflow-hidden bg-muted">
+                    <img 
+                      src={vehicleImageUrl} 
+                      alt={`${vehicleData.make} ${vehicleData.model}`}
+                      className="w-full h-48 object-cover"
+                    />
                   </div>
-                  <div>
-                    <span className="font-medium">Make:</span>
-                    <p className="text-muted-foreground">{vehicleData.make || "N/A"}</p>
+                )}
+                
+                {isGeneratingImage && (
+                  <div className="flex items-center justify-center p-4 bg-muted rounded-lg">
+                    <Loader2 className="h-6 w-6 animate-spin mr-2" />
+                    <span className="text-sm">Generating vehicle image...</span>
                   </div>
-                  <div>
-                    <span className="font-medium">Model:</span>
-                    <p className="text-muted-foreground">{vehicleData.model || "N/A"}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium">Year:</span>
-                    <p className="text-muted-foreground">{vehicleData.year || "N/A"}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium">Colour:</span>
-                    <p className="text-muted-foreground">{vehicleData.colour || "N/A"}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium">Body Type:</span>
-                    <p className="text-muted-foreground">{vehicleData.body || "N/A"}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium">Fuel Type:</span>
-                    <p className="text-muted-foreground">{vehicleData.fuel || "N/A"}</p>
+                )}
+
+                <div className="p-4 bg-muted rounded-lg space-y-2">
+                  <h3 className="font-semibold text-lg mb-3">Vehicle Details</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="font-medium">Registration:</span>
+                      <p className="text-muted-foreground">{vehicleData.vrm}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Make:</span>
+                      <p className="text-muted-foreground">{vehicleData.make || "N/A"}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Model:</span>
+                      <p className="text-muted-foreground">{vehicleData.model || "N/A"}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Year:</span>
+                      <p className="text-muted-foreground">{vehicleData.year || "N/A"}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Colour:</span>
+                      <p className="text-muted-foreground">{vehicleData.colour || "N/A"}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Body Type:</span>
+                      <p className="text-muted-foreground">{vehicleData.body || "N/A"}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Fuel Type:</span>
+                      <p className="text-muted-foreground">{vehicleData.fuel || "N/A"}</p>
+                    </div>
+                    {vehicleData.mileage && (
+                      <div>
+                        <span className="font-medium">Mileage:</span>
+                        <p className="text-muted-foreground">{vehicleData.mileage.toLocaleString()} miles</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

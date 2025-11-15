@@ -1,4 +1,1 @@
 project_id = "ggarxjzwywppoqtehvhb"
-
-[functions.generate-vehicle-image]
-verify_jwt = false

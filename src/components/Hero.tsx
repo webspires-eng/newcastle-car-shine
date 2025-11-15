@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import blueCar from "@/assets/blue-bmw-car.png";
+import heroCar from "@/assets/hero-car.png";
 import personWithCar from "@/assets/person-with-car-nobg.png";
 import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 export const Hero = () => {
@@ -44,7 +44,7 @@ export const Hero = () => {
                 {/* Person image positioned absolutely */}
                 
                 {/* Car image */}
-                <img src={blueCar} alt="Blue BMW car" className="w-full h-auto relative z-10" style={{
+                <img src={heroCar} alt="Dark blue sedan car" className="w-full h-auto relative z-10 animate-slide-in-right opacity-0 [animation-fill-mode:forwards]" style={{
                 filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
               }} />
               </div>

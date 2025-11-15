@@ -91,15 +91,12 @@ serve(async (req) => {
 
     // Call DVLA API
     console.log('Calling DVLA API for VRM:', vrm, 'context:', context);
-    const correlationId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
     const dvlaResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
         'x-api-key': apiKey,
-        'X-Correlation-Id': correlationId,
       },
       body: JSON.stringify({ registrationNumber: vrm }),
     });

@@ -6,102 +6,31 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-interface VehicleData {
-  vrm: string;
-  make: string;
-  model: string;
-  year: number | null;
-  colour: string;
-  body: string;
-  fuel: string;
-  mileage?: number;
-}
-
 const Seller = () => {
-  const [vrm, setVrm] = useState("");
-  const [mileage, setMileage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [vehicleData, setVehicleData] = useState<VehicleData | null>(null);
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [colour, setColour] = useState("");
   const [vehicleImageUrl, setVehicleImageUrl] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const { toast } = useToast();
 
-  const handleLookup = async (e: React.FormEvent) => {
+  const handleGenerateImage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!vrm.trim()) {
+    if (!make.trim() || !model.trim()) {
       toast({
         title: "Error",
-        description: "Please enter a vehicle registration number",
+        description: "Please enter vehicle make and model",
         variant: "destructive",
       });
       return;
     }
 
-    setIsLoading(true);
-    setVehicleData(null);
+    setIsGeneratingImage(true);
     setVehicleImageUrl(null);
 
     try {
-      let data: any = null;
-
-      try {
-        const { supabase } = await import("@/integrations/supabase/client");
-        const resp = await supabase.functions.invoke('dvla-lookup', {
-          body: { vrm: vrm.trim() }
-        });
-        if (resp.error) throw new Error(resp.error.message || 'Failed to lookup vehicle');
-        data = resp.data;
-      } catch (clientErr) {
-        console.warn('Supabase client unavailable, using direct function URL', clientErr);
-        const functionsUrl = 'https://ggarxjzwywppoqtehvhb.supabase.co/functions/v1/dvla-lookup';
-        const response = await fetch(functionsUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ vrm: vrm.trim() })
-        });
-        if (!response.ok) {
-          const err = await response.json().catch(() => ({}));
-          throw new Error(err.error || `Lookup failed with status ${response.status}`);
-        }
-        data = await response.json();
-      }
-
-      if (!data) {
-        throw new Error('No data returned from lookup');
-      }
-
-      const vehicleInfo = {
-        ...(data as VehicleData),
-        mileage: mileage ? parseInt(mileage) : undefined
-      };
-
-      setVehicleData(vehicleInfo);
-      toast({
-        title: "Success",
-        description: "Vehicle details retrieved successfully",
-      });
-
-      // Generate vehicle image
-      if (vehicleInfo.make && vehicleInfo.model) {
-        generateVehicleImage(vehicleInfo.make, vehicleInfo.model, vehicleInfo.colour);
-      }
-    } catch (error: any) {
-      console.error("DVLA lookup error:", error);
-      toast({
-        title: "Lookup Failed",
-        description: error.message || "Unable to retrieve vehicle details",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const generateVehicleImage = async (make: string, model: string, colour: string) => {
-    setIsGeneratingImage(true);
-    try {
-      const prompt = `A professional photo of a ${colour} ${make} ${model} car, studio lighting, side view, high quality, detailed`;
+      const prompt = `A professional photo of a ${colour || 'modern'} ${make} ${model} car, studio lighting, side view, high quality, detailed`;
       
       let data: any = null;
       try {
@@ -125,10 +54,20 @@ const Seller = () => {
 
       if (data?.image) {
         setVehicleImageUrl(data.image);
+        toast({
+          title: "Success",
+          description: "Vehicle image generated successfully",
+        });
+      } else {
+        throw new Error('No image returned');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Image generation error:", error);
-      // Silently fail - image is optional
+      toast({
+        title: "Generation Failed",
+        description: error.message || "Unable to generate vehicle image",
+        variant: "destructive",
+      });
     } finally {
       setIsGeneratingImage(false);
     }
@@ -137,111 +76,80 @@ const Seller = () => {
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="container max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-2">DVLA Lookup Test</h1>
+        <h1 className="text-4xl font-bold text-center mb-2">Vehicle Image Generator</h1>
         <p className="text-center text-muted-foreground mb-8">
-          Test the DVLA API integration by entering a vehicle registration number
+          Generate AI images of vehicles based on make, model, and color
         </p>
 
         <Card>
           <CardHeader>
-            <CardTitle>Vehicle Registration Lookup</CardTitle>
+            <CardTitle>Vehicle Details</CardTitle>
             <CardDescription>
-              Enter a UK vehicle registration number to retrieve vehicle details
+              Enter vehicle information to generate an image
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleLookup} className="space-y-4">
+            <form onSubmit={handleGenerateImage} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="vrm">Vehicle Registration Number</Label>
+                <Label htmlFor="make">Make *</Label>
                 <Input
-                  id="vrm"
-                  placeholder="e.g., AB12 CDE"
-                  value={vrm}
-                  onChange={(e) => setVrm(e.target.value.toUpperCase())}
-                  maxLength={8}
-                  disabled={isLoading}
+                  id="make"
+                  placeholder="e.g., BMW"
+                  value={make}
+                  onChange={(e) => setMake(e.target.value)}
+                  disabled={isGeneratingImage}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="mileage">Current Mileage (optional)</Label>
+                <Label htmlFor="model">Model *</Label>
                 <Input
-                  id="mileage"
-                  type="number"
-                  placeholder="e.g., 45000"
-                  value={mileage}
-                  onChange={(e) => setMileage(e.target.value)}
-                  disabled={isLoading}
+                  id="model"
+                  placeholder="e.g., M3"
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  disabled={isGeneratingImage}
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
+              <div className="space-y-2">
+                <Label htmlFor="colour">Colour (optional)</Label>
+                <Input
+                  id="colour"
+                  placeholder="e.g., Blue"
+                  value={colour}
+                  onChange={(e) => setColour(e.target.value)}
+                  disabled={isGeneratingImage}
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isGeneratingImage}>
+                {isGeneratingImage ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Looking up...
+                    Generating Image...
                   </>
                 ) : (
-                  "Lookup Vehicle"
+                  "Generate Vehicle Image"
                 )}
               </Button>
             </form>
 
-            {vehicleData && (
-              <div className="mt-6 space-y-4">
-                {vehicleImageUrl && (
-                  <div className="relative rounded-lg overflow-hidden bg-muted">
-                    <img 
-                      src={vehicleImageUrl} 
-                      alt={`${vehicleData.make} ${vehicleData.model}`}
-                      className="w-full h-48 object-cover"
-                    />
-                  </div>
-                )}
-                
-                {isGeneratingImage && (
-                  <div className="flex items-center justify-center p-4 bg-muted rounded-lg">
-                    <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                    <span className="text-sm">Generating vehicle image...</span>
-                  </div>
-                )}
+            {isGeneratingImage && (
+              <div className="mt-6 flex items-center justify-center p-8 bg-muted rounded-lg">
+                <Loader2 className="h-8 w-8 animate-spin mr-3" />
+                <span>Creating your vehicle image...</span>
+              </div>
+            )}
 
-                <div className="p-4 bg-muted rounded-lg space-y-2">
-                  <h3 className="font-semibold text-lg mb-3">Vehicle Details</h3>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className="font-medium">Registration:</span>
-                      <p className="text-muted-foreground">{vehicleData.vrm}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Make:</span>
-                      <p className="text-muted-foreground">{vehicleData.make || "N/A"}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Model:</span>
-                      <p className="text-muted-foreground">{vehicleData.model || "N/A"}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Year:</span>
-                      <p className="text-muted-foreground">{vehicleData.year || "N/A"}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Colour:</span>
-                      <p className="text-muted-foreground">{vehicleData.colour || "N/A"}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Body Type:</span>
-                      <p className="text-muted-foreground">{vehicleData.body || "N/A"}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Fuel Type:</span>
-                      <p className="text-muted-foreground">{vehicleData.fuel || "N/A"}</p>
-                    </div>
-                    {vehicleData.mileage && (
-                      <div>
-                        <span className="font-medium">Mileage:</span>
-                        <p className="text-muted-foreground">{vehicleData.mileage.toLocaleString()} miles</p>
-                      </div>
-                    )}
-                  </div>
+            {vehicleImageUrl && !isGeneratingImage && (
+              <div className="mt-6 space-y-4">
+                <div className="relative rounded-lg overflow-hidden bg-muted">
+                  <img 
+                    src={vehicleImageUrl} 
+                    alt={`${make} ${model}`}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                <div className="text-center text-sm text-muted-foreground">
+                  Generated image of {colour && `${colour} `}{make} {model}
                 </div>
               </div>
             )}

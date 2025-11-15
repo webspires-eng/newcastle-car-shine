@@ -39,21 +39,40 @@ const Seller = () => {
     setVehicleData(null);
 
     try {
-      const baseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || "https://ggarxjzwywppoqtehvhb.supabase.co";
-      const anonKey = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnYXJ4anp3eXdwcG9xdGVodmhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDE2MTUsImV4cCI6MjA3ODQ3NzYxNX0.uT-aCK6STBoJpaMYWJGEbLxhqnDCEBGJYaIczAM1LhU";
-      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup`, {
+      // Call DVLA API directly from client
+      const dvlaApiKey = import.meta.env.VITE_DVLA_API_KEY;
+      const dvlaEndpoint = import.meta.env.VITE_DVLA_ENDPOINT || "https://uat.driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles";
+      
+      if (!dvlaApiKey) {
+        throw new Error("DVLA API key not configured. Please add VITE_DVLA_API_KEY to your environment variables.");
+      }
+
+      const response = await fetch(dvlaEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "apikey": anonKey,
+          "x-api-key": dvlaApiKey,
         },
-        body: JSON.stringify({ vrm: vrm.trim() }),
+        body: JSON.stringify({ registrationNumber: vrm.trim() }),
       });
+
       if (!response.ok) {
-        const text = await response.text();
-        throw new Error(text || `Request failed with status ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `DVLA API request failed with status ${response.status}`);
       }
-      const data: VehicleData = await response.json();
+
+      const dvlaData = await response.json();
+      
+      // Transform DVLA response to our format
+      const data: VehicleData = {
+        vrm: vrm.trim(),
+        make: dvlaData.make || "",
+        model: dvlaData.model || "",
+        year: dvlaData.yearOfManufacture || null,
+        colour: dvlaData.colour || "",
+        body: dvlaData.bodyType || dvlaData.typeApproval || "",
+        fuel: dvlaData.fuelType || "",
+      };
 
       setVehicleData(data);
       toast({

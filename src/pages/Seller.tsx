@@ -39,40 +39,22 @@ const Seller = () => {
     setVehicleData(null);
 
     try {
-      // Call DVLA API directly from client
-      const dvlaApiKey = import.meta.env.VITE_DVLA_API_KEY;
-      const dvlaEndpoint = import.meta.env.VITE_DVLA_ENDPOINT || "https://uat.driver-vehicle-licensing.api.gov.uk/vehicle-enquiry/v1/vehicles";
-      
-      if (!dvlaApiKey) {
-        throw new Error("DVLA API key not configured. Please add VITE_DVLA_API_KEY to your environment variables.");
-      }
-
-      const response = await fetch(dvlaEndpoint, {
+      // Call edge function which securely handles DVLA API
+      const baseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": dvlaApiKey,
         },
-        body: JSON.stringify({ registrationNumber: vrm.trim() }),
+        body: JSON.stringify({ vrm: vrm.trim() }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `DVLA API request failed with status ${response.status}`);
+        throw new Error(errorData.error || `Lookup failed with status ${response.status}`);
       }
 
-      const dvlaData = await response.json();
-      
-      // Transform DVLA response to our format
-      const data: VehicleData = {
-        vrm: vrm.trim(),
-        make: dvlaData.make || "",
-        model: dvlaData.model || "",
-        year: dvlaData.yearOfManufacture || null,
-        colour: dvlaData.colour || "",
-        body: dvlaData.bodyType || dvlaData.typeApproval || "",
-        fuel: dvlaData.fuelType || "",
-      };
+      const data: VehicleData = await response.json();
 
       setVehicleData(data);
       toast({

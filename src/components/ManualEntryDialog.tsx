@@ -425,32 +425,32 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto" {...swipeHandlers}>
-        <DialogHeader className="space-y-3 pb-2">
-          <DialogTitle className="text-2xl md:text-xl">Get Your Free Valuation</DialogTitle>
-          <DialogDescription className="text-base md:text-sm">
+  <DialogContent className="w-full max-w-xs sm:max-w-[550px] max-h-[90vh] overflow-y-auto px-1 sm:px-6 py-1 sm:py-6 rounded-xl sm:rounded-2xl" {...swipeHandlers}>
+        <DialogHeader className="space-y-2 pb-1">
+          <DialogTitle className="text-lg md:text-xl">Get Your Free Valuation</DialogTitle>
+          <DialogDescription className="text-xs md:text-sm">
             Step {currentStep} of {totalSteps}
           </DialogDescription>
         </DialogHeader>
 
         {/* Progress Bar */}
-        <div className="w-full bg-muted rounded-full h-2.5 mb-6 overflow-hidden">
+        <div className="w-full bg-muted rounded-full h-1.5 mb-4 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-primary to-primary/70 h-2.5 rounded-full transition-all duration-500 ease-out"
+            className="bg-gradient-to-r from-primary to-primary/70 h-1.5 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="min-h-[300px]">{renderStepContent()}</div>
+          <div className="min-h-[120px] flex flex-col justify-center">{renderStepContent()}</div>
 
-          <div className="flex justify-between gap-3 pt-6 border-t">
+          <div className="flex flex-col sm:flex-row justify-between gap-2 pt-4 border-t">
             {currentStep > 1 ? (
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleBack}
-                className="flex-1 h-12 md:h-11 text-base md:text-sm touch-manipulation"
+                className="w-full sm:flex-1 h-10 md:h-11 text-sm md:text-sm touch-manipulation"
               >
                 <ChevronLeft className="w-5 h-5 md:w-4 md:h-4 mr-2" />
                 Back
@@ -460,7 +460,7 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="flex-1 h-12 md:h-11 text-base md:text-sm touch-manipulation"
+                className="w-full sm:flex-1 h-10 md:h-11 text-sm md:text-sm touch-manipulation"
               >
                 Cancel
               </Button>
@@ -469,7 +469,7 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 h-12 md:h-11 text-base md:text-sm font-semibold touch-manipulation"
+              className="w-full sm:flex-1 h-10 md:h-11 text-sm md:text-sm font-semibold touch-manipulation"
             >
               {isSubmitting ? (
                 "Submitting..."

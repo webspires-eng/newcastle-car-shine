@@ -69,63 +69,249 @@ serve(async (req) => {
     const inquiryData: InquiryData = validationResult.data;
     console.log('Received inquiry email request for:', inquiryData.email);
 
-    // Format the email body with inquiry details
+    // Format the email body with inquiry details - Professional design
     const emailBody = `
-      <html>
+      <!DOCTYPE html>
+      <html lang="en">
         <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #1a472a; color: white; padding: 20px; text-align: center; }
-            .content { background: #f9f9f9; padding: 20px; margin-top: 20px; }
-            .field { margin-bottom: 15px; }
-            .label { font-weight: bold; color: #1a472a; }
-            .value { margin-left: 10px; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+              line-height: 1.6; 
+              color: #333;
+              background-color: #f4f4f4;
+              padding: 20px;
+            }
+            .email-container { 
+              max-width: 650px; 
+              margin: 0 auto; 
+              background: white;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header { 
+              background: linear-gradient(135deg, #1a472a 0%, #2d6a3f 100%);
+              color: white; 
+              padding: 40px 30px;
+              text-align: center;
+            }
+            .header h1 { 
+              font-size: 28px;
+              font-weight: 700;
+              margin-bottom: 8px;
+            }
+            .header p {
+              font-size: 14px;
+              opacity: 0.9;
+            }
+            .badge {
+              display: inline-block;
+              background: rgba(255, 255, 255, 0.2);
+              padding: 6px 16px;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
+              margin-top: 10px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+            .content { 
+              padding: 40px 30px;
+            }
+            .section {
+              margin-bottom: 35px;
+            }
+            .section-title {
+              font-size: 18px;
+              font-weight: 700;
+              color: #1a472a;
+              margin-bottom: 20px;
+              padding-bottom: 10px;
+              border-bottom: 2px solid #f0f0f0;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            }
+            .icon {
+              width: 24px;
+              height: 24px;
+              background: #1a472a;
+              border-radius: 6px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              color: white;
+              font-size: 14px;
+            }
+            .info-grid {
+              display: grid;
+              gap: 16px;
+            }
+            .info-item {
+              background: #f9fafb;
+              padding: 16px;
+              border-radius: 8px;
+              border-left: 3px solid #1a472a;
+            }
+            .info-label {
+              font-size: 12px;
+              font-weight: 600;
+              color: #6b7280;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 6px;
+            }
+            .info-value {
+              font-size: 16px;
+              font-weight: 600;
+              color: #111827;
+            }
+            .highlight-box {
+              background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+              padding: 20px;
+              border-radius: 10px;
+              border: 2px solid #fbbf24;
+              margin: 25px 0;
+            }
+            .highlight-box .reg-number {
+              font-size: 32px;
+              font-weight: 900;
+              color: #92400e;
+              text-align: center;
+              letter-spacing: 4px;
+              padding: 10px;
+              background: white;
+              border-radius: 6px;
+              margin-top: 10px;
+            }
+            .notes-box {
+              background: #f3f4f6;
+              padding: 20px;
+              border-radius: 8px;
+              border-left: 4px solid #9ca3af;
+              margin-top: 15px;
+            }
+            .notes-box p {
+              color: #4b5563;
+              font-size: 14px;
+              line-height: 1.8;
+              white-space: pre-wrap;
+            }
+            .footer {
+              background: #f9fafb;
+              padding: 25px 30px;
+              text-align: center;
+              border-top: 1px solid #e5e7eb;
+            }
+            .footer p {
+              font-size: 13px;
+              color: #6b7280;
+              margin-bottom: 8px;
+            }
+            .cta-button {
+              display: inline-block;
+              background: #1a472a;
+              color: white;
+              padding: 12px 30px;
+              border-radius: 8px;
+              text-decoration: none;
+              font-weight: 600;
+              margin-top: 15px;
+              transition: background 0.3s;
+            }
+            @media only screen and (max-width: 600px) {
+              .email-container { margin: 10px; }
+              .header, .content, .footer { padding: 25px 20px; }
+              .header h1 { font-size: 24px; }
+              .highlight-box .reg-number { font-size: 24px; letter-spacing: 2px; }
+            }
           </style>
         </head>
         <body>
-          <div class="container">
+          <div class="email-container">
             <div class="header">
-              <h1>New Vehicle Inquiry</h1>
+              <h1>🚗 New Vehicle Inquiry</h1>
+              <p>Someone wants to sell their car!</p>
+              <div class="badge">New Lead</div>
             </div>
+            
             <div class="content">
-              <h2>Customer Information</h2>
-              <div class="field">
-                <span class="label">Name:</span>
-                <span class="value">${escapeHtml(inquiryData.name)}</span>
+              <div class="highlight-box">
+                <p style="text-align: center; font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 5px;">VEHICLE REGISTRATION</p>
+                <div class="reg-number">${escapeHtml(inquiryData.registrationNumber)}</div>
               </div>
-              <div class="field">
-                <span class="label">Email:</span>
-                <span class="value">${escapeHtml(inquiryData.email)}</span>
+
+              <div class="section">
+                <div class="section-title">
+                  <span class="icon">🚙</span>
+                  Vehicle Information
+                </div>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <div class="info-label">Make & Model</div>
+                    <div class="info-value">${escapeHtml(inquiryData.make)} ${escapeHtml(inquiryData.model)}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Mileage</div>
+                    <div class="info-value">${escapeHtml(inquiryData.mileage.toLocaleString())} miles</div>
+                  </div>
+                </div>
               </div>
-              <div class="field">
-                <span class="label">Phone:</span>
-                <span class="value">${escapeHtml(inquiryData.phone)}</span>
+
+              <div class="section">
+                <div class="section-title">
+                  <span class="icon">👤</span>
+                  Customer Contact Details
+                </div>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">${escapeHtml(inquiryData.name)}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value">
+                      <a href="mailto:${escapeHtml(inquiryData.email)}" style="color: #1a472a; text-decoration: none;">
+                        ${escapeHtml(inquiryData.email)}
+                      </a>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value">
+                      <a href="tel:${escapeHtml(inquiryData.phone)}" style="color: #1a472a; text-decoration: none;">
+                        ${escapeHtml(inquiryData.phone)}
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              <h2>Vehicle Details</h2>
-              <div class="field">
-                <span class="label">Registration:</span>
-                <span class="value">${escapeHtml(inquiryData.registrationNumber)}</span>
-              </div>
-              <div class="field">
-                <span class="label">Make:</span>
-                <span class="value">${escapeHtml(inquiryData.make)}</span>
-              </div>
-              <div class="field">
-                <span class="label">Model:</span>
-                <span class="value">${escapeHtml(inquiryData.model)}</span>
-              </div>
-              <div class="field">
-                <span class="label">Mileage:</span>
-                <span class="value">${escapeHtml(inquiryData.mileage.toLocaleString())} miles</span>
-              </div>
+
               ${inquiryData.notes ? `
-              <div class="field">
-                <span class="label">Additional Notes:</span>
-                <div class="value">${escapeHtml(inquiryData.notes)}</div>
+              <div class="section">
+                <div class="section-title">
+                  <span class="icon">📝</span>
+                  Additional Notes
+                </div>
+                <div class="notes-box">
+                  <p>${escapeHtml(inquiryData.notes)}</p>
+                </div>
               </div>
               ` : ''}
+            </div>
+            
+            <div class="footer">
+              <p><strong>⏰ Received:</strong> ${new Date().toLocaleString('en-GB', { 
+                dateStyle: 'full', 
+                timeStyle: 'short' 
+              })}</p>
+              <p style="margin-top: 15px; font-size: 12px;">
+                This is an automated notification from Sell My Car Newcastle
+              </p>
             </div>
           </div>
         </body>
@@ -136,9 +322,9 @@ serve(async (req) => {
     const formData = new URLSearchParams();
     formData.append('apikey', ELASTIC_EMAIL_API_KEY!);
     formData.append('from', 'noreply@sellmycar.com');
-    formData.append('fromName', 'Sell My Car Newcastle');
-    formData.append('to', 'sales@sellmycar.com'); // Replace with your actual sales email
-    formData.append('subject', `New Vehicle Inquiry - ${inquiryData.make} ${inquiryData.model}`);
+    formData.append('fromName', 'Sell My Car Newcastle - New Inquiry');
+    formData.append('to', 'webspires@gmail.com');
+    formData.append('subject', `🚗 New Lead: ${inquiryData.make} ${inquiryData.model} - ${inquiryData.registrationNumber}`);
     formData.append('bodyHtml', emailBody);
     formData.append('isTransactional', 'true');
 

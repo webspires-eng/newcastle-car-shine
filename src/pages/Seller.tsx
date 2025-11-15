@@ -39,24 +39,22 @@ const Seller = () => {
     setVehicleData(null);
 
     try {
-      // Call edge function which securely handles DVLA API
-      const baseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${baseUrl}/functions/v1/dvla-lookup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ vrm: vrm.trim() }),
+      // Call edge function using Supabase client
+      const { supabase } = await import("@/integrations/supabase/client");
+      
+      const { data, error } = await supabase.functions.invoke('dvla-lookup', {
+        body: { vrm: vrm.trim() }
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Lookup failed with status ${response.status}`);
+      if (error) {
+        throw new Error(error.message || 'Failed to lookup vehicle');
       }
 
-      const data: VehicleData = await response.json();
+      if (!data) {
+        throw new Error('No data returned from lookup');
+      }
 
-      setVehicleData(data);
+      setVehicleData(data as VehicleData);
       toast({
         title: "Success",
         description: "Vehicle details retrieved successfully",

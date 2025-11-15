@@ -24,7 +24,7 @@ export const Hero = () => {
           <div className="relative rounded-[3rem] md:rounded-[4rem] overflow-hidden bg-hero-yellow p-8 md:p-12 lg:p-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               {/* Left Content */}
-              <div className="space-y-6 relative z-10">
+              <div className="space-y-2 relative z-10">
                
                 <h1 className="sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight text-3xl text-left">
                   Sell my car.

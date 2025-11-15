@@ -7,36 +7,37 @@ export const HowItWorks = () => {
     {
       number: 1,
       title: "Get a free valuation",
-      description: "See your car's value instantly, then use our app to profile your vehicle. Quick, easy to follow and done in a few taps.",
+      description:
+        "See your car's value instantly, then use our app to profile your vehicle. Quick, easy to follow and done in a few taps.",
       image: womanPhoneGreen,
       badge: "Ford Focus ST",
-      price: "£13,650"
+      price: "£13,650",
     },
     {
       number: 2,
       title: "Choose the best offer",
-      description: "7,500+ verified dealers bid on your car in our daily auction. We send the highest offer. No fees. No stress.",
+      description:
+        "7,500+ verified dealers bid on your car in our daily auction. We send the highest offer. No fees. No stress.",
       image: womanPhoneGreen,
       badge: "Offer received",
-      price: "£14,250"
+      price: "£14,250",
     },
     {
       number: 3,
       title: "They pick up. You get paid.",
-      description: "Sold! The dealer collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
+      description:
+        "Sold! The dealer collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
       image: womanPhoneYellow,
       badge: "Collection",
-      status: "confirmed"
-    }
+      status: "confirmed",
+    },
   ];
 
   return (
-    <section id="how-it-works" className="py-20 bg-background">
+    <section id="how-it-works" className="py-4 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-            Why sell with us
-          </h2>
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">Why sell with us</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             We make car selling simple. Here's how it works.
           </p>
@@ -48,11 +49,7 @@ export const HowItWorks = () => {
               {/* Image Card */}
               <Card className="relative overflow-hidden rounded-3xl border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative aspect-[4/5]">
-                  <img 
-                    src={step.image} 
-                    alt={step.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={step.image} alt={step.title} className="w-full h-full object-cover" />
                   {/* Overlay Badge */}
                   <div className="absolute bottom-6 left-6 right-6 bg-foreground/90 backdrop-blur-sm text-background rounded-2xl p-4">
                     {step.price && (
@@ -76,14 +73,10 @@ export const HowItWorks = () => {
                 <div className="w-12 h-12 rounded-full bg-hero-yellow flex items-center justify-center">
                   <span className="text-2xl font-bold text-foreground">{step.number}</span>
                 </div>
-                
-                <h3 className="text-2xl font-bold text-foreground">
-                  {step.title}
-                </h3>
-                
-                <p className="text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
+
+                <h3 className="text-2xl font-bold text-foreground">{step.title}</h3>
+
+                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
             </div>
           ))}

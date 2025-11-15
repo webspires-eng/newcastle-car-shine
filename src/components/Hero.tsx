@@ -34,10 +34,16 @@ export const Hero = () => {
                 </p>
 
                 <div className="max-w-2xl space-y-3">
-                  <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 px-8 text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl">
+                  <Button 
+                    type="button" 
+                    variant="default" 
+                    size="lg" 
+                    onClick={() => setShowManualEntry(true)} 
+                    className="h-16 md:h-16 px-8 text-lg md:text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl w-full sm:w-auto touch-manipulation"
+                  >
                     Get Your Free Valuation
                   </Button>
-                  <p className="text-xs text-foreground/70">Enter your vehicle details to get an instant valuation from 7,500+ dealers.</p>
+                  <p className="text-xs md:text-xs text-foreground/70">Enter your vehicle details to get an instant valuation from 7,500+ dealers.</p>
                 </div>
 
                 {/* Trustpilot Badge */}

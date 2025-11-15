@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import confetti from "canvas-confetti";
 
 // Initialize Supabase client with safe fallbacks to avoid crashes when envs are missing
 const FALLBACK_URL = "https://ggarxjzwywppoqtehvhb.supabase.co";
@@ -117,6 +118,38 @@ export const ManualEntryDialog = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalSteps = 3;
+
+  // Confetti celebration function
+  const celebrate = () => {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const randomInRange = (min: number, max: number) => {
+      return Math.random() * (max - min) + min;
+    };
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+  };
 
   const handleChange = (field: keyof ManualVehicleData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -223,6 +256,7 @@ export const ManualEntryDialog = ({
       }
 
       toast.success("Inquiry submitted successfully!");
+      celebrate(); // Trigger confetti celebration
       onSubmit();
       onOpenChange(false);
       setFormData({
@@ -257,51 +291,51 @@ export const ManualEntryDialog = ({
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-5 md:space-y-4 animate-fade-in">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Your Contact Information</h3>
-              <p className="text-sm text-muted-foreground">We'll use this to get back to you</p>
+              <h3 className="text-xl md:text-lg font-semibold text-foreground">Your Contact Information</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-2">We'll use this to get back to you</p>
             </div>
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="text-base md:text-sm">Full Name</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 placeholder="John Doe"
-                className="mt-1"
+                className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.name && (
-                <p className="text-destructive text-sm mt-1">{errors.name}</p>
+                <p className="text-destructive text-sm mt-2">{errors.name}</p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email" className="text-base md:text-sm">Email Address</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 placeholder="john@example.com"
-                className="mt-1"
+                className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.email && (
-                <p className="text-destructive text-sm mt-1">{errors.email}</p>
+                <p className="text-destructive text-sm mt-2">{errors.email}</p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone" className="text-base md:text-sm">Phone Number</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 placeholder="+44 20 7946 0958"
-                className="mt-1"
+                className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.phone && (
-                <p className="text-destructive text-sm mt-1">{errors.phone}</p>
+                <p className="text-destructive text-sm mt-2">{errors.phone}</p>
               )}
             </div>
           </div>
@@ -309,13 +343,13 @@ export const ManualEntryDialog = ({
 
       case 2:
         return (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-5 md:space-y-4 animate-fade-in">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Vehicle Details</h3>
-              <p className="text-sm text-muted-foreground">Tell us about your car</p>
+              <h3 className="text-xl md:text-lg font-semibold text-foreground">Vehicle Details</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-2">Tell us about your car</p>
             </div>
             <div>
-              <Label htmlFor="registrationNumber">Registration Number</Label>
+              <Label htmlFor="registrationNumber" className="text-base md:text-sm">Registration Number</Label>
               <Input
                 id="registrationNumber"
                 value={formData.registrationNumber}
@@ -323,56 +357,56 @@ export const ManualEntryDialog = ({
                   handleChange("registrationNumber", e.target.value.toUpperCase())
                 }
                 placeholder="AB12 CDE"
-                className="mt-1"
+                className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.registrationNumber && (
-                <p className="text-destructive text-sm mt-1">
+                <p className="text-destructive text-sm mt-2">
                   {errors.registrationNumber}
                 </p>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
               <div>
-                <Label htmlFor="make">Make</Label>
+                <Label htmlFor="make" className="text-base md:text-sm">Make</Label>
                 <Input
                   id="make"
                   value={formData.make}
                   onChange={(e) => handleChange("make", e.target.value)}
                   placeholder="BMW"
-                  className="mt-1"
+                  className="mt-2 h-12 md:h-10 text-base"
                 />
                 {errors.make && (
-                  <p className="text-destructive text-sm mt-1">{errors.make}</p>
+                  <p className="text-destructive text-sm mt-2">{errors.make}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="model">Model</Label>
+                <Label htmlFor="model" className="text-base md:text-sm">Model</Label>
                 <Input
                   id="model"
                   value={formData.model}
                   onChange={(e) => handleChange("model", e.target.value)}
                   placeholder="3 Series"
-                  className="mt-1"
+                  className="mt-2 h-12 md:h-10 text-base"
                 />
                 {errors.model && (
-                  <p className="text-destructive text-sm mt-1">{errors.model}</p>
+                  <p className="text-destructive text-sm mt-2">{errors.model}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <Label htmlFor="mileage">Mileage</Label>
+              <Label htmlFor="mileage" className="text-base md:text-sm">Mileage</Label>
               <Input
                 id="mileage"
                 value={formData.mileage}
                 onChange={(e) => handleChange("mileage", e.target.value)}
                 placeholder="45,000"
-                className="mt-1"
+                className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.mileage && (
-                <p className="text-destructive text-sm mt-1">{errors.mileage}</p>
+                <p className="text-destructive text-sm mt-2">{errors.mileage}</p>
               )}
             </div>
           </div>
@@ -380,43 +414,43 @@ export const ManualEntryDialog = ({
 
       case 3:
         return (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-5 md:space-y-4 animate-fade-in">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-foreground">Almost Done!</h3>
-              <p className="text-sm text-muted-foreground">Any additional details? (optional)</p>
+              <h3 className="text-xl md:text-lg font-semibold text-foreground">Almost Done!</h3>
+              <p className="text-base md:text-sm text-muted-foreground mt-2">Any additional details? (optional)</p>
             </div>
             <div>
-              <Label htmlFor="notes">Additional Notes</Label>
+              <Label htmlFor="notes" className="text-base md:text-sm">Additional Notes</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => handleChange("notes", e.target.value)}
                 placeholder="Service history, recent repairs, condition notes..."
-                className="mt-1 min-h-[120px]"
+                className="mt-2 min-h-[140px] md:min-h-[120px] text-base"
               />
               {errors.notes && (
-                <p className="text-destructive text-sm mt-1">{errors.notes}</p>
+                <p className="text-destructive text-sm mt-2">{errors.notes}</p>
               )}
             </div>
 
-            <div className="bg-muted/50 rounded-lg p-4 mt-6">
-              <h4 className="font-semibold text-sm mb-3">Summary</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+            <div className="bg-muted/50 rounded-lg p-5 md:p-4 mt-6">
+              <h4 className="font-semibold text-base md:text-sm mb-4 md:mb-3">Summary</h4>
+              <div className="space-y-3 md:space-y-2 text-base md:text-sm">
+                <div className="flex justify-between items-start gap-4">
                   <span className="text-muted-foreground">Name:</span>
-                  <span className="font-medium">{formData.name}</span>
+                  <span className="font-medium text-right">{formData.name}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-start gap-4">
                   <span className="text-muted-foreground">Vehicle:</span>
-                  <span className="font-medium">{formData.make} {formData.model}</span>
+                  <span className="font-medium text-right">{formData.make} {formData.model}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-start gap-4">
                   <span className="text-muted-foreground">Registration:</span>
-                  <span className="font-medium">{formData.registrationNumber}</span>
+                  <span className="font-medium text-right">{formData.registrationNumber}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-start gap-4">
                   <span className="text-muted-foreground">Mileage:</span>
-                  <span className="font-medium">{formData.mileage}</span>
+                  <span className="font-medium text-right">{formData.mileage}</span>
                 </div>
               </div>
             </div>
@@ -430,18 +464,18 @@ export const ManualEntryDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Get Your Free Valuation</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-xl md:text-lg">Get Your Free Valuation</DialogTitle>
+          <DialogDescription className="text-base md:text-sm">
             Step {currentStep} of {totalSteps}
           </DialogDescription>
         </DialogHeader>
 
         {/* Progress Bar */}
-        <div className="w-full bg-muted rounded-full h-2 mb-4">
+        <div className="w-full bg-muted rounded-full h-3 md:h-2 mb-4">
           <div
-            className="bg-primary h-2 rounded-full transition-all duration-300"
+            className="bg-primary h-3 md:h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
         </div>
@@ -449,15 +483,15 @@ export const ManualEntryDialog = ({
         <form onSubmit={handleSubmit}>
           {renderStepContent()}
 
-          <div className="flex justify-between gap-3 mt-6 pt-4 border-t">
+          <div className="flex justify-between gap-3 mt-8 md:mt-6 pt-6 md:pt-4 border-t">
             {currentStep > 1 && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleBack}
-                className="flex-1"
+                className="flex-1 h-12 md:h-10 text-base md:text-sm"
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
+                <ChevronLeft className="w-5 h-5 md:w-4 md:h-4 mr-2" />
                 Back
               </Button>
             )}
@@ -467,7 +501,7 @@ export const ManualEntryDialog = ({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="flex-1"
+                className="flex-1 h-12 md:h-10 text-base md:text-sm"
               >
                 Cancel
               </Button>
@@ -476,7 +510,7 @@ export const ManualEntryDialog = ({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1"
+              className="flex-1 h-12 md:h-10 text-base md:text-sm"
             >
               {isSubmitting ? (
                 "Submitting..."
@@ -485,7 +519,7 @@ export const ManualEntryDialog = ({
               ) : (
                 <>
                   Next
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  <ChevronRight className="w-5 h-5 md:w-4 md:h-4 ml-2" />
                 </>
               )}
             </Button>

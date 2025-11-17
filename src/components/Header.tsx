@@ -10,9 +10,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const navItems = [
     { href: "/#how-it-works", label: "How it works" },
@@ -53,6 +55,16 @@ export const Header = () => {
             )}
           </nav>
 
+          {/* Instant Valuation Button - Desktop */}
+          <div className="hidden md:block absolute right-4 sm:right-6 lg:right-8">
+            <Button 
+              onClick={() => setDialogOpen(true)}
+              className="font-montserrat uppercase tracking-wider text-sm font-medium"
+            >
+              Instant Valuation
+            </Button>
+          </div>
+
           {/* Mobile Menu */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden absolute right-4">
@@ -92,6 +104,12 @@ export const Header = () => {
           </Sheet>
         </div>
       </div>
+      
+      <ManualEntryDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        onSubmit={() => {}}
+      />
     </header>
   );
 };

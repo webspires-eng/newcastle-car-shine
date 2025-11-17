@@ -22,22 +22,22 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
+    <header className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <img src={logo} alt="Sell My Car Newcastle" className="h-12 w-auto" />
+        <div className="flex items-center justify-center h-16">
+          {/* Logo - Centered */}
+          <Link to="/" className="absolute left-4 sm:left-6 lg:left-8">
+            <img src={logo} alt="Sell My Car Newcastle" className="h-10 w-auto" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden md:flex items-center space-x-8 font-montserrat">
             {navItems.map((item) =>
               item.href ? (
                 <a
                   key={item.label}
                   href={item.href}
-                  className="text-foreground hover:text-foreground/70 transition-colors font-medium"
+                  className="text-foreground/80 hover:text-foreground transition-colors font-light text-sm uppercase tracking-wider"
                 >
                   {item.label}
                 </a>
@@ -45,7 +45,7 @@ export const Header = () => {
                 <Link
                   key={item.label}
                   to={item.to!}
-                  className="text-foreground hover:text-foreground/70 transition-colors font-medium"
+                  className="text-foreground/80 hover:text-foreground transition-colors font-light text-sm uppercase tracking-wider"
                 >
                   {item.label}
                 </Link>
@@ -55,15 +55,15 @@ export const Header = () => {
 
           {/* Mobile Menu */}
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="md:hidden">
+            <SheetTrigger asChild className="md:hidden absolute right-4">
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] font-montserrat">
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className="uppercase tracking-wide">Menu</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col space-y-4 mt-8">
                 {navItems.map((item) =>
@@ -72,7 +72,7 @@ export const Header = () => {
                       key={item.label}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="text-lg font-medium text-foreground hover:text-foreground/70 transition-colors py-2"
+                      className="text-lg font-light text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
                     >
                       {item.label}
                     </a>
@@ -81,7 +81,7 @@ export const Header = () => {
                       key={item.label}
                       to={item.to!}
                       onClick={() => setOpen(false)}
-                      className="text-lg font-medium text-foreground hover:text-foreground/70 transition-colors py-2"
+                      className="text-lg font-light text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
                     >
                       {item.label}
                     </Link>

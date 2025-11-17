@@ -5,7 +5,7 @@ import luxuryCarsRow from "@/assets/luxury-cars-row.jpg";
 
 export const CtaSection = () => {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-12 md:py-16 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto rounded-[4rem] overflow-hidden relative">
           {/* Background Image */}

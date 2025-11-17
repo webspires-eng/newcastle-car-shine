@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
-import womanPhoneGreen from "@/assets/woman-phone-green.jpg";
-import womanPhoneYellow from "@/assets/woman-phone-yellow.jpg";
+import step1Image from "@/assets/step-1-valuation.jpg";
+import step2Image from "@/assets/step-2-offer.jpg";
+import step3Image from "@/assets/step-3-collection.jpg";
 
 export const HowItWorks = () => {
   const steps = [
@@ -9,7 +10,7 @@ export const HowItWorks = () => {
       title: "Get a free valuation",
       description:
         "See your car's value instantly, then use our app to profile your vehicle. Quick, easy to follow and done in a few taps.",
-      image: womanPhoneGreen,
+      image: step1Image,
       badge: "Ford Focus ST",
       price: "£13,650",
     },
@@ -18,7 +19,7 @@ export const HowItWorks = () => {
       title: "Choose the best offer",
       description:
         "7,500+ verified dealers bid on your car in our daily auction. We send the highest offer. No fees. No stress.",
-      image: womanPhoneGreen,
+      image: step2Image,
       badge: "Offer received",
       price: "£14,250",
     },
@@ -27,16 +28,16 @@ export const HowItWorks = () => {
       title: "They pick up. You get paid.",
       description:
         "Sold! The dealer collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
-      image: womanPhoneYellow,
+      image: step3Image,
       badge: "Collection",
       status: "confirmed",
     },
   ];
 
   return (
-    <section id="how-it-works" className="py-4 bg-background">
+    <section id="how-it-works" className="py-8 md:py-12 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">Why sell with us</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             We make car selling simple. Here's how it works.

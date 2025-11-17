@@ -10,7 +10,7 @@ export const Hero = () => {
     // Success handling is now done within ManualEntryDialog
     setShowManualEntry(false);
   };
-  return <section id="hero" className="relative overflow-hidden bg-background py-12 md:py-20">
+  return <section id="hero" className="relative overflow-hidden bg-background py-4 md:py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Centered Yellow Background Container with rounded corners */}
@@ -34,7 +34,7 @@ export const Hero = () => {
 
                 <div className="max-w-2xl space-y-3 mx-auto lg:mx-0 pt-2 md:pt-4">
                   <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 md:h-16 px-8 text-lg md:text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl w-full sm:w-auto touch-manipulation shadow-lg">
-                    Get your instant Quote now.
+                    Get Your Instant Quote Now
                   </Button>
                   {/* Trustpilot Badge below CTA on desktop */}
                   <div className="hidden lg:flex items-center gap-3 pt-6">

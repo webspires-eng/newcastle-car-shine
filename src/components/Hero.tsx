@@ -39,7 +39,7 @@ export const Hero = () => {
                   {/* Trustpilot Badge below CTA on desktop */}
                   <div className="hidden lg:flex items-center gap-3 pt-6">
                     <div className="flex items-center gap-1">
-                      <Star className="w-5 h-5 fill-[#00B67A] text-[#00B67A]" />
+                      
                       <span className="font-bold text-foreground">Trustpilot</span>
                     </div>
                     <div className="flex items-center gap-1">
@@ -55,8 +55,8 @@ export const Hero = () => {
                 {/* Car image */}
                 <div className="w-full max-w-[340px] md:max-w-[420px] lg:max-w-[480px] xl:max-w-[550px] aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl relative z-10 animate-fade-in">
                   <img src={heroCar} alt="Dark blue sedan car" className="w-full h-full object-cover object-center" style={{
-                    filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
-                  }} />
+                  filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15))'
+                }} />
                 </div>
               </div>
 

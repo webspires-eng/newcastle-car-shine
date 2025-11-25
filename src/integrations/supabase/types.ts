@@ -37,8 +37,10 @@ export type Database = {
       }
       vehicle_inquiries: {
         Row: {
+          condition: string | null
           created_at: string
           email: string
+          hpi_clear: boolean | null
           id: string
           make: string
           mileage: number
@@ -49,8 +51,10 @@ export type Database = {
           registration_number: string
         }
         Insert: {
+          condition?: string | null
           created_at?: string
           email: string
+          hpi_clear?: boolean | null
           id?: string
           make: string
           mileage: number
@@ -61,8 +65,10 @@ export type Database = {
           registration_number: string
         }
         Update: {
+          condition?: string | null
           created_at?: string
           email?: string
+          hpi_clear?: boolean | null
           id?: string
           make?: string
           mileage?: number

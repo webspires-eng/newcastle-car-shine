@@ -17,6 +17,8 @@ const inquirySchema = z.object({
   make: z.string().trim().min(1, "Make is required").max(50, "Make must be less than 50 characters"),
   model: z.string().trim().min(1, "Model is required").max(50, "Model must be less than 50 characters"),
   mileage: z.number().int("Mileage must be an integer").positive("Mileage must be positive"),
+  hpiClear: z.enum(["yes", "no", "unsure"]).optional(),
+  condition: z.enum(["excellent", "good", "bad"]).optional(),
   notes: z.string().trim().max(1000, "Notes must be less than 1000 characters").optional(),
 });
 
@@ -28,6 +30,8 @@ interface InquiryData {
   make: string;
   model: string;
   mileage: number;
+  hpiClear?: "yes" | "no" | "unsure";
+  condition?: "excellent" | "good" | "bad";
   notes?: string;
 }
 
@@ -259,6 +263,18 @@ serve(async (req) => {
                     <div class="info-label">Mileage</div>
                     <div class="info-value">${escapeHtml(inquiryData.mileage.toLocaleString())} miles</div>
                   </div>
+                  ${inquiryData.hpiClear ? `
+                  <div class="info-item">
+                    <div class="info-label">HPI Clear</div>
+                    <div class="info-value">${inquiryData.hpiClear === 'yes' ? '✅ Yes' : inquiryData.hpiClear === 'no' ? '❌ No' : '❓ Not Sure'}</div>
+                  </div>
+                  ` : ''}
+                  ${inquiryData.condition ? `
+                  <div class="info-item">
+                    <div class="info-label">Condition</div>
+                    <div class="info-value">${inquiryData.condition === 'excellent' ? '⭐ Excellent - Perfect condition' : inquiryData.condition === 'good' ? '👍 Good - Few scratches' : '⚠️ Bad - Multiple scratches'}</div>
+                  </div>
+                  ` : ''}
                 </div>
               </div>
 

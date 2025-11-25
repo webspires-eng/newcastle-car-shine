@@ -38,6 +38,8 @@ const vehicleInquirySchema = z.object({
   make: z.string().trim().min(1, "Make is required").max(50),
   model: z.string().trim().min(1, "Model is required").max(50),
   mileage: z.string().trim().min(1, "Mileage is required").regex(/^\d+(,\d+)*$/, "Invalid mileage format"),
+  hpiClear: z.enum(["yes", "no", "unsure"], { required_error: "Please select an option" }),
+  condition: z.enum(["excellent", "good", "bad"], { required_error: "Please select a condition" }),
   notes: z.string().trim().max(1000).optional(),
 });
 
@@ -55,6 +57,8 @@ export interface ManualVehicleData {
   make: string;
   model: string;
   mileage: string;
+  hpiClear: string;
+  condition: string;
   notes: string;
 }
 
@@ -68,6 +72,8 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
     make: "",
     model: "",
     mileage: "",
+    hpiClear: "",
+    condition: "",
     notes: "",
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ManualVehicleData, string>>>({});
@@ -103,7 +109,7 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
     let fieldsToValidate: (keyof ManualVehicleData)[] = [];
 
     if (step === 1) fieldsToValidate = ["registrationNumber"];
-    else if (step === 2) fieldsToValidate = ["make", "model", "mileage"];
+    else if (step === 2) fieldsToValidate = ["make", "model", "mileage", "hpiClear", "condition"];
     else if (step === 3) fieldsToValidate = ["name", "email", "phone"];
 
     const partialSchema = z.object(
@@ -179,6 +185,8 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
         make: validatedData.make,
         model: validatedData.model,
         mileage: mileageInt,
+        hpi_clear: validatedData.hpiClear === "yes" ? true : validatedData.hpiClear === "no" ? false : null,
+        condition: validatedData.condition,
         notes: validatedData.notes || null,
       });
 
@@ -194,6 +202,8 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
             make: validatedData.make,
             model: validatedData.model,
             mileage: mileageInt,
+            hpiClear: validatedData.hpiClear,
+            condition: validatedData.condition,
             notes: validatedData.notes || undefined,
           },
         });
@@ -213,6 +223,8 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
         make: "",
         model: "",
         mileage: "",
+        hpiClear: "",
+        condition: "",
         notes: "",
       });
       setCurrentStep(1);
@@ -317,6 +329,61 @@ export const ManualEntryDialog = ({ open, onOpenChange, onSubmit }: ManualEntryD
                 className="mt-2 h-12 md:h-10 text-base"
               />
               {errors.mileage && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.mileage}</p>}
+            </div>
+
+            <div>
+              <Label className="text-base md:text-sm font-medium">Is the car HPI Clear?</Label>
+              <div className="mt-2 space-y-2">
+                {[
+                  { value: "yes", label: "Yes" },
+                  { value: "no", label: "No" },
+                  { value: "unsure", label: "Not Sure" }
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleChange("hpiClear", option.value)}
+                    className={`w-full h-12 md:h-10 px-4 rounded-lg border-2 text-base font-medium transition-all ${
+                      formData.hpiClear === option.value
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-background hover:border-primary/50"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              {errors.hpiClear && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.hpiClear}</p>}
+            </div>
+
+            <div>
+              <Label className="text-base md:text-sm font-medium">What's the condition of the car?</Label>
+              <div className="mt-2 space-y-2">
+                {[
+                  { value: "excellent", label: "Excellent", desc: "Perfect condition" },
+                  { value: "good", label: "Good", desc: "Few scratches here and there" },
+                  { value: "bad", label: "Bad", desc: "Got scratches and stuff around" }
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleChange("condition", option.value)}
+                    className={`w-full p-4 md:p-3 rounded-lg border-2 text-left transition-all ${
+                      formData.condition === option.value
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-background hover:border-primary/50"
+                    }`}
+                  >
+                    <div className={`font-semibold text-base md:text-sm ${
+                      formData.condition === option.value ? "text-primary" : "text-foreground"
+                    }`}>
+                      {option.label}
+                    </div>
+                    <div className="text-xs md:text-xs text-muted-foreground mt-1">{option.desc}</div>
+                  </button>
+                ))}
+              </div>
+              {errors.condition && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.condition}</p>}
             </div>
           </div>
         );

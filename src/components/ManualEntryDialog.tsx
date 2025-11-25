@@ -282,6 +282,50 @@ export const ManualEntryDialog = ({
               <p className="text-base md:text-sm text-muted-foreground mt-3">Vehicle specifications</p>
             </div>
 
+            <div>
+              <Label className="text-base md:text-sm font-medium">What's the condition of the car?</Label>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {[{
+                value: "excellent",
+                label: "Excellent",
+                desc: "Perfect condition"
+              }, {
+                value: "good",
+                label: "Good",
+                desc: "Few scratches"
+              }, {
+                value: "bad",
+                label: "Bad",
+                desc: "Multiple scratches"
+              }].map(option => <button key={option.value} type="button" onClick={() => handleChange("condition", option.value)} className={`flex-1 min-w-[120px] p-3 md:p-2.5 rounded-lg border-2 text-center transition-all ${formData.condition === option.value ? "border-primary bg-primary/10" : "border-border bg-background hover:border-primary/50"}`}>
+                    <div className={`font-semibold text-sm md:text-sm ${formData.condition === option.value ? "text-primary" : "text-foreground"}`}>
+                      {option.label}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{option.desc}</div>
+                  </button>)}
+              </div>
+              {errors.condition && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.condition}</p>}
+            </div>
+
+            <div>
+              <Label className="text-base md:text-sm font-medium">Is the car HPI Clear?</Label>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {[{
+                value: "yes",
+                label: "Yes"
+              }, {
+                value: "no",
+                label: "No"
+              }, {
+                value: "unsure",
+                label: "Not Sure"
+              }].map(option => <button key={option.value} type="button" onClick={() => handleChange("hpiClear", option.value)} className={`flex-1 min-w-[100px] px-4 py-2.5 border-2 rounded-lg text-sm font-medium transition-all ${formData.hpiClear === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
+                    {option.label}
+                  </button>)}
+              </div>
+              {errors.hpiClear && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.hpiClear}</p>}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
               <div>
                 <Label htmlFor="make" className="text-base md:text-sm font-medium">Make</Label>
@@ -300,50 +344,6 @@ export const ManualEntryDialog = ({
               <Label htmlFor="mileage" className="text-base md:text-sm font-medium">Mileage</Label>
               <Input id="mileage" value={formData.mileage} onChange={e => handleChange("mileage", e.target.value)} placeholder="e.g., 45,000" className="mt-2 h-12 md:h-10 text-base" />
               {errors.mileage && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.mileage}</p>}
-            </div>
-
-            <div>
-              <Label className="text-base md:text-sm font-medium">Is the car HPI Clear?</Label>
-              <div className="mt-2 space-y-2">
-                {[{
-                value: "yes",
-                label: "Yes"
-              }, {
-                value: "no",
-                label: "No"
-              }, {
-                value: "unsure",
-                label: "Not Sure"
-              }].map(option => <button key={option.value} type="button" onClick={() => handleChange("hpiClear", option.value)} className="text-base font-sans font-medium px-[20px] py-[10px] border-2 border-solid rounded-md">
-                    {option.label}
-                  </button>)}
-              </div>
-              {errors.hpiClear && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.hpiClear}</p>}
-            </div>
-
-            <div>
-              <Label className="text-base md:text-sm font-medium">What's the condition of the car?</Label>
-              <div className="mt-2 space-y-2">
-                {[{
-                value: "excellent",
-                label: "Excellent",
-                desc: "Perfect condition"
-              }, {
-                value: "good",
-                label: "Good",
-                desc: "Few scratches here and there"
-              }, {
-                value: "bad",
-                label: "Bad",
-                desc: "Got scratches and stuff around"
-              }].map(option => <button key={option.value} type="button" onClick={() => handleChange("condition", option.value)} className={`w-full p-4 md:p-3 rounded-lg border-2 text-left transition-all ${formData.condition === option.value ? "border-primary bg-primary/10" : "border-border bg-background hover:border-primary/50"}`}>
-                    <div className={`font-semibold text-base md:text-sm ${formData.condition === option.value ? "text-primary" : "text-foreground"}`}>
-                      {option.label}
-                    </div>
-                    <div className="text-xs md:text-xs text-muted-foreground mt-1">{option.desc}</div>
-                  </button>)}
-              </div>
-              {errors.condition && <p className="text-destructive text-sm mt-1 animate-fade-in">{errors.condition}</p>}
             </div>
           </div>;
       case 3:

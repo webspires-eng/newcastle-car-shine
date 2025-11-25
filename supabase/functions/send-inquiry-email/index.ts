@@ -321,7 +321,7 @@ serve(async (req) => {
     // Send email via Elastic Email API
     const formData = new URLSearchParams();
     formData.append('apikey', ELASTIC_EMAIL_API_KEY!);
-    formData.append('from', 'noreply@sellmycar.com');
+    formData.append('from', 'mail@webspires.co.uk');
     formData.append('fromName', 'Sell My Car Newcastle - New Inquiry');
     formData.append('to', 'webspires@gmail.com');
     formData.append('subject', `🚗 New Lead: ${inquiryData.make} ${inquiryData.model} - ${inquiryData.registrationNumber}`);

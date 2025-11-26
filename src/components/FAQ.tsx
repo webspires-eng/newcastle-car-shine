@@ -13,7 +13,7 @@ export const FAQ = () => {
       answer: "Yes! We can help you settle any outstanding finance as part of the sale process. We'll work with your finance company to ensure everything is handled smoothly, and you'll receive any remaining funds after the finance is settled."
     },
     {
-      question: "Is it free to sell my car with Motorway?",
+      question: "Is it free to sell my car with Newcastle?",
       answer: "Absolutely! There are no fees or charges for using our service. We don't take any commission from your sale. You keep 100% of the selling price."
     },
     {
@@ -45,7 +45,7 @@ export const FAQ = () => {
       answer: "Selling online typically gets you a better price than part exchange. With our service, you'll receive competitive bids from multiple dealers, often resulting in higher offers than dealer part exchange values."
     },
     {
-      question: "Can I sell any make or model of car with Motorway?",
+      question: "Can I sell any make or model of car with Newcastle?",
       answer: "Yes! We accept almost all makes and models, including cars on finance, high mileage vehicles, and those with minor damage. Our network of dealers covers a wide range of vehicle types."
     }
   ];

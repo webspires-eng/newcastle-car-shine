@@ -12,14 +12,6 @@ export const Footer = () => {
               <Car className="w-8 h-8 text-foreground" />
               <span className="text-2xl font-bold">Sell My Car Newcastle</span>
             </div>
-            <div className="flex flex-col gap-3">
-              <a href="#" className="block">
-                <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store" className="h-12 w-auto" />
-              </a>
-              <a href="#" className="block">
-                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" className="h-[70px] w-auto -ml-2" />
-              </a>
-            </div>
           </div>
 
           {/* About Column */}

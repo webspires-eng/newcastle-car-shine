@@ -5,7 +5,7 @@ export const Footer = () => {
     <footer className="bg-hero-yellow text-foreground py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand & App Downloads */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
@@ -50,16 +50,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Tools Column */}
-          <div>
-            <h3 className="font-bold text-lg mb-4">Tools</h3>
-            <ul className="space-y-3 text-foreground">
-              <li><a href="#" className="hover:underline underline-offset-4">Value my car</a></li>
-              <li><a href="#" className="hover:underline underline-offset-4">MOT check</a></li>
-              <li><a href="#" className="hover:underline underline-offset-4">Tax check</a></li>
-              <li><a href="#" className="hover:underline underline-offset-4">ULEZ check</a></li>
-            </ul>
-          </div>
         </div>
 
         {/* Social Media Icons */}

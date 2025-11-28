@@ -25,9 +25,9 @@ export const HowItWorks = () => {
     },
     {
       number: 3,
-      title: "They pick up. You get paid.",
+      title: "We pick up. You get paid.",
       description:
-        "Sold! The dealer collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
+        "Sold! We collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
       image: step3Image,
       badge: "Collection",
       status: "confirmed",

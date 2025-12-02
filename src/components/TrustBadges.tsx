@@ -12,6 +12,14 @@ export const TrustBadges = () => {
     }
   });
 
+  const [emblaRefBrands, emblaApiBrands] = useEmblaCarousel({ 
+    loop: true,
+    align: "start",
+    breakpoints: {
+      '(min-width: 768px)': { active: false }
+    }
+  });
+
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -19,6 +27,14 @@ export const TrustBadges = () => {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  const scrollPrevBrands = useCallback(() => {
+    if (emblaApiBrands) emblaApiBrands.scrollPrev();
+  }, [emblaApiBrands]);
+
+  const scrollNextBrands = useCallback(() => {
+    if (emblaApiBrands) emblaApiBrands.scrollNext();
+  }, [emblaApiBrands]);
   const reviews = [{
     text: "It was a much better and easier process than I imagined, customer service was excellent.",
     author: "customer",
@@ -100,21 +116,44 @@ export const TrustBadges = () => {
         </div>
 
         <div className="border-t border-border pt-12">
-          <div className="flex items-center justify-center gap-8 flex-wrap">
+          <div className="text-center mb-6">
             <span className="text-muted-foreground font-medium">Recommended by</span>
-            <div className="flex items-center gap-8 flex-wrap">
-              <div className="bg-[#FFCC00] px-4 py-2 font-bold text-xl">AA</div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
-                <span className="font-bold text-xl">octopus</span>
+          </div>
+          
+          <div className="relative max-w-5xl mx-auto">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={scrollPrevBrands}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </Button>
+
+            <div className="overflow-hidden md:overflow-visible" ref={emblaRefBrands}>
+              <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4">
+                <div className="flex-[0_0_auto] bg-[#FFCC00] px-4 py-2 font-bold text-xl">AA</div>
+                <div className="flex-[0_0_auto] flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
+                  <span className="font-bold text-xl whitespace-nowrap">octopus</span>
+                </div>
+                <span className="flex-[0_0_auto] font-bold text-xl whitespace-nowrap">Confused<span className="text-[#FF1F8F]">.com</span></span>
+                <div className="flex-[0_0_auto] text-center">
+                  <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
+                  <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
+                </div>
+                <span className="flex-[0_0_auto] font-bold text-xl whitespace-nowrap text-[#00B67A]">GoCompare</span>
               </div>
-              <span className="font-bold text-xl">Confused<span className="text-[#FF1F8F]">.com</span></span>
-              <div className="text-center">
-                <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
-                <div className="font-bold text-lg">SUPERMARKET</div>
-              </div>
-              <span className="font-bold text-xl text-[#00B67A]">GoCompare</span>
             </div>
+
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={scrollNextBrands}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </Button>
           </div>
         </div>
       </div>

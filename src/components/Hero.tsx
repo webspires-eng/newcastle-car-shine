@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import heroCar from "@/assets/hero-car.png";
+import heroCar from "@/assets/dark-blue-sedan.png";
 import personWithCar from "@/assets/person-with-car-nobg.png";
 import { ManualEntryDialog } from "@/components/ManualEntryDialog";
 export const Hero = () => {

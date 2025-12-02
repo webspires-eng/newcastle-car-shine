@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
-import step1Image from "@/assets/step-1-valuation.jpg";
-import step2Image from "@/assets/step-2-offer.jpg";
-import step3Image from "@/assets/step-3-collection.jpg";
+import carAppPhone from "@/assets/car-app-phone.jpg";
+import womanPhoneGreen from "@/assets/woman-phone-green.jpg";
+import womanPhoneYellow from "@/assets/woman-phone-yellow.jpg";
 
 export const HowItWorks = () => {
   const steps = [
@@ -10,7 +10,7 @@ export const HowItWorks = () => {
       title: "Get a free valuation",
       description:
         "See your car's value instantly, then use our app to profile your vehicle. Quick, easy to follow and done in a few taps.",
-      image: step1Image,
+      image: carAppPhone,
       badge: "Ford Focus ST",
       price: "£13,650",
     },
@@ -19,16 +19,16 @@ export const HowItWorks = () => {
       title: "Choose the best offer",
       description:
         "7,500+ verified dealers bid on your car in our daily auction. We send the highest offer. No fees. No stress.",
-      image: step2Image,
+      image: womanPhoneGreen,
       badge: "Offer received",
       price: "£14,250",
     },
     {
       number: 3,
-      title: "We pick up. You get paid.",
+      title: "They pick up. You get paid.",
       description:
-        "Sold! We collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
-      image: step3Image,
+        "Sold! The dealer collects from you wherever you are, and pays the same day. Outstanding finance? We'll sort it.",
+      image: womanPhoneYellow,
       badge: "Collection",
       status: "confirmed",
     },
@@ -37,7 +37,7 @@ export const HowItWorks = () => {
   return (
     <section id="how-it-works" className="py-8 md:py-12 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">Why sell with us</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             We make car selling simple. Here's how it works.
@@ -49,7 +49,7 @@ export const HowItWorks = () => {
             <div key={step.number} className="space-y-6">
               {/* Image Card */}
               <Card className="relative overflow-hidden rounded-3xl border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative aspect-[4/5]">
+                <div className="relative aspect-[3/4] md:aspect-[4/5]">
                   <img src={step.image} alt={step.title} className="w-full h-full object-cover" />
                   {/* Overlay Badge */}
                   <div className="absolute bottom-6 left-6 right-6 bg-foreground/90 backdrop-blur-sm text-background rounded-2xl p-4">

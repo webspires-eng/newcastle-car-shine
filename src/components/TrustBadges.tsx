@@ -75,7 +75,7 @@ export const TrustBadges = () => {
               {reviews.map((review, index) => (
                 <div 
                   key={index} 
-                  className="flex-[0_0_85%] mr-4 md:flex-none md:mr-0 bg-card border border-border rounded-lg p-6"
+                  className="flex-[0_0_100%] mr-4 md:flex-none md:mr-0 bg-card border border-border rounded-lg p-6"
                 >
                   <div className="flex items-center gap-1 mb-3">
                     {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}

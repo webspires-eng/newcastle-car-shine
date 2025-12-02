@@ -1,4 +1,5 @@
-import { Car, Facebook, Instagram } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
+import logo from "@/assets/sell-my-car-newcastle-logo.png";
 
 export const Footer = () => {
   return (
@@ -9,8 +10,7 @@ export const Footer = () => {
           {/* Brand & App Downloads */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
-              <Car className="w-8 h-8 text-foreground" />
-              <span className="text-2xl font-bold">Sell My Car Newcastle</span>
+              <img src={logo} alt="Sell My Car Newcastle" className="h-12 w-auto" />
             </div>
           </div>
 

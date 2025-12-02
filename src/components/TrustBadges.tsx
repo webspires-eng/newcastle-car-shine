@@ -1,40 +1,13 @@
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import useEmblaCarousel from "embla-carousel-react";
-import { useCallback } from "react";
+import { Star } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export const TrustBadges = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-    breakpoints: {
-      '(min-width: 768px)': { active: false }
-    }
-  });
-
-  const [emblaRefBrands, emblaApiBrands] = useEmblaCarousel({
-    loop: true,
-    align: "start",
-    breakpoints: {
-      '(min-width: 768px)': { active: false }
-    }
-  });
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const scrollPrevBrands = useCallback(() => {
-    if (emblaApiBrands) emblaApiBrands.scrollPrev();
-  }, [emblaApiBrands]);
-
-  const scrollNextBrands = useCallback(() => {
-    if (emblaApiBrands) emblaApiBrands.scrollNext();
-  }, [emblaApiBrands]);
   const reviews = [{
     text: "It was a much better and easier process than I imagined, customer service was excellent.",
     author: "customer",
@@ -52,6 +25,7 @@ export const TrustBadges = () => {
     author: "Jason Moore",
     time: "6 hours ago"
   }];
+
   return <section className="py-10 bg-background">
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
@@ -60,49 +34,38 @@ export const TrustBadges = () => {
         </h2>
       </div>
 
-      <div className="relative max-w-7xl mx-auto mb-16">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={scrollPrev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+      <div className="relative max-w-7xl mx-auto mb-16 md:px-12">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
         >
-          <ChevronLeft className="w-6 h-6" />
-        </Button>
-
-        <div className="overflow-hidden md:overflow-visible px-4 md:px-0" ref={emblaRef}>
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <CarouselContent className="-ml-4 md:-ml-6">
             {reviews.map((review, index) => (
-              <div
-                key={index}
-                className="flex-[0_0_100%] min-w-0 md:flex-none bg-card border border-border rounded-lg p-6"
-              >
-                <div className="flex items-center gap-1 mb-3">
-                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}
-                  <span className="text-xs text-muted-foreground ml-2">✓ Invited</span>
+              <CarouselItem key={index} className="pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/4">
+                <div className="bg-card border border-border rounded-lg p-6 h-full">
+                  <div className="flex items-center gap-1 mb-3">
+                    {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}
+                    <span className="text-xs text-muted-foreground ml-2">✓ Invited</span>
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2 text-sm">
+                    {review.text.split('.')[0]}...
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    {review.text}
+                  </p>
+                  <div className="text-xs text-muted-foreground">
+                    <p className="font-semibold">{review.author}, {review.time}</p>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-foreground mb-2 text-sm">
-                  {review.text.split('.')[0]}...
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                  {review.text}
-                </p>
-                <div className="text-xs text-muted-foreground">
-                  <p className="font-semibold">{review.author}, {review.time}</p>
-                </div>
-              </div>
+              </CarouselItem>
             ))}
-          </div>
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={scrollNext}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </Button>
+          </CarouselContent>
+          <CarouselPrevious className="left-2 md:-left-12" />
+          <CarouselNext className="right-2 md:-right-12" />
+        </Carousel>
       </div>
 
       <div className="text-center mb-12">
@@ -120,40 +83,40 @@ export const TrustBadges = () => {
           <span className="text-muted-foreground font-medium">Recommended by</span>
         </div>
 
-        <div className="relative max-w-5xl mx-auto">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={scrollPrevBrands}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+        <div className="relative max-w-5xl mx-auto md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
           >
-            <ChevronLeft className="w-6 h-6" />
-          </Button>
-
-          <div className="overflow-hidden md:overflow-visible" ref={emblaRefBrands}>
-            <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4 items-center">
-              <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl w-fit mx-auto md:mx-0">AA</div>
-              <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center gap-2 mx-auto md:mx-0">
-                <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
-                <span className="font-bold text-xl whitespace-nowrap">octopus</span>
-              </div>
-              <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap mx-auto md:mx-0">Confused<span className="text-[#FF1F8F]">.com</span></span>
-              <div className="flex-[0_0_100%] md:flex-[0_0_auto] text-center flex flex-col items-center justify-center mx-auto md:mx-0">
-                <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
-                <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
-              </div>
-              <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap text-[#00B67A] mx-auto md:mx-0">GoCompare</span>
-            </div>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={scrollNextBrands}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </Button>
+            <CarouselContent className="-ml-4 md:-ml-8 items-center">
+              <CarouselItem className="pl-4 md:pl-8 basis-full md:basis-auto flex justify-center">
+                <div className="flex items-center justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl w-fit">AA</div>
+              </CarouselItem>
+              <CarouselItem className="pl-4 md:pl-8 basis-full md:basis-auto flex justify-center">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
+                  <span className="font-bold text-xl whitespace-nowrap">octopus</span>
+                </div>
+              </CarouselItem>
+              <CarouselItem className="pl-4 md:pl-8 basis-full md:basis-auto flex justify-center">
+                <span className="flex items-center justify-center font-bold text-xl whitespace-nowrap">Confused<span className="text-[#FF1F8F]">.com</span></span>
+              </CarouselItem>
+              <CarouselItem className="pl-4 md:pl-8 basis-full md:basis-auto flex justify-center">
+                <div className="text-center flex flex-col items-center justify-center">
+                  <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
+                  <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
+                </div>
+              </CarouselItem>
+              <CarouselItem className="pl-4 md:pl-8 basis-full md:basis-auto flex justify-center">
+                <span className="flex items-center justify-center font-bold text-xl whitespace-nowrap text-[#00B67A]">GoCompare</span>
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious className="left-2 md:-left-12" />
+            <CarouselNext className="right-2 md:-right-12" />
+          </Carousel>
         </div>
       </div>
     </div>

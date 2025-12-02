@@ -1,32 +1,24 @@
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 export const TrustBadges = () => {
-  const reviews = [
-    {
-      text: "It was a much better and easier process than I imagined, customer service was excellent.",
-      author: "customer",
-      time: "2 hours ago"
-    },
-    {
-      text: "I have sold two cars through Motorway and found the experience very simple and smooth...",
-      author: "Raj",
-      time: "3 hours ago"
-    },
-    {
-      text: "Straightforward process, clear instructions, good result",
-      author: "Cranhamman",
-      time: "4 hours ago"
-    },
-    {
-      text: "Great service; very quick and easy, with good transparency throughout. I would happi...",
-      author: "Jason Moore",
-      time: "6 hours ago"
-    }
-  ];
-
-  return (
-    <section className="py-20 bg-background">
+  const reviews = [{
+    text: "It was a much better and easier process than I imagined, customer service was excellent.",
+    author: "customer",
+    time: "2 hours ago"
+  }, {
+    text: "I have sold two cars through Motorway and found the experience very simple and smooth...",
+    author: "Raj",
+    time: "3 hours ago"
+  }, {
+    text: "Straightforward process, clear instructions, good result",
+    author: "Cranhamman",
+    time: "4 hours ago"
+  }, {
+    text: "Great service; very quick and easy, with good transparency throughout. I would happi...",
+    author: "Jason Moore",
+    time: "6 hours ago"
+  }];
+  return <section className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8">
@@ -35,24 +27,14 @@ export const TrustBadges = () => {
         </div>
 
         <div className="relative max-w-7xl mx-auto mb-16">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background"
-          >
+          <Button variant="ghost" size="icon" className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background">
             <ChevronLeft className="w-6 h-6" />
           </Button>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-12">
-            {reviews.map((review, index) => (
-              <div 
-                key={index} 
-                className="bg-card border border-border rounded-lg p-6"
-              >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-[10px]">
+            {reviews.map((review, index) => <div key={index} className="bg-card border border-border rounded-lg p-6">
                 <div className="flex items-center gap-1 mb-3">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />
-                  ))}
+                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}
                   <span className="text-xs text-muted-foreground ml-2">✓ Invited</span>
                 </div>
                 <h3 className="font-semibold text-foreground mb-2 text-sm">
@@ -64,15 +46,10 @@ export const TrustBadges = () => {
                 <div className="text-xs text-muted-foreground">
                   <p className="font-semibold">{review.author}, {review.time}</p>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background"
-          >
+          <Button variant="ghost" size="icon" className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background">
             <ChevronRight className="w-6 h-6" />
           </Button>
         </div>
@@ -106,6 +83,5 @@ export const TrustBadges = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };

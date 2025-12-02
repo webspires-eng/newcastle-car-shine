@@ -40,7 +40,7 @@ export const TrustBadges = () => {
     author: "customer",
     time: "2 hours ago"
   }, {
-    text: "I have sold two cars through Motorway and found the experience very simple and smooth...",
+    text: "I have sold two cars through Sell My Car Newcastle and found the experience very simple and smooth...",
     author: "Raj",
     time: "3 hours ago"
   }, {

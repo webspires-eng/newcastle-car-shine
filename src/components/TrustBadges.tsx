@@ -131,18 +131,18 @@ export const TrustBadges = () => {
             </Button>
 
             <div className="overflow-hidden md:overflow-visible" ref={emblaRefBrands}>
-              <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4">
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl">AA</div>
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center gap-2">
+              <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4 items-center">
+                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl w-fit mx-auto md:mx-0">AA</div>
+                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center gap-2 mx-auto md:mx-0">
                   <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
                   <span className="font-bold text-xl whitespace-nowrap">octopus</span>
                 </div>
-                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex justify-center font-bold text-xl whitespace-nowrap">Confused<span className="text-[#FF1F8F]">.com</span></span>
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] text-center flex flex-col items-center justify-center">
+                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap mx-auto md:mx-0">Confused<span className="text-[#FF1F8F]">.com</span></span>
+                <div className="flex-[0_0_100%] md:flex-[0_0_auto] text-center flex flex-col items-center justify-center mx-auto md:mx-0">
                   <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
                   <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
                 </div>
-                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex justify-center font-bold text-xl whitespace-nowrap text-[#00B67A]">GoCompare</span>
+                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap text-[#00B67A] mx-auto md:mx-0">GoCompare</span>
               </div>
             </div>
 

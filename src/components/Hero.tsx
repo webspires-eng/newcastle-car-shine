@@ -33,7 +33,7 @@ export const Hero = () => {
                 </p>
 
                 <div className="max-w-2xl space-y-3 mx-auto lg:mx-0 pt-2 md:pt-4">
-                  <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 md:h-16 px-8 text-lg md:text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl w-full sm:w-auto touch-manipulation shadow-lg">
+                  <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 md:h-16 text-lg md:text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl w-full sm:w-auto touch-manipulation shadow-lg px-0 pr-[16px] pl-[16px]">
                     Get Your Instant Quote Now
                   </Button>
                   {/* Trustpilot Badge below CTA on desktop */}

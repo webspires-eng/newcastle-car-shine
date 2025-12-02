@@ -70,12 +70,12 @@ export const TrustBadges = () => {
             <ChevronLeft className="w-6 h-6" />
           </Button>
 
-          <div className="overflow-hidden md:overflow-visible" ref={emblaRef}>
-            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6 px-[10px]">
+          <div className="overflow-hidden md:overflow-visible px-4 md:px-0" ref={emblaRef}>
+            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {reviews.map((review, index) => (
                 <div 
                   key={index} 
-                  className="flex-[0_0_100%] mr-4 md:flex-none md:mr-0 bg-card border border-border rounded-lg p-6"
+                  className="flex-[0_0_100%] min-w-0 md:flex-none bg-card border border-border rounded-lg p-6"
                 >
                   <div className="flex items-center gap-1 mb-3">
                     {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}

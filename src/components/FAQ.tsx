@@ -53,19 +53,19 @@ export const FAQ = () => {
   return (
     <section className="py-10 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          <div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4 sticky top-8">
+        <div className="flex flex-col gap-12">
+          <div className="text-center lg:text-left">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Sell my car FAQs
             </h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {faqs.map((faq, index) => (
-              <Accordion key={index} type="single" collapsible>
+              <Accordion key={index} type="single" collapsible className="h-full">
                 <AccordionItem
                   value={`item-${index}`}
-                  className="bg-hero-yellow/30 border-none rounded-2xl px-6 hover:bg-hero-yellow/40 transition-colors duration-300"
+                  className="bg-hero-yellow/30 border-none rounded-2xl px-6 hover:bg-hero-yellow/40 transition-colors duration-300 h-full"
                 >
                   <AccordionTrigger className="text-left text-base font-semibold hover:no-underline py-5">
                     <span className="flex items-center justify-between w-full pr-4">

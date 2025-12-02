@@ -45,7 +45,7 @@ export const Testimonials = () => {
           </p>
         </div>
 
-        <div className="max-w-7xl mx-auto">
+        <div className="relative max-w-7xl mx-auto md:px-12">
           <Carousel
             opts={{
               align: "start",
@@ -86,10 +86,8 @@ export const Testimonials = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="flex justify-center gap-4 mt-8 md:hidden">
-              <CarouselPrevious className="static translate-y-0" />
-              <CarouselNext className="static translate-y-0" />
-            </div>
+            <CarouselPrevious className="left-2 md:-left-12" />
+            <CarouselNext className="right-2 md:-right-12" />
           </Carousel>
         </div>
       </div>

@@ -28,7 +28,7 @@ export const GuidesSection = () => {
   return (
     <section className="py-10 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-start justify-between mb-12">
+        <div className="flex flex-col md:flex-row items-start justify-between mb-12 gap-6">
           <div>
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Car selling guides
@@ -39,7 +39,7 @@ export const GuidesSection = () => {
           </div>
           <Button
             variant="secondary"
-            className="bg-background hover:bg-background/90 text-foreground rounded-full"
+            className="bg-background hover:bg-background/90 text-foreground rounded-full w-full md:w-auto justify-between md:justify-center"
           >
             Explore guides
             <ArrowRight className="w-4 h-4 ml-2" />

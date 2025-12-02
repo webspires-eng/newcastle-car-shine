@@ -26,7 +26,7 @@ export const GuidesSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
+    <section className="py-10 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-start justify-between mb-12">
           <div>
@@ -37,8 +37,8 @@ export const GuidesSection = () => {
               Everything to know about selling, valuing, and maintaining your car. Made simple.
             </p>
           </div>
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             className="bg-background hover:bg-background/90 text-foreground rounded-full"
           >
             Explore guides
@@ -48,8 +48,8 @@ export const GuidesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {guides.map((guide, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="bg-card rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
             >
               <h3 className="text-lg font-bold text-foreground mb-4 leading-tight">

@@ -4,7 +4,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCallback } from "react";
 
 export const TrustBadges = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
     breakpoints: {
@@ -12,7 +12,7 @@ export const TrustBadges = () => {
     }
   });
 
-  const [emblaRefBrands, emblaApiBrands] = useEmblaCarousel({ 
+  const [emblaRefBrands, emblaApiBrands] = useEmblaCarousel({
     loop: true,
     align: "start",
     breakpoints: {
@@ -52,110 +52,110 @@ export const TrustBadges = () => {
     author: "Jason Moore",
     time: "6 hours ago"
   }];
-  return <section className="py-20 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8">
-            Rated 'Excellent' with 80,000+ reviews
-          </h2>
+  return <section className="py-10 bg-background">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8">
+          Rated 'Excellent' with 80,000+ reviews
+        </h2>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto mb-16">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={scrollPrev}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </Button>
+
+        <div className="overflow-hidden md:overflow-visible px-4 md:px-0" ref={emblaRef}>
+          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {reviews.map((review, index) => (
+              <div
+                key={index}
+                className="flex-[0_0_100%] min-w-0 md:flex-none bg-card border border-border rounded-lg p-6"
+              >
+                <div className="flex items-center gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}
+                  <span className="text-xs text-muted-foreground ml-2">✓ Invited</span>
+                </div>
+                <h3 className="font-semibold text-foreground mb-2 text-sm">
+                  {review.text.split('.')[0]}...
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  {review.text}
+                </p>
+                <div className="text-xs text-muted-foreground">
+                  <p className="font-semibold">{review.author}, {review.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto mb-16">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={scrollPrev}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={scrollNext}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </Button>
+      </div>
+
+      <div className="text-center mb-12">
+        <p className="text-muted-foreground mb-2">
+          Rated <span className="font-bold">4.4</span> / 5 based on <span className="font-bold">92,400 reviews</span>. Showing our 5 star reviews.
+        </p>
+        <div className="flex items-center justify-center gap-1">
+          <Star className="w-5 h-5 fill-[#00b67a] text-[#00b67a]" />
+          <span className="font-bold text-[#00b67a]">Trustpilot</span>
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-12">
+        <div className="text-center mb-6">
+          <span className="text-muted-foreground font-medium">Recommended by</span>
+        </div>
+
+        <div className="relative max-w-5xl mx-auto">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={scrollPrevBrands}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
           >
             <ChevronLeft className="w-6 h-6" />
           </Button>
 
-          <div className="overflow-hidden md:overflow-visible px-4 md:px-0" ref={emblaRef}>
-            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {reviews.map((review, index) => (
-                <div 
-                  key={index} 
-                  className="flex-[0_0_100%] min-w-0 md:flex-none bg-card border border-border rounded-lg p-6"
-                >
-                  <div className="flex items-center gap-1 mb-3">
-                    {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}
-                    <span className="text-xs text-muted-foreground ml-2">✓ Invited</span>
-                  </div>
-                  <h3 className="font-semibold text-foreground mb-2 text-sm">
-                    {review.text.split('.')[0]}...
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                    {review.text}
-                  </p>
-                  <div className="text-xs text-muted-foreground">
-                    <p className="font-semibold">{review.author}, {review.time}</p>
-                  </div>
-                </div>
-              ))}
+          <div className="overflow-hidden md:overflow-visible" ref={emblaRefBrands}>
+            <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4 items-center">
+              <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl w-fit mx-auto md:mx-0">AA</div>
+              <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center gap-2 mx-auto md:mx-0">
+                <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
+                <span className="font-bold text-xl whitespace-nowrap">octopus</span>
+              </div>
+              <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap mx-auto md:mx-0">Confused<span className="text-[#FF1F8F]">.com</span></span>
+              <div className="flex-[0_0_100%] md:flex-[0_0_auto] text-center flex flex-col items-center justify-center mx-auto md:mx-0">
+                <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
+                <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
+              </div>
+              <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap text-[#00B67A] mx-auto md:mx-0">GoCompare</span>
             </div>
           </div>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={scrollNext}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={scrollNextBrands}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
           >
             <ChevronRight className="w-6 h-6" />
           </Button>
         </div>
-
-        <div className="text-center mb-12">
-          <p className="text-muted-foreground mb-2">
-            Rated <span className="font-bold">4.4</span> / 5 based on <span className="font-bold">92,400 reviews</span>. Showing our 5 star reviews.
-          </p>
-          <div className="flex items-center justify-center gap-1">
-            <Star className="w-5 h-5 fill-[#00b67a] text-[#00b67a]" />
-            <span className="font-bold text-[#00b67a]">Trustpilot</span>
-          </div>
-        </div>
-
-        <div className="border-t border-border pt-12">
-          <div className="text-center mb-6">
-            <span className="text-muted-foreground font-medium">Recommended by</span>
-          </div>
-          
-          <div className="relative max-w-5xl mx-auto">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={scrollPrevBrands}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </Button>
-
-            <div className="overflow-hidden md:overflow-visible" ref={emblaRefBrands}>
-              <div className="flex md:flex-wrap md:justify-center gap-8 px-10 md:px-4 items-center">
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center bg-[#FFCC00] px-4 py-2 font-bold text-xl w-fit mx-auto md:mx-0">AA</div>
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center gap-2 mx-auto md:mx-0">
-                  <div className="w-8 h-8 rounded-full bg-[#FF1F8F]"></div>
-                  <span className="font-bold text-xl whitespace-nowrap">octopus</span>
-                </div>
-                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap mx-auto md:mx-0">Confused<span className="text-[#FF1F8F]">.com</span></span>
-                <div className="flex-[0_0_100%] md:flex-[0_0_auto] text-center flex flex-col items-center justify-center mx-auto md:mx-0">
-                  <div className="font-bold text-lg text-[#00B67A]">MONEY</div>
-                  <div className="font-bold text-lg whitespace-nowrap">SUPERMARKET</div>
-                </div>
-                <span className="flex-[0_0_100%] md:flex-[0_0_auto] flex items-center justify-center font-bold text-xl whitespace-nowrap text-[#00B67A] mx-auto md:mx-0">GoCompare</span>
-              </div>
-            </div>
-
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={scrollNextBrands}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </Button>
-          </div>
-        </div>
       </div>
-    </section>;
+    </div>
+  </section>;
 };

@@ -17,7 +17,7 @@ export const Hero = () => {
         <div className="relative rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 md:p-8 lg:p-12 xl:p-16">
           <div className="flex flex-col-reverse lg:flex-row gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-center lg:items-center min-h-[480px] lg:min-h-[600px] xl:min-h-[650px]">
             {/* Left Content */}
-            <div className="space-y-6 flex-col relative z-10 order-2 lg:order-1 w-full lg:w-[52%] text-center lg:text-left lg:px-8 xl:px-12 px-0 flex items-center justify-center">
+            <div className="space-y-6 flex-col relative z-10 order-2 lg:order-1 w-full lg:w-[52%] lg:text-left lg:px-8 xl:px-12 px-0 flex items-center lg:items-start justify-center">
 
               <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight md:leading-[1.1] drop-shadow-sm">
                 Sell my car.
@@ -32,7 +32,7 @@ export const Hero = () => {
                 and free home collection with same-day payment.
               </p>
 
-              <div className="max-w-2xl space-y-3 mx-auto lg:mx-0 pt-2 md:pt-4 flex flex-col items-center lg:items-start justify-center lg:justify-start">
+              <div className="max-w-2xl space-y-3 mx-auto lg:mx-0 pt-2 md:pt-4">
                 <Button type="button" variant="default" size="lg" onClick={() => setShowManualEntry(true)} className="h-16 md:h-16 text-lg md:text-lg font-semibold bg-foreground text-background hover:bg-foreground/90 rounded-xl w-full sm:w-auto touch-manipulation shadow-lg px-0 pr-[16px] pl-[16px]">
                   Get Your Instant Quote Now
                 </Button>

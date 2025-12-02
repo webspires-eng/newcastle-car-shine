@@ -90,10 +90,6 @@ export const Testimonials = () => {
               <CarouselPrevious className="static translate-y-0" />
               <CarouselNext className="static translate-y-0" />
             </div>
-            <div className="hidden md:block">
-              <CarouselPrevious className="-left-12" />
-              <CarouselNext className="-right-12" />
-            </div>
           </Carousel>
         </div>
       </div>

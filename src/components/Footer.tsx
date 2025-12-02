@@ -2,7 +2,7 @@ import { Car, Facebook, Instagram } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-hero-yellow text-foreground py-16">
+    <footer className="bg-hero-yellow text-foreground py-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
@@ -51,7 +51,7 @@ export const Footer = () => {
           </a>
           <a href="#" className="bg-foreground rounded-full w-10 h-10 flex items-center justify-center hover:opacity-80 transition-opacity">
             <svg className="w-5 h-5 text-background" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
           </a>
           <a href="#" className="bg-background rounded-full w-10 h-10 flex items-center justify-center hover:opacity-80 transition-opacity">

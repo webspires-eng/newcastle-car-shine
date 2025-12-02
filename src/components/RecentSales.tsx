@@ -1,4 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import carFiat from "@/assets/car-fiat-500.png";
 import carBMW from "@/assets/car-bmw-m1.png";
 import carAudi from "@/assets/car-audi-q2.png";
@@ -15,7 +22,7 @@ export const RecentSales = () => {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-8">
+    <section className="py-10 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
@@ -25,41 +32,51 @@ export const RecentSales = () => {
           </h2>
         </div>
 
-        {/* Horizontal Scrolling Container */}
-        <div className="overflow-x-auto pb-4 -mx-4 px-4">
-          <div className="flex gap-6 min-w-max">
-            {sales.map((sale, index) => (
-              <Card 
-                key={index} 
-                className="w-80 hover:shadow-xl transition-all duration-500 rounded-2xl border-2 animate-fade-in hover:scale-105"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  animationFillMode: 'both'
-                }}
-              >
-                <CardContent className="p-6">
-                  {/* Car Image with slide animation */}
-                  <div className="w-full h-40 bg-gradient-to-br from-muted to-muted/50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative group">
-                    <img 
-                      src={sale.image} 
-                      alt={sale.car}
-                      className="w-48 h-auto object-contain transform transition-all duration-700 group-hover:scale-110 group-hover:translate-x-2 animate-slide-in-right"
-                      style={{
-                        animationDelay: `${index * 0.15}s`,
-                        animationFillMode: 'both'
-                      }}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Sold by {sale.seller}</p>
-                    <p className="font-semibold text-foreground text-lg">{sale.car}</p>
-                    <p className="text-xs text-muted-foreground">{sale.time}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        <div className="relative max-w-7xl mx-auto md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4 md:-ml-6">
+              {sales.map((sale, index) => (
+                <CarouselItem key={index} className="pl-4 md:pl-6 basis-full sm:basis-1/2 lg:basis-1/3">
+                  <Card
+                    className="hover:shadow-xl transition-all duration-500 rounded-2xl border-2 animate-fade-in hover:scale-105"
+                    style={{
+                      animationDelay: `${index * 0.1}s`,
+                      animationFillMode: 'both'
+                    }}
+                  >
+                    <CardContent className="p-6">
+                      {/* Car Image with slide animation */}
+                      <div className="w-full h-40 bg-gradient-to-br from-muted to-muted/50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative group">
+                        <img
+                          src={sale.image}
+                          alt={sale.car}
+                          className="w-48 h-auto object-contain transform transition-all duration-700 group-hover:scale-110 group-hover:translate-x-2 animate-slide-in-right"
+                          style={{
+                            animationDelay: `${index * 0.15}s`,
+                            animationFillMode: 'both'
+                          }}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Sold by {sale.seller}</p>
+                        <p className="font-semibold text-foreground text-lg">{sale.car}</p>
+                        <p className="text-xs text-muted-foreground">{sale.time}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2 md:-left-12" />
+            <CarouselNext className="right-2 md:-right-12" />
+          </Carousel>
         </div>
       </div>
     </section>

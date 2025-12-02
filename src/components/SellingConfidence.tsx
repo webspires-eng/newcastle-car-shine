@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCallback } from "react";
 
 export const SellingConfidence = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
     breakpoints: {
@@ -47,7 +47,7 @@ export const SellingConfidence = () => {
   ];
 
   return (
-    <section className="py-20 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
+    <section className="py-10 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
@@ -56,9 +56,9 @@ export const SellingConfidence = () => {
         </div>
 
         <div className="relative max-w-7xl mx-auto">
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={scrollPrev}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
           >
@@ -68,13 +68,13 @@ export const SellingConfidence = () => {
           <div className="overflow-hidden md:overflow-visible px-4 md:px-0" ref={emblaRef}>
             <div className="flex md:grid md:grid-cols-3 gap-6">
               {cards.map((card, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className="flex-[0_0_100%] min-w-0 md:flex-none bg-card rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
-                    <img 
-                      src={card.image} 
+                    <img
+                      src={card.image}
                       alt={card.title}
                       className="w-full h-full object-cover"
                     />
@@ -96,9 +96,9 @@ export const SellingConfidence = () => {
             </div>
           </div>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={scrollNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 hover:bg-background md:hidden"
           >

@@ -35,7 +35,7 @@ export const HowItWorks = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-8 md:py-12 bg-background">
+    <section id="how-it-works" className="py-10 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">Why sell with us</h2>
@@ -49,7 +49,7 @@ export const HowItWorks = () => {
             <div key={step.number} className="space-y-6">
               {/* Image Card */}
               <Card className="relative overflow-hidden rounded-3xl border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative aspect-[3/4] md:aspect-[4/5]">
+                <div className="relative aspect-square md:aspect-[4/5]">
                   <img src={step.image} alt={step.title} className="w-full h-full object-cover" />
                   {/* Overlay Badge */}
                   <div className="absolute bottom-6 left-6 right-6 bg-foreground/90 backdrop-blur-sm text-background rounded-2xl p-4">

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
 import luxuryCarsRow from "@/assets/luxury-cars-row.jpg";
 export const CtaSection = () => {
-  return <section className="py-12 md:py-16 bg-background">
+  return <section className="py-10 bg-background">
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto rounded-[4rem] overflow-hidden relative">
         {/* Background Image */}
@@ -29,20 +29,7 @@ export const CtaSection = () => {
               Let's find out what yours is worth.
             </p>
 
-            {/* CTA Form */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-xl bg-background/95 backdrop-blur-sm rounded-2xl p-2">
-              <Input
-                type="text"
-                placeholder="ENTER REG"
-                className="h-14 text-base border-0 font-medium uppercase placeholder:text-muted-foreground/50 bg-transparent"
-              />
-              <Button
-                size="lg"
-                className="h-14 px-8 text-base font-semibold whitespace-nowrap bg-hero-yellow text-foreground hover:bg-hero-yellow/90 rounded-xl"
-              >
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-            </div>
+
           </div>
         </div>
       </div>

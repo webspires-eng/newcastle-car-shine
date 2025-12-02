@@ -51,7 +51,7 @@ export const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
+    <section className="py-10 bg-background rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div>
@@ -63,7 +63,7 @@ export const FAQ = () => {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <Accordion key={index} type="single" collapsible>
-                <AccordionItem 
+                <AccordionItem
                   value={`item-${index}`}
                   className="bg-hero-yellow/30 border-none rounded-2xl px-6 hover:bg-hero-yellow/40 transition-colors duration-300"
                 >

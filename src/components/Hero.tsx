@@ -17,7 +17,7 @@ export const Hero = () => {
           <div className="relative rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 md:p-8 lg:p-12 xl:p-16">
             <div className="flex flex-col-reverse lg:flex-row gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-center lg:items-center min-h-[480px] lg:min-h-[600px] xl:min-h-[650px]">
               {/* Left Content */}
-              <div className="space-y-6 flex flex-col justify-center relative z-10 order-2 lg:order-1 w-full lg:w-[52%] text-center lg:text-left px-2 lg:px-8 xl:px-12">
+              <div className="space-y-6 flex-col relative z-10 order-2 lg:order-1 w-full lg:w-[52%] text-center lg:text-left lg:px-8 xl:px-12 px-0 flex items-center justify-center">
                
                 <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight md:leading-[1.1] drop-shadow-sm">
                   Sell my car.

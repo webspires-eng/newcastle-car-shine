@@ -30,7 +30,7 @@ export const TrustBadges = () => {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
         <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8">
-          Rated 'Excellent' with 80,000+ reviews
+          Rated 'Excellent' with 92,000+ reviews
         </h2>
       </div>
 
@@ -70,7 +70,7 @@ export const TrustBadges = () => {
 
       <div className="text-center mb-12">
         <p className="text-muted-foreground mb-2">
-          Rated <span className="font-bold">4.4</span> / 5 based on <span className="font-bold">92,400 reviews</span>. Showing our 5 star reviews.
+          Rated <span className="font-bold">4.4</span> / 5 based on <span className="font-bold">92,000+ reviews</span>. Showing our 5 star reviews.
         </p>
         <div className="flex items-center justify-center gap-1">
           <Star className="w-5 h-5 fill-[#00b67a] text-[#00b67a]" />

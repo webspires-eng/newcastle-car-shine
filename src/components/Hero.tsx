@@ -45,7 +45,7 @@ export const Hero = () => {
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00B67A] text-[#00B67A]" />)}
                   </div>
-                  <span className="text-sm text-foreground/80">92,250+ reviews</span>
+                  <span className="text-sm text-foreground/80">92,000+ reviews</span>
                 </div>
               </div>
             </div>

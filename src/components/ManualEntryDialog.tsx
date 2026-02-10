@@ -196,13 +196,15 @@ export const ManualEntryDialog = ({
         name: validatedData.name,
         email: validatedData.email,
         phone: validatedData.phone,
+        postcode: validatedData.postcode,
         registration_number: validatedData.registrationNumber,
         make: validatedData.make,
         model: validatedData.model,
         mileage: mileageInt,
+        transmission: validatedData.transmission,
         hpi_clear: validatedData.hpiClear === "yes" ? true : validatedData.hpiClear === "no" ? false : null,
         condition: validatedData.condition,
-        notes: validatedData.notes ? `${validatedData.notes} | Postcode: ${validatedData.postcode} | Transmission: ${validatedData.transmission}` : `Postcode: ${validatedData.postcode} | Transmission: ${validatedData.transmission}`
+        notes: validatedData.notes || null
       });
       if (error) throw error;
       try {

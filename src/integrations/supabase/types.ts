@@ -48,7 +48,9 @@ export type Database = {
           name: string
           notes: string | null
           phone: string
+          postcode: string | null
           registration_number: string
+          transmission: string | null
         }
         Insert: {
           condition?: string | null
@@ -62,7 +64,9 @@ export type Database = {
           name: string
           notes?: string | null
           phone: string
+          postcode?: string | null
           registration_number: string
+          transmission?: string | null
         }
         Update: {
           condition?: string | null
@@ -76,7 +80,9 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string
+          postcode?: string | null
           registration_number?: string
+          transmission?: string | null
         }
         Relationships: []
       }

@@ -89,6 +89,19 @@ export const Footer = () => {
               ‡83% of payments are made on the day of handover.
             </p>
           </div>
+
+          <div className="text-center mt-8 text-xs text-foreground/50">
+            <p>Developed by{" "}
+              <a
+                href="https://webspires.co.uk?utm_source=newcastlecars"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors underline"
+              >
+                Webspires
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

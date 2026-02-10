@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,11 @@ import dealershipImg from "@/assets/dealership-interior.jpg";
 import carHandshakeImg from "@/assets/car-handshake.jpg";
 
 const AboutUs = () => {
+  useEffect(() => { document.title = "About Us | Sell My Car Newcastle"; }, []);
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <main>
         {/* Hero Section */}
         <section className="py-20 bg-hero-yellow">

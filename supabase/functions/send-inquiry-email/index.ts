@@ -13,10 +13,12 @@ const inquirySchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
   phone: z.string().trim().min(10, "Phone must be at least 10 characters").max(20, "Phone must be less than 20 characters").regex(/^[\d\s+()-]+$/, "Phone contains invalid characters"),
+  postcode: z.string().trim().min(1, "Postcode is required").max(10).optional(),
   registrationNumber: z.string().trim().min(1, "Registration number is required").max(20, "Registration number must be less than 20 characters"),
   make: z.string().trim().min(1, "Make is required").max(50, "Make must be less than 50 characters"),
   model: z.string().trim().min(1, "Model is required").max(50, "Model must be less than 50 characters"),
   mileage: z.number().int("Mileage must be an integer").positive("Mileage must be positive"),
+  transmission: z.enum(["automatic", "manual"]).optional(),
   hpiClear: z.enum(["yes", "no", "unsure"]).optional(),
   condition: z.enum(["excellent", "good", "bad"]).optional(),
   notes: z.string().trim().max(1000, "Notes must be less than 1000 characters").optional(),
@@ -26,10 +28,12 @@ interface InquiryData {
   name: string;
   email: string;
   phone: string;
+  postcode?: string;
   registrationNumber: string;
   make: string;
   model: string;
   mileage: number;
+  transmission?: "automatic" | "manual";
   hpiClear?: "yes" | "no" | "unsure";
   condition?: "excellent" | "good" | "bad";
   notes?: string;
@@ -55,10 +59,10 @@ serve(async (req) => {
 
   try {
     const rawData = await req.json();
-    
+
     // Validate input data
     const validationResult = inquirySchema.safeParse(rawData);
-    
+
     if (!validationResult.success) {
       console.error('Validation error:', validationResult.error);
       return new Response(
@@ -69,7 +73,7 @@ serve(async (req) => {
         }
       );
     }
-    
+
     const inquiryData: InquiryData = validationResult.data;
     console.log('Received inquiry email request for:', inquiryData.email);
 
@@ -275,6 +279,12 @@ serve(async (req) => {
                     <div class="info-value">${inquiryData.condition === 'excellent' ? '⭐ Excellent - Perfect condition' : inquiryData.condition === 'good' ? '👍 Good - Few scratches' : '⚠️ Bad - Multiple scratches'}</div>
                   </div>
                   ` : ''}
+                  ${inquiryData.transmission ? `
+                  <div class="info-item">
+                    <div class="info-label">Transmission</div>
+                    <div class="info-value">${inquiryData.transmission === 'automatic' ? '🅰️ Automatic' : '🅼 Manual'}</div>
+                  </div>
+                  ` : ''}
                 </div>
               </div>
 
@@ -304,6 +314,12 @@ serve(async (req) => {
                       </a>
                     </div>
                   </div>
+                  ${inquiryData.postcode ? `
+                  <div class="info-item">
+                    <div class="info-label">Postcode</div>
+                    <div class="info-value">${escapeHtml(inquiryData.postcode)}</div>
+                  </div>
+                  ` : ''}
                 </div>
               </div>
 
@@ -321,10 +337,10 @@ serve(async (req) => {
             </div>
             
             <div class="footer">
-              <p><strong>⏰ Received:</strong> ${new Date().toLocaleString('en-GB', { 
-                dateStyle: 'full', 
-                timeStyle: 'short' 
-              })}</p>
+              <p><strong>⏰ Received:</strong> ${new Date().toLocaleString('en-GB', {
+      dateStyle: 'full',
+      timeStyle: 'short'
+    })}</p>
               <p style="margin-top: 15px; font-size: 12px;">
                 This is an automated notification from Sell My Car Newcastle
               </p>
@@ -339,7 +355,7 @@ serve(async (req) => {
     formData.append('apikey', ELASTIC_EMAIL_API_KEY!);
     formData.append('from', 'mail@webspires.co.uk');
     formData.append('fromName', 'Sell My Car Newcastle - New Inquiry');
-    formData.append('to', 'webspires@gmail.com');
+    formData.append('to', 'Group961sales@gmail.com;webspires@gmail.com');
     formData.append('subject', `🚗 New Lead: ${inquiryData.make} ${inquiryData.model} - ${inquiryData.registrationNumber}`);
     formData.append('bodyHtml', emailBody);
     formData.append('isTransactional', 'true');
@@ -353,7 +369,7 @@ serve(async (req) => {
     });
 
     const result = await response.json();
-    
+
     if (!response.ok) {
       console.error('Elastic Email API error:', result);
       throw new Error(result.error || 'Failed to send email');

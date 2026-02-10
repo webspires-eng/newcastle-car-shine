@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ExploreGuides = () => {
+  useEffect(() => { document.title = "Car Selling Guides | Sell My Car Newcastle"; }, []);
   const guides = [
     {
       slug: "how-to-sell-a-car-complete-guide",
@@ -97,7 +99,7 @@ const ExploreGuides = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <main>
         {/* Hero Section */}
         <section className="py-20 bg-hero-yellow">
@@ -120,11 +122,10 @@ const ExploreGuides = () => {
               {categories.map((category) => (
                 <button
                   key={category}
-                  className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                    category === "All"
+                  className={`px-6 py-2 rounded-full font-medium transition-colors ${category === "All"
                       ? "bg-hero-yellow text-foreground"
                       : "bg-muted text-foreground hover:bg-muted/80"
-                  }`}
+                    }`}
                 >
                   {category}
                 </button>
@@ -145,7 +146,7 @@ const ExploreGuides = () => {
                         <Calendar className="w-4 h-4" />
                         <span>{guide.date}</span>
                       </div>
-                      
+
                       <span className="inline-block bg-hero-yellow text-foreground px-3 py-1 rounded-full text-xs font-medium mb-4">
                         {guide.category}
                       </span>
@@ -153,7 +154,7 @@ const ExploreGuides = () => {
                       <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                         {guide.title}
                       </h3>
-                      
+
                       <p className="text-muted-foreground mb-4 leading-relaxed">
                         {guide.excerpt}
                       </p>

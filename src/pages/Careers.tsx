@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Heart, TrendingUp, Users, Coffee } from "lucide-react";
 
 const Careers = () => {
+  useEffect(() => { document.title = "Careers | Sell My Car Newcastle"; }, []);
   const benefits = [
     {
       icon: Heart,
@@ -64,7 +66,7 @@ const Careers = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <main>
         {/* Hero Section */}
         <section className="py-20 bg-hero-yellow">
@@ -86,7 +88,7 @@ const Careers = () => {
             <div className="max-w-4xl mx-auto text-center mb-12">
               <h2 className="text-4xl font-bold text-foreground mb-6">Why Work With Us?</h2>
               <p className="text-lg text-muted-foreground">
-                We're building something special, and we want talented people to be part of our journey. 
+                We're building something special, and we want talented people to be part of our journey.
                 Here at Sell My Car Newcastle, we're not just colleagues – we're a family.
               </p>
             </div>
@@ -115,7 +117,7 @@ const Careers = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-4xl font-bold text-foreground mb-12 text-center">Open Positions</h2>
-              
+
               <div className="space-y-4">
                 {openPositions.map((position, index) => (
                   <Card key={index} className="hover:shadow-lg transition-shadow">
@@ -158,13 +160,13 @@ const Careers = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-4xl font-bold text-foreground mb-8 text-center">Our Culture</h2>
-              
+
               <div className="space-y-6">
                 <Card>
                   <CardContent className="p-8">
                     <h3 className="text-2xl font-bold text-foreground mb-4">Innovation & Growth</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      We encourage creative thinking and continuous improvement. Your ideas matter here, 
+                      We encourage creative thinking and continuous improvement. Your ideas matter here,
                       and we give you the freedom to experiment and grow professionally.
                     </p>
                   </CardContent>
@@ -174,7 +176,7 @@ const Careers = () => {
                   <CardContent className="p-8">
                     <h3 className="text-2xl font-bold text-foreground mb-4">Customer First</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Everything we do is focused on making our customers' experience better. 
+                      Everything we do is focused on making our customers' experience better.
                       We celebrate wins together and learn from challenges as a team.
                     </p>
                   </CardContent>
@@ -184,7 +186,7 @@ const Careers = () => {
                   <CardContent className="p-8">
                     <h3 className="text-2xl font-bold text-foreground mb-4">Diversity & Inclusion</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      We're proud to be an equal opportunity employer. We celebrate diversity and 
+                      We're proud to be an equal opportunity employer. We celebrate diversity and
                       are committed to creating an inclusive environment for all employees.
                     </p>
                   </CardContent>

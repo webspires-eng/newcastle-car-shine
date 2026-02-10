@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -736,6 +737,12 @@ const GuideArticle = () => {
 
   const guide = guides.find(g => g.slug === slug);
 
+  useEffect(() => {
+    document.title = guide
+      ? `${guide.title} | Sell My Car Newcastle`
+      : "Guide Not Found | Sell My Car Newcastle";
+  }, [guide]);
+
   if (!guide) {
     return <Navigate to="/guides" replace />;
   }
@@ -743,7 +750,7 @@ const GuideArticle = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <main>
         {/* Breadcrumb */}
         <div className="bg-muted/30 py-4 border-b">
@@ -762,7 +769,7 @@ const GuideArticle = () => {
         <article className="py-12 sm:py-16 lg:py-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
-              <Link 
+              <Link
                 to="/guides"
                 className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8 font-medium"
               >
@@ -790,7 +797,7 @@ const GuideArticle = () => {
               </div>
 
               {/* Article Content */}
-              <div 
+              <div
                 className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:mb-6 prose-ul:mb-6 prose-li:mb-2"
                 dangerouslySetInnerHTML={{ __html: guide.content }}
               />

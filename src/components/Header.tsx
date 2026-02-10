@@ -39,7 +39,7 @@ export const Header = () => {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="text-foreground/80 hover:text-foreground transition-colors font-light text-sm uppercase tracking-wider"
+                  className="text-foreground/80 hover:text-foreground transition-colors font-medium text-sm uppercase tracking-wider"
                 >
                   {item.label}
                 </a>
@@ -47,7 +47,7 @@ export const Header = () => {
                 <Link
                   key={item.label}
                   to={item.to!}
-                  className="text-foreground/80 hover:text-foreground transition-colors font-light text-sm uppercase tracking-wider"
+                  className="text-foreground/80 hover:text-foreground transition-colors font-medium text-sm uppercase tracking-wider"
                 >
                   {item.label}
                 </Link>
@@ -57,7 +57,7 @@ export const Header = () => {
 
           {/* Instant Valuation Button - Desktop */}
           <div className="hidden md:block absolute right-4 sm:right-6 lg:right-8">
-            <Button 
+            <Button
               onClick={() => setDialogOpen(true)}
               className="font-montserrat uppercase tracking-wider text-sm font-medium"
             >
@@ -84,7 +84,7 @@ export const Header = () => {
                       key={item.label}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="text-lg font-light text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
+                      className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
                     >
                       {item.label}
                     </a>
@@ -93,7 +93,7 @@ export const Header = () => {
                       key={item.label}
                       to={item.to!}
                       onClick={() => setOpen(false)}
-                      className="text-lg font-light text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
+                      className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
                     >
                       {item.label}
                     </Link>
@@ -104,11 +104,11 @@ export const Header = () => {
           </Sheet>
         </div>
       </div>
-      
-      <ManualEntryDialog 
-        open={dialogOpen} 
+
+      <ManualEntryDialog
+        open={dialogOpen}
         onOpenChange={setDialogOpen}
-        onSubmit={() => {}}
+        onSubmit={() => { }}
       />
     </header>
   );

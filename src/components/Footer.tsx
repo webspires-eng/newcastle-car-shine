@@ -1,4 +1,5 @@
 import { Facebook, Instagram } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/sell-my-car-newcastle-logo.png";
 
 export const Footer = () => {
@@ -35,12 +36,10 @@ export const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-6">About Us</h3>
             <ul className="space-y-4 text-foreground/80">
-              <li><a href="#" className="hover:text-foreground transition-colors">About us</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-              <li><a href="#how-it-works" className="hover:text-foreground transition-colors">How it works</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Reviews</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Press</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
+              <li><Link to="/about" className="hover:text-foreground transition-colors">About us</Link></li>
+              <li><Link to="/careers" className="hover:text-foreground transition-colors">Careers</Link></li>
+              <li><a href="/#how-it-works" className="hover:text-foreground transition-colors">How it works</a></li>
+              <li><Link to="/guides" className="hover:text-foreground transition-colors">Guides</Link></li>
             </ul>
           </div>
 
@@ -48,12 +47,10 @@ export const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-6">Selling your car</h3>
             <ul className="space-y-4 text-foreground/80">
-              <li><a href="#" className="hover:text-foreground transition-colors">Sell my car</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Sell my van</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Sell on finance</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Sell to a dealer</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Car buyers</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Value my car</a></li>
+              <li><Link to="/" className="hover:text-foreground transition-colors">Sell my car</Link></li>
+              <li><Link to="/guides/how-to-sell-car" className="hover:text-foreground transition-colors">How to sell a car</Link></li>
+              <li><Link to="/guides/sell-car-on-finance" className="hover:text-foreground transition-colors">Sell on finance</Link></li>
+              <li><Link to="/guides/car-valuation" className="hover:text-foreground transition-colors">Value my car</Link></li>
             </ul>
           </div>
 
@@ -61,9 +58,9 @@ export const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-6">Contact</h3>
             <ul className="space-y-4 text-foreground/80">
-              <li><a href="#" className="hover:text-foreground transition-colors">Help and contact</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Refer a friend</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Partner with us</a></li>
+              <li>
+                <a href="mailto:support@sellmycarnewcastle.co.uk" className="hover:text-foreground transition-colors">Help and contact</a>
+              </li>
               <li className="pt-4">
                 <p className="font-semibold text-foreground">Need help?</p>
                 <a href="mailto:support@sellmycarnewcastle.co.uk" className="hover:underline">support@sellmycarnewcastle.co.uk</a>
@@ -76,10 +73,7 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
             <p className="text-sm font-medium">© Sell My Car Newcastle, 2017-{new Date().getFullYear()}</p>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-foreground/80">
-              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Cookies</a>
-              <a href="#" className="hover:text-foreground transition-colors">Sitemap</a>
+              <Link to="/sitemap.xml" className="hover:text-foreground transition-colors">Sitemap</Link>
             </div>
           </div>
 

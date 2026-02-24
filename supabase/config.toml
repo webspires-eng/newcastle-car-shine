@@ -2,3 +2,6 @@ project_id = "ggarxjzwywppoqtehvhb"
 
 [functions.send-inquiry-email]
 verify_jwt = false
+
+[functions.dvla-lookup]
+verify_jwt = false

@@ -86,7 +86,7 @@ export const ManualEntryDialog = ({
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [dvlaData, setDvlaData] = useState<any>(null);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
-  const totalSteps = 4;
+  const totalSteps = 6;
 
   // Confetti celebration
   const celebrate = () => {
@@ -134,7 +134,15 @@ export const ManualEntryDialog = ({
   const validateStep = (step: number): boolean => {
     const newErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
     let fieldsToValidate: (keyof ManualVehicleData)[] = [];
-    if (step === 1) fieldsToValidate = ["registrationNumber"]; else if (step === 2) fieldsToValidate = ["make", "model", "mileage", "transmission", "hpiClear", "condition"]; else if (step === 3) fieldsToValidate = ["name", "email", "phone", "postcode"];
+    if (step === 1) fieldsToValidate = ["registrationNumber"];
+    else if (step === 2) fieldsToValidate = []; // DVLA display only
+    else if (step === 3) fieldsToValidate = ["condition", "hpiClear"];
+    else if (step === 4) fieldsToValidate = ["make", "model", "mileage", "transmission"];
+    else if (step === 5) fieldsToValidate = ["name", "email", "phone", "postcode"];
+    // step 6 = notes, optional
+
+    if (fieldsToValidate.length === 0) return true;
+
     const partialSchema = z.object(fieldsToValidate.reduce((acc, field) => {
       acc[field] = vehicleInquirySchema.shape[field];
       return acc;
@@ -315,42 +323,105 @@ export const ManualEntryDialog = ({
           </div>
           <p className="text-xs text-center text-muted-foreground">💡 Swipe left or tap Next to continue</p>
         </div>;
+
       case 2:
-        return <div className={`space-y-3 ${animClass}`}>
+        return <div className={`space-y-4 ${animClass}`}>
           <div className="text-center mb-3">
-            <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
-              <Gauge className="w-5 h-5 text-primary" />
+            <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 animate-scale-in">
+              <Car className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-foreground">Tell Us About Your Car</h3>
-            <p className="text-sm text-muted-foreground mt-1">Vehicle specifications</p>
+            <h3 className="text-lg font-bold text-foreground">Your Vehicle Details</h3>
+            <p className="text-sm text-muted-foreground mt-1">We found your car from DVLA records</p>
           </div>
 
-          {/* DVLA Data Banner */}
           {isLookingUp && (
-            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20 animate-fade-in">
-              <Loader2 className="w-4 h-4 animate-spin text-primary" />
-              <span className="text-sm text-muted-foreground">Looking up vehicle details...</span>
+            <div className="flex flex-col items-center gap-3 py-8 animate-fade-in">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Looking up your vehicle...</p>
             </div>
           )}
-          {dvlaData && !isLookingUp && (
-            <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800 animate-fade-in">
-              <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">✅ DVLA Data Found</p>
-              <div className="grid grid-cols-2 gap-1 text-xs text-green-800 dark:text-green-300">
-                {dvlaData.colour && <span>Colour: <strong>{dvlaData.colour}</strong></span>}
-                {dvlaData.fuelType && <span>Fuel: <strong>{dvlaData.fuelType}</strong></span>}
-                {dvlaData.year && <span>Year: <strong>{dvlaData.year}</strong></span>}
-                {dvlaData.taxStatus && <span>Tax: <strong>{dvlaData.taxStatus}</strong></span>}
-                {dvlaData.motStatus && <span>MOT: <strong>{dvlaData.motStatus}</strong></span>}
-                {dvlaData.engineCapacity && <span>Engine: <strong>{dvlaData.engineCapacity}cc</strong></span>}
+
+          {!isLookingUp && dvlaData && (
+            <div className="space-y-3 animate-fade-in">
+              {/* Registration plate display */}
+              <div className="bg-amber-400 rounded-lg p-3 text-center border-2 border-amber-500">
+                <span className="text-2xl font-black tracking-widest text-foreground">{dvlaData.registrationNumber || formData.registrationNumber}</span>
               </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {dvlaData.make && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Make</p>
+                    <p className="font-bold text-sm">{dvlaData.make}</p>
+                  </div>
+                )}
+                {dvlaData.model && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Model</p>
+                    <p className="font-bold text-sm">{dvlaData.model}</p>
+                  </div>
+                )}
+                {dvlaData.year && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Year</p>
+                    <p className="font-bold text-sm">{dvlaData.year}</p>
+                  </div>
+                )}
+                {dvlaData.colour && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Colour</p>
+                    <p className="font-bold text-sm">{dvlaData.colour}</p>
+                  </div>
+                )}
+                {dvlaData.fuelType && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Fuel Type</p>
+                    <p className="font-bold text-sm">{dvlaData.fuelType}</p>
+                  </div>
+                )}
+                {dvlaData.engineCapacity && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Engine</p>
+                    <p className="font-bold text-sm">{dvlaData.engineCapacity}cc</p>
+                  </div>
+                )}
+                {dvlaData.taxStatus && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">Tax Status</p>
+                    <p className="font-bold text-sm">{dvlaData.taxStatus}</p>
+                  </div>
+                )}
+                {dvlaData.motStatus && (
+                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
+                    <p className="text-xs text-muted-foreground">MOT Status</p>
+                    <p className="font-bold text-sm">{dvlaData.motStatus}</p>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-center text-muted-foreground">✅ Is this your car? Tap Next to continue</p>
             </div>
           )}
+
+          {!isLookingUp && !dvlaData && (
+            <div className="text-center py-6 space-y-2 animate-fade-in">
+              <p className="text-sm text-muted-foreground">We couldn't find your vehicle automatically.</p>
+              <p className="text-xs text-muted-foreground">Don't worry — you can enter the details manually on the next step.</p>
+            </div>
+          )}
+        </div>;
+
+      case 3:
+        return <div className={`space-y-5 ${animClass}`}>
+          <div className="text-center mb-3">
+            <h3 className="text-lg font-bold text-foreground">About Your Car</h3>
+            <p className="text-sm text-muted-foreground mt-1">Help us understand its condition</p>
+          </div>
 
           <div>
             <Label className="text-sm font-medium">What's the condition of the car?</Label>
-            <div className="mt-1.5 flex gap-2">
-              {[{ value: "excellent", label: "Excellent" }, { value: "good", label: "Good" }, { value: "bad", label: "Bad" }].map(option => (
-                <button key={option.value} type="button" onClick={() => handleChange("condition", option.value)} className={`flex-1 py-2 rounded-lg border-2 text-center transition-all text-sm font-medium ${formData.condition === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
+            <div className="mt-2 flex gap-2">
+              {[{ value: "excellent", label: "⭐ Excellent" }, { value: "good", label: "👍 Good" }, { value: "bad", label: "⚠️ Bad" }].map(option => (
+                <button key={option.value} type="button" onClick={() => handleChange("condition", option.value)} className={`flex-1 py-3 rounded-lg border-2 text-center transition-all text-sm font-medium ${formData.condition === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
                   {option.label}
                 </button>
               ))}
@@ -360,14 +431,25 @@ export const ManualEntryDialog = ({
 
           <div>
             <Label className="text-sm font-medium">Is the car HPI Clear?</Label>
-            <div className="mt-1.5 flex gap-2">
-              {[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not Sure" }].map(option => (
-                <button key={option.value} type="button" onClick={() => handleChange("hpiClear", option.value)} className={`flex-1 py-2 border-2 rounded-lg text-sm font-medium transition-all ${formData.hpiClear === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
+            <div className="mt-2 flex gap-2">
+              {[{ value: "yes", label: "✅ Yes" }, { value: "no", label: "❌ No" }, { value: "unsure", label: "🤷 Not Sure" }].map(option => (
+                <button key={option.value} type="button" onClick={() => handleChange("hpiClear", option.value)} className={`flex-1 py-3 border-2 rounded-lg text-sm font-medium transition-all ${formData.hpiClear === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
                   {option.label}
                 </button>
               ))}
             </div>
             {errors.hpiClear && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.hpiClear}</p>}
+          </div>
+        </div>;
+
+      case 4:
+        return <div className={`space-y-3 ${animClass}`}>
+          <div className="text-center mb-3">
+            <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
+              <Gauge className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground">Vehicle Specifications</h3>
+            <p className="text-sm text-muted-foreground mt-1">Confirm or enter your car details</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -401,7 +483,8 @@ export const ManualEntryDialog = ({
             {errors.transmission && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.transmission}</p>}
           </div>
         </div>;
-      case 3:
+
+      case 5:
         return <div className={`space-y-3 ${animClass}`}>
           <div className="text-center mb-3">
             <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
@@ -416,26 +499,24 @@ export const ManualEntryDialog = ({
             <Input id="name" value={formData.name} onChange={e => handleChange("name", e.target.value)} placeholder="John Doe" className="mt-1 h-10 text-sm" />
             {errors.name && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.name}</p>}
           </div>
-
           <div>
             <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
             <Input id="email" type="email" value={formData.email} onChange={e => handleChange("email", e.target.value)} placeholder="john@example.com" className="mt-1 h-10 text-sm" />
             {errors.email && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.email}</p>}
           </div>
-
           <div>
             <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
             <Input id="phone" value={formData.phone} onChange={e => handleChange("phone", e.target.value)} placeholder="+44 20 7946 0958" className="mt-1 h-10 text-sm" />
             {errors.phone && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.phone}</p>}
           </div>
-
           <div>
             <Label htmlFor="postcode" className="text-sm font-medium">Postcode</Label>
             <Input id="postcode" value={formData.postcode} onChange={e => handleChange("postcode", e.target.value.toUpperCase())} placeholder="e.g., NE1 4LP" className="mt-1 h-10 text-sm" />
             {errors.postcode && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.postcode}</p>}
           </div>
         </div>;
-      case 4:
+
+      case 6:
         return <div className={`space-y-3 ${animClass}`}>
           <div className="text-center mb-2">
             <h3 className="text-lg font-bold text-foreground">Almost Done!</h3>
@@ -467,16 +548,12 @@ export const ManualEntryDialog = ({
                 <span className="font-semibold">{formData.mileage}</span>
               </div>
               <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Transmission:</span>
-                <span className="font-semibold capitalize">{formData.transmission}</span>
+                <span className="text-muted-foreground">Condition:</span>
+                <span className="font-semibold capitalize">{formData.condition}</span>
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span className="text-muted-foreground">Contact:</span>
                 <span className="font-semibold">{formData.name}</span>
-              </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Postcode:</span>
-                <span className="font-semibold">{formData.postcode}</span>
               </div>
             </div>
           </div>
@@ -506,14 +583,14 @@ export const ManualEntryDialog = ({
 
         <div className="flex justify-between gap-3 pt-3 border-t">
           {currentStep > 1 && (
-            <Button type="button" variant="outline" onClick={handleBack} className="flex-1 h-10 text-sm touch-manipulation">
+            <Button type="button" variant="outline" onClick={handleBack} disabled={isLookingUp} className="flex-1 h-10 text-sm touch-manipulation">
               <ChevronLeft className="w-4 h-4 mr-1" />
               Back
             </Button>
           )}
 
-          <Button type="submit" disabled={isSubmitting} className={`${currentStep === 1 ? 'w-full' : 'flex-1'} h-10 text-sm font-semibold touch-manipulation`}>
-            {isSubmitting ? "Submitting..." : currentStep === totalSteps ? "Submit Inquiry" : <>
+          <Button type="submit" disabled={isSubmitting || isLookingUp} className={`${currentStep === 1 ? 'w-full' : 'flex-1'} h-10 text-sm font-semibold touch-manipulation`}>
+            {isSubmitting ? "Submitting..." : isLookingUp ? <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Looking up...</> : currentStep === totalSteps ? "Submit Inquiry" : <>
               Next
               <ChevronRight className="w-4 h-4 ml-1" />
             </>}

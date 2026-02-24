@@ -8,9 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { ChevronLeft, ChevronRight, Car, User, Mail, Phone, Gauge } from "lucide-react";
+import { ChevronLeft, ChevronRight, Car, User, Mail, Phone, Gauge, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useSwipeable } from "react-swipeable";
+import { supabase as supabaseClient } from "@/integrations/supabase/client";
 
 // Initialize Supabase client with safe fallbacks
 const FALLBACK_URL = "https://ggarxjzwywppoqtehvhb.supabase.co";
@@ -82,6 +83,8 @@ export const ManualEntryDialog = ({
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ManualVehicleData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [dvlaData, setDvlaData] = useState<any>(null);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const totalSteps = 4;
 
@@ -156,8 +159,33 @@ export const ManualEntryDialog = ({
       return false;
     }
   };
+  const lookupDvla = async (reg: string) => {
+    setIsLookingUp(true);
+    setDvlaData(null);
+    try {
+      const { data, error } = await supabaseClient.functions.invoke("dvla-lookup", {
+        body: { registrationNumber: reg },
+      });
+      if (error) throw error;
+      if (data && !data.error) {
+        setDvlaData(data);
+        // Auto-fill make and model
+        if (data.make) handleChange("make", data.make);
+        if (data.model) handleChange("model", data.model);
+      }
+    } catch (err) {
+      console.error("DVLA lookup failed:", err);
+      // Silent fail — user can still enter manually
+    } finally {
+      setIsLookingUp(false);
+    }
+  };
+
   const handleNext = () => {
     if (validateStep(currentStep)) {
+      if (currentStep === 1) {
+        lookupDvla(formData.registrationNumber);
+      }
       setSlideDirection("right");
       setCurrentStep(prev => Math.min(prev + 1, totalSteps));
     }
@@ -245,6 +273,7 @@ export const ManualEntryDialog = ({
         condition: "",
         notes: ""
       });
+      setDvlaData(null);
       setCurrentStep(1);
     } catch (err: any) {
       if (err?.issues) {
@@ -295,6 +324,27 @@ export const ManualEntryDialog = ({
             <h3 className="text-lg font-bold text-foreground">Tell Us About Your Car</h3>
             <p className="text-sm text-muted-foreground mt-1">Vehicle specifications</p>
           </div>
+
+          {/* DVLA Data Banner */}
+          {isLookingUp && (
+            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20 animate-fade-in">
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <span className="text-sm text-muted-foreground">Looking up vehicle details...</span>
+            </div>
+          )}
+          {dvlaData && !isLookingUp && (
+            <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800 animate-fade-in">
+              <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">✅ DVLA Data Found</p>
+              <div className="grid grid-cols-2 gap-1 text-xs text-green-800 dark:text-green-300">
+                {dvlaData.colour && <span>Colour: <strong>{dvlaData.colour}</strong></span>}
+                {dvlaData.fuelType && <span>Fuel: <strong>{dvlaData.fuelType}</strong></span>}
+                {dvlaData.year && <span>Year: <strong>{dvlaData.year}</strong></span>}
+                {dvlaData.taxStatus && <span>Tax: <strong>{dvlaData.taxStatus}</strong></span>}
+                {dvlaData.motStatus && <span>MOT: <strong>{dvlaData.motStatus}</strong></span>}
+                {dvlaData.engineCapacity && <span>Engine: <strong>{dvlaData.engineCapacity}cc</strong></span>}
+              </div>
+            </div>
+          )}
 
           <div>
             <Label className="text-sm font-medium">What's the condition of the car?</Label>

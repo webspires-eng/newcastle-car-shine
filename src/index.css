@@ -19,7 +19,7 @@ All colors MUST be HSL.
 
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-    
+
     --hero-yellow: 45 100% 51%;
     --hero-yellow-light: 45 100% 61%;
 
@@ -40,15 +40,15 @@ All colors MUST be HSL.
     --ring: 0 0% 10%;
 
     --radius: 0.5rem;
-    
+
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
-    
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-    
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -91,8 +91,13 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground font-sans;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display;
   }
 
@@ -101,6 +106,7 @@ All colors MUST be HSL.
       transform: translateX(100%);
       opacity: 0;
     }
+
     100% {
       transform: translateX(0);
       opacity: 1;

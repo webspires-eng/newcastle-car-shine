@@ -5,9 +5,9 @@ import logo from "@/assets/sell-my-car-newcastle-logo.png";
 export const Footer = () => {
   return (
     <footer className="bg-hero-yellow text-foreground py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-16">
           {/* Brand Column */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
             <p className="text-sm font-medium">© Sell My Car Newcastle, 2017-{new Date().getFullYear()}</p>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-foreground/80">
-              <Link to="/sitemap.xml" className="hover:text-foreground transition-colors">Sitemap</Link>
+              <a href="/sitemap.xml" className="hover:text-foreground transition-colors">Sitemap</a>
             </div>
           </div>
 
@@ -90,7 +90,7 @@ export const Footer = () => {
             </p>
           </div>
 
-          <div className="text-center mt-8 text-xs text-foreground/50">
+          <div className="text-center mt-8 text-xs text-foreground/50 font-bold">
             <p>Developed by{" "}
               <a
                 href="https://webspires.co.uk?utm_source=newcastlecars"

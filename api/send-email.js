@@ -1,40 +1,40 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Method not allowed" });
-    }
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-    const {
-        name,
-        email,
-        phone,
-        postcode,
-        registrationNumber,
-        make,
-        model,
-        mileage,
-        transmission,
-        hpiClear,
-        condition,
-        notes,
-        dvlaData,
-    } = req.body;
+  const {
+    name,
+    email,
+    phone,
+    postcode,
+    registrationNumber,
+    make,
+    model,
+    mileage,
+    transmission,
+    hpiClear,
+    condition,
+    notes,
+    dvlaData,
+  } = req.body;
 
-    // SMTP transporter using Elastic Email
-    const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "2525"),
-        secure: false, // TLS on port 2525
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
+  // SMTP transporter using Elastic Email
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || "2525"),
+    secure: false, // TLS on port 2525
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
-    // Build vehicle details section
-    const dvlaRows = dvlaData
-        ? `
+  // Build vehicle details section
+  const dvlaRows = dvlaData
+    ? `
       ${dvlaData.year ? `<tr><td style="padding:6px 12px;color:#666;">Year</td><td style="padding:6px 12px;font-weight:600;">${dvlaData.year}</td></tr>` : ""}
       ${dvlaData.colour ? `<tr><td style="padding:6px 12px;color:#666;">Colour</td><td style="padding:6px 12px;font-weight:600;">${dvlaData.colour}</td></tr>` : ""}
       ${dvlaData.fuelType ? `<tr><td style="padding:6px 12px;color:#666;">Fuel Type</td><td style="padding:6px 12px;font-weight:600;">${dvlaData.fuelType}</td></tr>` : ""}
@@ -46,9 +46,9 @@ export default async function handler(req, res) {
       ${dvlaData.co2Emissions ? `<tr><td style="padding:6px 12px;color:#666;">CO₂ Emissions</td><td style="padding:6px 12px;font-weight:600;">${dvlaData.co2Emissions} g/km</td></tr>` : ""}
       ${dvlaData.euroStatus ? `<tr><td style="padding:6px 12px;color:#666;">Euro Status</td><td style="padding:6px 12px;font-weight:600;">${dvlaData.euroStatus}</td></tr>` : ""}
     `
-        : "";
+    : "";
 
-    const htmlContent = `
+  const htmlContent = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
       <div style="background:#000;color:#fff;padding:20px;border-radius:12px 12px 0 0;text-align:center;">
         <h1 style="margin:0;font-size:22px;">🚗 New Vehicle Valuation Request</h1>
@@ -89,21 +89,21 @@ export default async function handler(req, res) {
     </div>
   `;
 
-    try {
-        // Send to admin
-        await transporter.sendMail({
-            from: `"Sell My Car Newcastle" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: process.env.ADMIN_EMAIL || "mail@webspires.co.uk",
-            subject: `New Valuation Request - ${registrationNumber} ${make || ""} ${model || ""}`.trim(),
-            html: htmlContent,
-        });
+  try {
+    // Send to admin
+    await transporter.sendMail({
+      from: '"Sell My Car Newcastle" <mail@webspires.co.uk>',
+      to: "mail@webspires.co.uk, webspires@gmail.com",
+      subject: `New Valuation Request - ${registrationNumber} ${make || ""} ${model || ""}`.trim(),
+      html: htmlContent,
+    });
 
-        // Send confirmation to customer
-        await transporter.sendMail({
-            from: `"Sell My Car Newcastle" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-            to: email,
-            subject: `Your Car Valuation Request - ${registrationNumber}`,
-            html: `
+    // Send confirmation to customer
+    await transporter.sendMail({
+      from: '"Sell My Car Newcastle" <mail@webspires.co.uk>',
+      to: email,
+      subject: `Your Car Valuation Request - ${registrationNumber}`,
+      html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
           <div style="background:#000;color:#fff;padding:20px;border-radius:12px 12px 0 0;text-align:center;">
             <h1 style="margin:0;font-size:22px;">Thank You, ${name.split(" ")[0]}!</h1>
@@ -125,11 +125,11 @@ export default async function handler(req, res) {
           </div>
         </div>
       `,
-        });
+    });
 
-        return res.status(200).json({ success: true });
-    } catch (error) {
-        console.error("Email send error:", error);
-        return res.status(500).json({ error: error.message });
-    }
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Email send error:", error);
+    return res.status(500).json({ error: error.message });
+  }
 }

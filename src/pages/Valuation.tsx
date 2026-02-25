@@ -114,7 +114,12 @@ const Valuation = () => {
                 condition: validated.condition,
                 notes: formData.notes || null,
             });
-            if (error) throw error;
+            if (error) {
+                console.error("Supabase insert error:", error);
+                toast.error(`Database error: ${error.message}`);
+                setIsSubmitting(false);
+                return;
+            }
 
             try {
                 await supabase.functions.invoke("send-inquiry-email", {
@@ -149,9 +154,24 @@ const Valuation = () => {
                 console.error("Email notification error:", emailError);
             }
 
-            toast.success("Inquiry submitted successfully! We'll be in touch soon.");
-            celebrate();
-            setTimeout(() => navigate("/"), 3000);
+            // Navigate to thank you page with all details
+            navigate("/thank-you", {
+                state: {
+                    name: validated.name,
+                    email: validated.email,
+                    phone: validated.phone,
+                    postcode: validated.postcode,
+                    registrationNumber,
+                    mileage,
+                    make: dvlaData?.make || "",
+                    model: dvlaData?.model || "",
+                    condition: validated.condition,
+                    hpiClear: validated.hpiClear,
+                    transmission: validated.transmission,
+                    notes: formData.notes || "",
+                    dvlaData,
+                },
+            });
         } catch (err: any) {
             if (err?.issues) {
                 const formatted: Record<string, string> = {};
@@ -160,8 +180,8 @@ const Valuation = () => {
                 }
                 setErrors(formatted);
             } else {
-                console.error(err);
-                toast.error("Failed to submit inquiry. Please try again.");
+                console.error("Submission error:", err);
+                toast.error(err?.message || "Failed to submit inquiry. Please try again.");
             }
         } finally {
             setIsSubmitting(false);
@@ -479,7 +499,7 @@ const Valuation = () => {
                                             <span className="text-[9px] font-bold text-white leading-none">UK</span>
                                         </div>
                                     </div>
-                                    <div className="bg-background flex-1 py-1.5 text-center">
+                                    <div className="bg-amber-400 flex-1 py-1.5 text-center">
                                         <span className="text-base font-black tracking-wider">{registrationNumber}</span>
                                     </div>
                                 </div>

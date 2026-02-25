@@ -12,6 +12,7 @@ const ExploreGuides = lazy(() => import("./pages/ExploreGuides"));
 const GuideArticle = lazy(() => import("./pages/GuideArticle"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Valuation = lazy(() => import("./pages/Valuation"));
+const ThankYou = lazy(() => import("./pages/ThankYou"));
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/guides" element={<ExploreGuides />} />
             <Route path="/guides/:slug" element={<GuideArticle />} />
             <Route path="/valuation" element={<Valuation />} />
+            <Route path="/thank-you" element={<ThankYou />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

@@ -63,7 +63,7 @@ export const Footer = () => {
               </li>
               <li className="pt-4">
                 <p className="font-semibold text-foreground">Need help?</p>
-                <a href="mailto:support@sellmycarnewcastle.co.uk" className="hover:underline">support@sellmycarnewcastle.co.uk</a>
+                <a href="mailto:support@sellmycarnewcastle.co.uk" className="hover:underline break-all">support@sellmycarnewcastle.co.uk</a>
               </li>
             </ul>
           </div>

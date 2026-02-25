@@ -11,7 +11,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { ChevronLeft, ChevronRight, Car, User, Mail, Phone, Gauge, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useSwipeable } from "react-swipeable";
-import { supabase as supabaseClient } from "@/integrations/supabase/client";
+
 
 // Initialize Supabase client with safe fallbacks
 const FALLBACK_URL = "https://ggarxjzwywppoqtehvhb.supabase.co";
@@ -171,15 +171,29 @@ export const ManualEntryDialog = ({
     setIsLookingUp(true);
     setDvlaData(null);
     try {
-      const { data, error } = await supabaseClient.functions.invoke("dvla-lookup", {
-        body: { registrationNumber: reg },
-      });
-      if (error) throw error;
+      const cleaned = reg.replace(/\s+/g, "").toUpperCase();
+      const response = await fetch(`/api/dvla?vrm=${encodeURIComponent(cleaned)}`);
+      if (!response.ok) {
+        throw new Error(`Lookup failed (${response.status})`);
+      }
+      const data = await response.json();
       if (data && !data.error) {
-        setDvlaData(data);
+        // Map backend response fields to what the form template expects
+        const mapped = {
+          registrationNumber: data.vrm || reg,
+          make: data.make || "",
+          model: data.model || "",
+          year: data.year || null,
+          colour: data.colour || "",
+          fuelType: data.fuel || "",
+          engineCapacity: data.engineCapacity || null,
+          taxStatus: data.taxStatus || "",
+          motStatus: data.motStatus || "",
+        };
+        setDvlaData(mapped);
         // Auto-fill make and model
-        if (data.make) handleChange("make", data.make);
-        if (data.model) handleChange("model", data.model);
+        if (mapped.make) handleChange("make", mapped.make);
+        if (mapped.model) handleChange("model", mapped.model);
       }
     } catch (err) {
       console.error("DVLA lookup failed:", err);

@@ -1,10 +1,7 @@
-const express = require('express');
-require('dotenv').config();
+import express from 'express';
+import dotenv from 'dotenv';
 
-const fetchFn =
-  typeof global.fetch === 'function'
-    ? (...args) => global.fetch(...args)
-    : (...args) => import('node-fetch').then(({ default: fetchModule }) => fetchModule(...args));
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -43,7 +40,7 @@ app.get('/api/dvla', async (req, res) => {
   }
 
   try {
-    const dvlaResponse = await fetchFn(endpoint, {
+    const dvlaResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,6 +60,18 @@ app.get('/api/dvla', async (req, res) => {
 
       const errorBody = await safeReadBody(dvlaResponse);
       console.error('DVLA API error', dvlaResponse.status, errorBody);
+
+      // Pass through 400 errors with detail from DVLA
+      if (dvlaResponse.status === 400) {
+        try {
+          const parsed = JSON.parse(errorBody);
+          const detail = parsed?.errors?.[0]?.detail || 'Invalid registration number format';
+          return res.status(400).json({ error: detail });
+        } catch {
+          return res.status(400).json({ error: 'Invalid registration number format' });
+        }
+      }
+
       return res.status(502).json({ error: 'DVLA lookup failed' });
     }
 
@@ -120,7 +129,18 @@ function normalizeVehicle(payload, fallbackVrm) {
     year,
     colour: payload?.colour || '',
     body: payload?.bodyType || '',
-    fuel: payload?.fuelType || ''
+    fuel: payload?.fuelType || '',
+    taxStatus: payload?.taxStatus || '',
+    taxDueDate: payload?.taxDueDate || '',
+    motStatus: payload?.motStatus || '',
+    engineCapacity: payload?.engineCapacity || null,
+    co2Emissions: payload?.co2Emissions || null,
+    euroStatus: payload?.euroStatus || '',
+    wheelplan: payload?.wheelplan || '',
+    typeApproval: payload?.typeApproval || '',
+    revenueWeight: payload?.revenueWeight || null,
+    monthOfFirstRegistration: payload?.monthOfFirstRegistration || '',
+    dateOfLastV5CIssued: payload?.dateOfLastV5CIssued || '',
   };
 }
 

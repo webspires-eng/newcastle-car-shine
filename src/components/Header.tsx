@@ -21,7 +21,6 @@ export const Header = () => {
     { to: "/about", label: "About Us" },
     { to: "/careers", label: "Careers" },
     { to: "/guides", label: "Explore Guides" },
-    { to: "/vehicle-lookup", label: "Vehicle Lookup" },
   ];
 
   return (

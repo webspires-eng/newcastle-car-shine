@@ -121,9 +121,12 @@ const Valuation = () => {
                 return;
             }
 
+            // Send email via API route (non-blocking)
             try {
-                await supabase.functions.invoke("send-inquiry-email", {
-                    body: {
+                await fetch("/api/send-email", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
                         name: validated.name,
                         email: validated.email,
                         phone: validated.phone,
@@ -136,19 +139,8 @@ const Valuation = () => {
                         hpiClear: validated.hpiClear,
                         condition: validated.condition,
                         notes: formData.notes || undefined,
-                        dvlaData: dvlaData ? {
-                            year: dvlaData.year || null,
-                            colour: dvlaData.colour || null,
-                            fuelType: dvlaData.fuelType || null,
-                            engineCapacity: dvlaData.engineCapacity || null,
-                            bodyType: dvlaData.bodyType || null,
-                            taxStatus: dvlaData.taxStatus || null,
-                            taxDueDate: dvlaData.taxDueDate || null,
-                            motStatus: dvlaData.motStatus || null,
-                            co2Emissions: dvlaData.co2Emissions || null,
-                            euroStatus: dvlaData.euroStatus || null,
-                        } : null,
-                    },
+                        dvlaData: dvlaData || null,
+                    }),
                 });
             } catch (emailError) {
                 console.error("Email notification error:", emailError);

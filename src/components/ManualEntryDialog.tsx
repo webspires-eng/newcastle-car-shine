@@ -416,9 +416,40 @@ export const ManualEntryDialog = ({
           )}
 
           {!isLookingUp && !dvlaData && (
-            <div className="text-center py-6 space-y-2 animate-fade-in">
-              <p className="text-sm text-muted-foreground">We couldn't find your vehicle automatically.</p>
-              <p className="text-xs text-muted-foreground">Don't worry — you can enter the details manually on the next step.</p>
+            <div className="space-y-3 animate-fade-in">
+              <div className="text-center mb-2">
+                <p className="text-sm text-muted-foreground">We couldn't find your vehicle automatically.</p>
+                <p className="text-xs text-muted-foreground">Please enter the details below.</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="dvla-year" className="text-sm font-medium">Year</Label>
+                  <Input id="dvla-year" placeholder="e.g., 2019" className="mt-1 h-10 text-sm" onChange={e => {
+                    setDvlaData((prev: any) => ({ ...(prev || {}), year: e.target.value, registrationNumber: formData.registrationNumber }));
+                  }} />
+                </div>
+                <div>
+                  <Label htmlFor="dvla-colour" className="text-sm font-medium">Colour</Label>
+                  <Input id="dvla-colour" placeholder="e.g., Red" className="mt-1 h-10 text-sm" onChange={e => {
+                    setDvlaData((prev: any) => ({ ...(prev || {}), colour: e.target.value, registrationNumber: formData.registrationNumber }));
+                  }} />
+                </div>
+                <div>
+                  <Label htmlFor="dvla-fuel" className="text-sm font-medium">Fuel Type</Label>
+                  <Input id="dvla-fuel" placeholder="e.g., Petrol" className="mt-1 h-10 text-sm" onChange={e => {
+                    setDvlaData((prev: any) => ({ ...(prev || {}), fuelType: e.target.value, registrationNumber: formData.registrationNumber }));
+                  }} />
+                </div>
+                <div>
+                  <Label htmlFor="dvla-engine" className="text-sm font-medium">Engine (cc)</Label>
+                  <Input id="dvla-engine" placeholder="e.g., 2000" className="mt-1 h-10 text-sm" onChange={e => {
+                    setDvlaData((prev: any) => ({ ...(prev || {}), engineCapacity: e.target.value, registrationNumber: formData.registrationNumber }));
+                  }} />
+                </div>
+              </div>
+
+              <p className="text-xs text-center text-muted-foreground">💡 These fields are optional — tap Next to continue</p>
             </div>
           )}
         </div>;

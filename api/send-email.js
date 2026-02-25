@@ -93,7 +93,7 @@ export default async function handler(req, res) {
     // Send to admin
     await transporter.sendMail({
       from: '"Sell My Car Newcastle" <mail@webspires.co.uk>',
-      to: "mail@webspires.co.uk, webspires@gmail.com",
+      to: "webspires@gmail.com, Group961sales@gmail.com",
       subject: `New Valuation Request - ${registrationNumber} ${make || ""} ${model || ""}`.trim(),
       html: htmlContent,
     });

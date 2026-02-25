@@ -102,7 +102,7 @@ export default async function handler(req, res) {
     await transporter.sendMail({
       from: '"Sell My Car Newcastle" <mail@webspires.co.uk>',
       to: email,
-      subject: `Your Car Valuation Request - ${registrationNumber}`,
+      subject: `[No Reply] Your Car Valuation Request - ${registrationNumber}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
           <div style="background:#000;color:#fff;padding:20px;border-radius:12px 12px 0 0;text-align:center;">

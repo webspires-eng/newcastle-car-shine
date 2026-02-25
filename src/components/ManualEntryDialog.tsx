@@ -261,7 +261,16 @@ export const ManualEntryDialog = ({
             transmission: validatedData.transmission,
             hpiClear: validatedData.hpiClear,
             condition: validatedData.condition,
-            notes: validatedData.notes || undefined
+            notes: validatedData.notes || undefined,
+            // DVLA API data
+            dvlaData: dvlaData ? {
+              year: dvlaData.year || null,
+              colour: dvlaData.colour || null,
+              fuelType: dvlaData.fuelType || null,
+              engineCapacity: dvlaData.engineCapacity || null,
+              taxStatus: dvlaData.taxStatus || null,
+              motStatus: dvlaData.motStatus || null,
+            } : null
           }
         });
       } catch (emailError) {

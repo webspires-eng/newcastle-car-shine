@@ -344,7 +344,7 @@ export const ManualEntryDialog = ({
               <Car className="w-6 h-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-foreground">Your Vehicle Details</h3>
-            <p className="text-sm text-muted-foreground mt-1">We found your car from DVLA records</p>
+            <p className="text-sm text-muted-foreground mt-1">{isLookingUp ? "Searching DVLA records..." : dvlaData ? "We found your car from DVLA records" : "Enter your vehicle details below"}</p>
           </div>
 
           {isLookingUp && (
@@ -492,8 +492,8 @@ export const ManualEntryDialog = ({
             <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
               <Gauge className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-lg font-bold text-foreground">Vehicle Specifications</h3>
-            <p className="text-sm text-muted-foreground mt-1">Confirm or enter your car details</p>
+            <h3 className="text-lg font-bold text-foreground">Mileage & Transmission</h3>
+            <p className="text-sm text-muted-foreground mt-1">{dvlaData?.make ? `Confirm details for your ${dvlaData.make}` : "Tell us about your car"}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -585,8 +585,16 @@ export const ManualEntryDialog = ({
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span className="text-muted-foreground">Vehicle:</span>
-                <span className="font-semibold">{formData.make} {formData.model}</span>
+                <span className="font-semibold">{formData.make} {formData.model}{dvlaData?.year ? ` (${dvlaData.year})` : ""}</span>
               </div>
+              {dvlaData?.colour && <div className="flex justify-between items-center gap-2">
+                <span className="text-muted-foreground">Colour:</span>
+                <span className="font-semibold">{dvlaData.colour}</span>
+              </div>}
+              {dvlaData?.fuelType && <div className="flex justify-between items-center gap-2">
+                <span className="text-muted-foreground">Fuel:</span>
+                <span className="font-semibold">{dvlaData.fuelType}</span>
+              </div>}
               <div className="flex justify-between items-center gap-2">
                 <span className="text-muted-foreground">Mileage:</span>
                 <span className="font-semibold">{formData.mileage}</span>

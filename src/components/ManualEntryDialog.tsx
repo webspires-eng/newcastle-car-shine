@@ -76,7 +76,7 @@ export const ManualEntryDialog = ({
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [dvlaData, setDvlaData] = useState<any>(null);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
-  const totalSteps = 6;
+  const totalSteps = 5;
 
   // Confetti celebration
   const celebrate = () => {
@@ -125,11 +125,10 @@ export const ManualEntryDialog = ({
     const newErrors: Partial<Record<keyof ManualVehicleData, string>> = {};
     let fieldsToValidate: (keyof ManualVehicleData)[] = [];
     if (step === 1) fieldsToValidate = ["registrationNumber"];
-    else if (step === 2) fieldsToValidate = []; // DVLA display only
-    else if (step === 3) fieldsToValidate = ["condition", "hpiClear"];
-    else if (step === 4) fieldsToValidate = ["make", "model", "mileage", "transmission"];
-    else if (step === 5) fieldsToValidate = ["name", "email", "phone", "postcode"];
-    // step 6 = notes, optional
+    else if (step === 2) fieldsToValidate = ["make", "model"]; // DVLA auto-fills or manual
+    else if (step === 3) fieldsToValidate = ["condition", "hpiClear", "mileage", "transmission"];
+    else if (step === 4) fieldsToValidate = ["name", "email", "phone", "postcode"];
+    // step 5 = notes, optional
 
     if (fieldsToValidate.length === 0) return true;
 
@@ -424,6 +423,16 @@ export const ManualEntryDialog = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
+                  <Label htmlFor="make-manual" className="text-sm font-medium">Make *</Label>
+                  <Input id="make-manual" value={formData.make} placeholder="e.g., BMW" className="mt-1 h-10 text-sm" onChange={e => handleChange("make", e.target.value)} />
+                  {errors.make && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.make}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="model-manual" className="text-sm font-medium">Model *</Label>
+                  <Input id="model-manual" value={formData.model} placeholder="e.g., 3 Series" className="mt-1 h-10 text-sm" onChange={e => handleChange("model", e.target.value)} />
+                  {errors.model && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.model}</p>}
+                </div>
+                <div>
                   <Label htmlFor="dvla-year" className="text-sm font-medium">Year</Label>
                   <Input id="dvla-year" placeholder="e.g., 2019" className="mt-1 h-10 text-sm" onChange={e => {
                     setDvlaData((prev: any) => ({ ...(prev || {}), year: e.target.value, registrationNumber: formData.registrationNumber }));
@@ -448,21 +457,19 @@ export const ManualEntryDialog = ({
                   }} />
                 </div>
               </div>
-
-              <p className="text-xs text-center text-muted-foreground">💡 These fields are optional — tap Next to continue</p>
             </div>
           )}
         </div>;
 
       case 3:
-        return <div className={`space-y-5 ${animClass}`}>
-          <div className="text-center mb-3">
+        return <div className={`space-y-4 ${animClass}`}>
+          <div className="text-center mb-2">
             <h3 className="text-lg font-bold text-foreground">About Your Car</h3>
-            <p className="text-sm text-muted-foreground mt-1">Help us understand its condition</p>
+            <p className="text-sm text-muted-foreground mt-1">{dvlaData?.make ? `Tell us more about your ${dvlaData.make}` : "Help us understand your car"}</p>
           </div>
 
           <div>
-            <Label className="text-sm font-medium">What's the condition of the car?</Label>
+            <Label className="text-sm font-medium">What's the condition?</Label>
             <div className="mt-2 flex gap-2">
               {[{ value: "excellent", label: "⭐ Excellent" }, { value: "good", label: "👍 Good" }, { value: "bad", label: "⚠️ Bad" }].map(option => (
                 <button key={option.value} type="button" onClick={() => handleChange("condition", option.value)} className={`flex-1 py-3 rounded-lg border-2 text-center transition-all text-sm font-medium ${formData.condition === option.value ? "border-primary bg-primary/10 text-primary" : "border-border bg-background hover:border-primary/50"}`}>
@@ -484,30 +491,6 @@ export const ManualEntryDialog = ({
             </div>
             {errors.hpiClear && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.hpiClear}</p>}
           </div>
-        </div>;
-
-      case 4:
-        return <div className={`space-y-3 ${animClass}`}>
-          <div className="text-center mb-3">
-            <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
-              <Gauge className="w-5 h-5 text-primary" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">Mileage & Transmission</h3>
-            <p className="text-sm text-muted-foreground mt-1">{dvlaData?.make ? `Confirm details for your ${dvlaData.make}` : "Tell us about your car"}</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="make" className="text-sm font-medium">Make</Label>
-              <Input id="make" value={formData.make} onChange={e => handleChange("make", e.target.value)} placeholder="e.g., BMW" className="mt-1 h-10 text-sm" />
-              {errors.make && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.make}</p>}
-            </div>
-            <div>
-              <Label htmlFor="model" className="text-sm font-medium">Model</Label>
-              <Input id="model" value={formData.model} onChange={e => handleChange("model", e.target.value)} placeholder="e.g., 3 Series" className="mt-1 h-10 text-sm" />
-              {errors.model && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.model}</p>}
-            </div>
-          </div>
 
           <div>
             <Label htmlFor="mileage" className="text-sm font-medium">Mileage</Label>
@@ -528,7 +511,7 @@ export const ManualEntryDialog = ({
           </div>
         </div>;
 
-      case 5:
+      case 4:
         return <div className={`space-y-3 ${animClass}`}>
           <div className="text-center mb-3">
             <div className="mx-auto w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2 animate-scale-in">
@@ -560,7 +543,7 @@ export const ManualEntryDialog = ({
           </div>
         </div>;
 
-      case 6:
+      case 5:
         return <div className={`space-y-3 ${animClass}`}>
           <div className="text-center mb-2">
             <h3 className="text-lg font-bold text-foreground">Almost Done!</h3>

@@ -159,9 +159,14 @@ export const ManualEntryDialog = ({
   const lookupDvla = async (reg: string) => {
     setIsLookingUp(true);
     setDvlaData(null);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
     try {
       const cleaned = reg.replace(/\s+/g, "").toUpperCase();
-      const response = await fetch(`/api/dvla?vrm=${encodeURIComponent(cleaned)}`);
+      const response = await fetch(`/api/dvla?vrm=${encodeURIComponent(cleaned)}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       if (!response.ok) {
         throw new Error(`Lookup failed (${response.status})`);
       }
@@ -185,6 +190,7 @@ export const ManualEntryDialog = ({
         if (mapped.model) handleChange("model", mapped.model);
       }
     } catch (err) {
+      clearTimeout(timeoutId);
       console.error("DVLA lookup failed:", err);
       // Silent fail — user can still enter manually
     } finally {
@@ -343,7 +349,7 @@ export const ManualEntryDialog = ({
               <Car className="w-6 h-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-foreground">Your Vehicle Details</h3>
-            <p className="text-sm text-muted-foreground mt-1">{isLookingUp ? "Searching DVLA records..." : dvlaData ? "We found your car from DVLA records" : "Enter your vehicle details below"}</p>
+            <p className="text-sm text-muted-foreground mt-1">{isLookingUp ? "Searching DVLA records..." : dvlaData ? "Details filled from DVLA — you can edit if needed" : "Enter your vehicle details below"}</p>
           </div>
 
           {isLookingUp && (
@@ -353,106 +359,45 @@ export const ManualEntryDialog = ({
             </div>
           )}
 
-          {!isLookingUp && dvlaData && (
+          {!isLookingUp && (
             <div className="space-y-3 animate-fade-in">
               {/* Registration plate display */}
               <div className="bg-amber-400 rounded-lg p-3 text-center border-2 border-amber-500">
-                <span className="text-2xl font-black tracking-widest text-foreground">{dvlaData.registrationNumber || formData.registrationNumber}</span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {dvlaData.make && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Make</p>
-                    <p className="font-bold text-sm">{dvlaData.make}</p>
-                  </div>
-                )}
-                {dvlaData.model && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Model</p>
-                    <p className="font-bold text-sm">{dvlaData.model}</p>
-                  </div>
-                )}
-                {dvlaData.year && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Year</p>
-                    <p className="font-bold text-sm">{dvlaData.year}</p>
-                  </div>
-                )}
-                {dvlaData.colour && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Colour</p>
-                    <p className="font-bold text-sm">{dvlaData.colour}</p>
-                  </div>
-                )}
-                {dvlaData.fuelType && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Fuel Type</p>
-                    <p className="font-bold text-sm">{dvlaData.fuelType}</p>
-                  </div>
-                )}
-                {dvlaData.engineCapacity && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Engine</p>
-                    <p className="font-bold text-sm">{dvlaData.engineCapacity}cc</p>
-                  </div>
-                )}
-                {dvlaData.taxStatus && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">Tax Status</p>
-                    <p className="font-bold text-sm">{dvlaData.taxStatus}</p>
-                  </div>
-                )}
-                {dvlaData.motStatus && (
-                  <div className="bg-muted/50 rounded-lg p-3 border border-border">
-                    <p className="text-xs text-muted-foreground">MOT Status</p>
-                    <p className="font-bold text-sm">{dvlaData.motStatus}</p>
-                  </div>
-                )}
-              </div>
-              <p className="text-xs text-center text-muted-foreground">✅ Is this your car? Tap Next to continue</p>
-            </div>
-          )}
-
-          {!isLookingUp && !dvlaData && (
-            <div className="space-y-3 animate-fade-in">
-              <div className="text-center mb-2">
-                <p className="text-sm text-muted-foreground">We couldn't find your vehicle automatically.</p>
-                <p className="text-xs text-muted-foreground">Please enter the details below.</p>
+                <span className="text-2xl font-black tracking-widest text-foreground">{formData.registrationNumber}</span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="make-manual" className="text-sm font-medium">Make *</Label>
-                  <Input id="make-manual" value={formData.make} placeholder="e.g., BMW" className="mt-1 h-10 text-sm" onChange={e => handleChange("make", e.target.value)} />
+                  <Label htmlFor="make-step2" className="text-sm font-medium">Make *</Label>
+                  <Input id="make-step2" value={formData.make} placeholder="e.g., BMW" className="mt-1 h-10 text-sm" onChange={e => handleChange("make", e.target.value)} />
                   {errors.make && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.make}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="model-manual" className="text-sm font-medium">Model *</Label>
-                  <Input id="model-manual" value={formData.model} placeholder="e.g., 3 Series" className="mt-1 h-10 text-sm" onChange={e => handleChange("model", e.target.value)} />
+                  <Label htmlFor="model-step2" className="text-sm font-medium">Model *</Label>
+                  <Input id="model-step2" value={formData.model} placeholder="e.g., 3 Series" className="mt-1 h-10 text-sm" onChange={e => handleChange("model", e.target.value)} />
                   {errors.model && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.model}</p>}
                 </div>
                 <div>
                   <Label htmlFor="dvla-year" className="text-sm font-medium">Year</Label>
-                  <Input id="dvla-year" placeholder="e.g., 2019" className="mt-1 h-10 text-sm" onChange={e => {
+                  <Input id="dvla-year" value={dvlaData?.year || ""} placeholder="e.g., 2019" className="mt-1 h-10 text-sm" onChange={e => {
                     setDvlaData((prev: any) => ({ ...(prev || {}), year: e.target.value, registrationNumber: formData.registrationNumber }));
                   }} />
                 </div>
                 <div>
                   <Label htmlFor="dvla-colour" className="text-sm font-medium">Colour</Label>
-                  <Input id="dvla-colour" placeholder="e.g., Red" className="mt-1 h-10 text-sm" onChange={e => {
+                  <Input id="dvla-colour" value={dvlaData?.colour || ""} placeholder="e.g., Red" className="mt-1 h-10 text-sm" onChange={e => {
                     setDvlaData((prev: any) => ({ ...(prev || {}), colour: e.target.value, registrationNumber: formData.registrationNumber }));
                   }} />
                 </div>
                 <div>
                   <Label htmlFor="dvla-fuel" className="text-sm font-medium">Fuel Type</Label>
-                  <Input id="dvla-fuel" placeholder="e.g., Petrol" className="mt-1 h-10 text-sm" onChange={e => {
+                  <Input id="dvla-fuel" value={dvlaData?.fuelType || ""} placeholder="e.g., Petrol" className="mt-1 h-10 text-sm" onChange={e => {
                     setDvlaData((prev: any) => ({ ...(prev || {}), fuelType: e.target.value, registrationNumber: formData.registrationNumber }));
                   }} />
                 </div>
                 <div>
                   <Label htmlFor="dvla-engine" className="text-sm font-medium">Engine (cc)</Label>
-                  <Input id="dvla-engine" placeholder="e.g., 2000" className="mt-1 h-10 text-sm" onChange={e => {
+                  <Input id="dvla-engine" value={dvlaData?.engineCapacity || ""} placeholder="e.g., 2000" className="mt-1 h-10 text-sm" onChange={e => {
                     setDvlaData((prev: any) => ({ ...(prev || {}), engineCapacity: e.target.value, registrationNumber: formData.registrationNumber }));
                   }} />
                 </div>
@@ -618,14 +563,14 @@ export const ManualEntryDialog = ({
 
         <div className="flex justify-between gap-3 pt-3 border-t">
           {currentStep > 1 && (
-            <Button type="button" variant="outline" onClick={handleBack} disabled={isLookingUp} className="flex-1 h-10 text-sm touch-manipulation">
+            <Button type="button" variant="outline" onClick={handleBack} disabled={isLookingUp && currentStep === 1} className="flex-1 h-10 text-sm touch-manipulation">
               <ChevronLeft className="w-4 h-4 mr-1" />
               Back
             </Button>
           )}
 
-          <Button type="submit" disabled={isSubmitting || isLookingUp} className={`${currentStep === 1 ? 'w-full' : 'flex-1'} h-10 text-sm font-semibold touch-manipulation`}>
-            {isSubmitting ? "Submitting..." : isLookingUp ? <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Looking up...</> : currentStep === totalSteps ? "Submit Inquiry" : <>
+          <Button type="submit" disabled={isSubmitting || (isLookingUp && currentStep === 1)} className={`${currentStep === 1 ? 'w-full' : 'flex-1'} h-10 text-sm font-semibold touch-manipulation`}>
+            {isSubmitting ? "Submitting..." : isLookingUp && currentStep === 1 ? <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Looking up...</> : currentStep === totalSteps ? "Submit Inquiry" : <>
               Next
               <ChevronRight className="w-4 h-4 ml-1" />
             </>}

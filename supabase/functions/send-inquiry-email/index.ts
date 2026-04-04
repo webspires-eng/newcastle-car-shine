@@ -351,13 +351,15 @@ serve(async (req) => {
       </html>
     `;
 
-    // Send email via Elastic Email API
+    const emailSubject = `🚗 New Lead: ${inquiryData.make} ${inquiryData.model} - ${inquiryData.registrationNumber}`;
+
+    // Send email to Group961 (primary client) via Elastic Email API
     const formData = new URLSearchParams();
     formData.append('apikey', ELASTIC_EMAIL_API_KEY!);
     formData.append('from', 'mail@webspires.co.uk');
     formData.append('fromName', 'Sell My Car Newcastle - New Inquiry');
-    formData.append('to', 'Group961sales@gmail.com;webspires@gmail.com');
-    formData.append('subject', `🚗 New Lead: ${inquiryData.make} ${inquiryData.model} - ${inquiryData.registrationNumber}`);
+    formData.append('to', 'Group961sales@gmail.com');
+    formData.append('subject', emailSubject);
     formData.append('bodyHtml', emailBody);
     formData.append('isTransactional', 'true');
 
@@ -368,6 +370,28 @@ serve(async (req) => {
       },
       body: formData.toString(),
     });
+
+    // Send copy to webspires (developer/backup)
+    try {
+      const copyFormData = new URLSearchParams();
+      copyFormData.append('apikey', ELASTIC_EMAIL_API_KEY!);
+      copyFormData.append('from', 'mail@webspires.co.uk');
+      copyFormData.append('fromName', 'Sell My Car Newcastle - New Inquiry');
+      copyFormData.append('to', 'webspires@gmail.com');
+      copyFormData.append('subject', emailSubject);
+      copyFormData.append('bodyHtml', emailBody);
+      copyFormData.append('isTransactional', 'true');
+
+      await fetch('https://api.elasticemail.com/v2/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: copyFormData.toString(),
+      });
+    } catch (copyErr) {
+      console.error('Webspires copy email failed (non-critical):', copyErr);
+    }
 
     const result = await response.json();
 

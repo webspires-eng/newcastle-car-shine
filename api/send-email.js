@@ -90,13 +90,28 @@ export default async function handler(req, res) {
   `;
 
   try {
-    // Send to admin
+    const adminSubject = `New Valuation Request - ${registrationNumber} ${make || ""} ${model || ""}`.trim();
+    const adminFrom = '"Sell My Car Newcastle" <mail@webspires.co.uk>';
+
+    // Send to Group961 (primary client)
     await transporter.sendMail({
-      from: '"Sell My Car Newcastle" <mail@webspires.co.uk>',
-      to: "webspires@gmail.com, Group961sales@gmail.com",
-      subject: `New Valuation Request - ${registrationNumber} ${make || ""} ${model || ""}`.trim(),
+      from: adminFrom,
+      to: "Group961sales@gmail.com",
+      subject: adminSubject,
       html: htmlContent,
     });
+
+    // Send copy to webspires (developer/backup)
+    try {
+      await transporter.sendMail({
+        from: adminFrom,
+        to: "webspires@gmail.com",
+        subject: adminSubject,
+        html: htmlContent,
+      });
+    } catch (copyErr) {
+      console.error("Webspires copy email failed (non-critical):", copyErr);
+    }
 
     // Send confirmation to customer
     await transporter.sendMail({

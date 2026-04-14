@@ -8,15 +8,59 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Car, Mail, Phone, MapPin, User, Gauge, ChevronLeft, ChevronRight, Loader2, HelpCircle } from "lucide-react";
+import { Car, Mail, Phone, MapPin, User, Gauge, ChevronLeft, ChevronRight, Loader2, HelpCircle, CheckCircle2, XCircle } from "lucide-react";
 import confetti from "canvas-confetti";
 import { ManualEntryDialog } from "@/components/ManualEntryDialog";
+
+const COMMON_DOMAINS = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com", "live.com", "me.com", "googlemail.com", "yahoo.co.uk", "hotmail.co.uk", "btinternet.com", "sky.com", "talktalk.net"];
+
+function levenshtein(a: string, b: string): number {
+    const dp: number[][] = Array.from({ length: a.length + 1 }, (_, i) =>
+        Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+    );
+    for (let i = 1; i <= a.length; i++)
+        for (let j = 1; j <= b.length; j++)
+            dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    return dp[a.length][b.length];
+}
+
+function suggestEmailDomain(email: string): string | null {
+    const atIdx = email.lastIndexOf("@");
+    if (atIdx < 1) return null;
+    const typed = email.slice(atIdx + 1).toLowerCase();
+    if (!typed || COMMON_DOMAINS.includes(typed)) return null;
+    let best: string | null = null, bestDist = 3;
+    for (const domain of COMMON_DOMAINS) {
+        const dist = levenshtein(typed, domain);
+        if (dist < bestDist) { bestDist = dist; best = domain; }
+    }
+    return best ? `${email.slice(0, atIdx + 1)}${best}` : null;
+}
+
+function formatUKPhone(value: string): string {
+    const digits = value.replace(/\D/g, "");
+    if (digits.startsWith("44")) {
+        const num = digits.slice(2);
+        if (num.length <= 4) return `+44 ${num}`;
+        if (num.length <= 7) return `+44 ${num.slice(0, 4)} ${num.slice(4)}`;
+        return `+44 ${num.slice(0, 4)} ${num.slice(4, 7)} ${num.slice(7, 10)}`;
+    }
+    if (digits.startsWith("07") || digits.startsWith("7")) {
+        const num = digits.startsWith("7") ? "0" + digits : digits;
+        if (num.length <= 5) return num;
+        if (num.length <= 8) return `${num.slice(0, 5)} ${num.slice(5)}`;
+        return `${num.slice(0, 5)} ${num.slice(5, 8)} ${num.slice(8, 11)}`;
+    }
+    return value;
+}
+
+const UK_PHONE_RE = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const contactSchema = z.object({
     name: z.string().trim().min(1, "Name is required").max(100),
     email: z.string().trim().email("Invalid email address").max(255),
-    phone: z.string().trim().min(10, "Phone must be at least 10 characters").max(20).regex(/^[\d\s+()-]+$/, "Invalid phone format"),
+    phone: z.string().trim().regex(UK_PHONE_RE, "Enter a valid UK mobile number (e.g. 07700 900000)"),
     postcode: z.string().trim().min(1, "Postcode is required").max(10),
     condition: z.enum(["excellent", "good", "bad"], {
         required_error: "Please select a condition"
@@ -71,8 +115,15 @@ const Valuation = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [commsOptOut, setCommsOptOut] = useState(false);
     const [showChangeCar, setShowChangeCar] = useState(false);
+    const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
 
     const handleChange = (field: string, value: string) => {
+        if (field === "phone") {
+            value = formatUKPhone(value);
+        }
+        if (field === "email") {
+            setEmailSuggestion(suggestEmailDomain(value));
+        }
         setFormData(prev => ({ ...prev, [field]: value }));
         setErrors(prev => ({ ...prev, [field]: "" }));
     };
@@ -249,7 +300,7 @@ const Valuation = () => {
                                     <span className="text-muted-foreground text-xs">(So we can send your valuation)</span>
                                     <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
                                 </Label>
-                                <div className="flex items-stretch rounded-lg border-2 border-border overflow-hidden mt-1.5 focus-within:border-primary transition-colors">
+                                <div className={`flex items-stretch rounded-lg border-2 overflow-hidden mt-1.5 transition-colors ${formData.email && EMAIL_RE.test(formData.email.trim()) && !emailSuggestion ? "border-green-500" : errors.email ? "border-destructive" : "border-border focus-within:border-primary"}`}>
                                     <div className="bg-muted/30 flex items-center justify-center px-3">
                                         <Mail className="w-5 h-5 text-muted-foreground" />
                                     </div>
@@ -261,8 +312,32 @@ const Valuation = () => {
                                         placeholder="e.g. name@email.com"
                                         className="border-0 h-12 text-base focus-visible:ring-0 bg-background text-foreground"
                                     />
+                                    <div className="flex items-center pr-3">
+                                        {formData.email && EMAIL_RE.test(formData.email.trim()) && !emailSuggestion && (
+                                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                        )}
+                                        {formData.email && (!EMAIL_RE.test(formData.email.trim()) || emailSuggestion) && (
+                                            <XCircle className="w-5 h-5 text-destructive" />
+                                        )}
+                                    </div>
                                 </div>
                                 {errors.email && <p className="text-destructive text-sm mt-1">{errors.email}</p>}
+                                {emailSuggestion && !errors.email && (
+                                    <p className="text-sm mt-1 text-amber-600">
+                                        Did you mean{" "}
+                                        <button
+                                            type="button"
+                                            className="underline font-medium"
+                                            onClick={() => {
+                                                handleChange("email", emailSuggestion);
+                                                setEmailSuggestion(null);
+                                            }}
+                                        >
+                                            {emailSuggestion}
+                                        </button>
+                                        ?
+                                    </p>
+                                )}
                             </div>
 
                             {/* Postcode */}
@@ -294,19 +369,31 @@ const Valuation = () => {
                                     <span className="text-muted-foreground text-xs">(To send your valuation by SMS, WhatsApp or RCS)</span>
                                     <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
                                 </Label>
-                                <div className="flex items-stretch rounded-lg border-2 border-border overflow-hidden mt-1.5 focus-within:border-primary transition-colors">
+                                <div className={`flex items-stretch rounded-lg border-2 overflow-hidden mt-1.5 transition-colors ${formData.phone && UK_PHONE_RE.test(formData.phone.trim()) ? "border-green-500" : errors.phone ? "border-destructive" : "border-border focus-within:border-primary"}`}>
                                     <div className="bg-muted/30 flex items-center justify-center px-3">
                                         <Phone className="w-5 h-5 text-muted-foreground" />
                                     </div>
                                     <Input
                                         id="phone"
+                                        type="tel"
                                         value={formData.phone}
                                         onChange={e => handleChange("phone", e.target.value)}
-                                        placeholder="e.g. 07000 000000"
+                                        placeholder="e.g. 07700 900000"
                                         className="border-0 h-12 text-base focus-visible:ring-0 bg-background text-foreground"
                                     />
+                                    <div className="flex items-center pr-3">
+                                        {formData.phone && UK_PHONE_RE.test(formData.phone.trim()) && (
+                                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                        )}
+                                        {formData.phone && formData.phone.replace(/\D/g, "").length >= 10 && !UK_PHONE_RE.test(formData.phone.trim()) && (
+                                            <XCircle className="w-5 h-5 text-destructive" />
+                                        )}
+                                    </div>
                                 </div>
                                 {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone}</p>}
+                                {!errors.phone && formData.phone && formData.phone.replace(/\D/g, "").length >= 10 && !UK_PHONE_RE.test(formData.phone.trim()) && (
+                                    <p className="text-destructive text-sm mt-1">Enter a valid UK mobile number (e.g. 07700 900000)</p>
+                                )}
                             </div>
 
                             {/* Full Name */}
@@ -567,7 +654,6 @@ const Valuation = () => {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 };

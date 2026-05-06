@@ -21,8 +21,8 @@ export const Hero = ({ headline, subheadline }: HeroProps = {}) => {
     <section id="hero" className="relative overflow-hidden bg-background py-4 md:py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="relative rounded-[2rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 md:p-8 lg:p-12 xl:p-16">
-            <div className="flex flex-col-reverse lg:flex-row gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-center lg:items-center min-h-[480px] lg:min-h-[600px] xl:min-h-[650px]">
+          <div className="relative rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 sm:px-6 sm:py-8 md:p-8 lg:p-12 xl:p-16">
+            <div className="flex flex-col-reverse lg:flex-row gap-8 sm:gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-center lg:items-center min-h-[420px] sm:min-h-[480px] lg:min-h-[600px] xl:min-h-[650px]">
               <div className="space-y-6 flex-col relative z-10 order-2 lg:order-1 w-full lg:w-[52%] lg:text-left lg:px-8 xl:px-12 px-0 flex items-center lg:items-start justify-center">
                 <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight md:leading-[1.1] drop-shadow-sm">
                   {headline ? headline : "Sell My Car in Newcastle."}
@@ -64,7 +64,7 @@ export const Hero = ({ headline, subheadline }: HeroProps = {}) => {
               </div>
 
               <div className="relative order-1 lg:order-2 w-full lg:w-[48%] flex justify-center items-center pb-4 lg:pb-0">
-                <div className="w-full max-w-[340px] md:max-w-[420px] lg:max-w-[480px] xl:max-w-[550px] aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl relative z-10 animate-fade-in">
+                <div className="w-full max-w-[280px] sm:max-w-[400px] md:max-w-[460px] lg:max-w-[480px] xl:max-w-[550px] 2xl:max-w-[620px] aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl relative z-10 animate-fade-in">
                   <Image
                     src={heroCar}
                     alt="Dark blue sedan car"

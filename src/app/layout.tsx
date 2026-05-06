@@ -51,10 +51,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   icons: {
-    icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/favicon.ico", sizes: "any" },
-    ],
+    icon: { url: "/favicon.png", type: "image/png" },
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },

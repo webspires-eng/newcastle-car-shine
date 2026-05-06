@@ -26,7 +26,7 @@ export const GuidesSection = () => {
   ];
 
   return (
-    <section className="py-10 bg-hero-yellow rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
+    <section className="py-10 bg-hero-yellow rounded-[2rem] sm:rounded-[3rem] lg:rounded-[4rem] mx-4 sm:mx-6 lg:mx-8 my-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-start justify-between mb-12 gap-6">
           <div>
@@ -46,7 +46,7 @@ export const GuidesSection = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {guides.map((guide, index) => (
             <div
               key={index}

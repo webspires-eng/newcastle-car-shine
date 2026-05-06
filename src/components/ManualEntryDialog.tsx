@@ -103,7 +103,7 @@ export const ManualEntryDialog = ({
   };
 
   return <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="w-[92vw] max-w-[480px] p-6 sm:p-8 rounded-2xl">
+    <DialogContent className="w-[calc(100vw-2rem)] max-w-[480px] p-5 sm:p-8 rounded-2xl">
       <DialogHeader className="space-y-1 pb-0">
         <DialogTitle className="text-2xl text-center font-bold text-foreground">
           30 second <span className="text-primary">car valuation</span>

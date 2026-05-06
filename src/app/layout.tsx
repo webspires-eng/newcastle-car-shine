@@ -50,7 +50,14 @@ export const metadata: Metadata = {
       "Get a free valuation, the best offer from 7,500+ dealers, and free home collection with same-day payment.",
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/favicon.ico" },
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 const localBusinessSchema = {

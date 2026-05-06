@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { getServiceClient } from "@/lib/supabase-server";
 
 interface DvlaData {
   year?: string | number;
@@ -15,6 +16,7 @@ interface DvlaData {
 }
 
 interface EmailPayload {
+  bookingId?: string;
   name: string;
   email: string;
   phone: string;
@@ -28,6 +30,29 @@ interface EmailPayload {
   condition?: string;
   notes?: string;
   dvlaData?: DvlaData;
+}
+
+async function logEmailsToBooking(
+  bookingId: string,
+  entries: { type: "user" | "admin"; to: string; subject: string; body: string }[]
+) {
+  if (!bookingId) return;
+  let sb;
+  try {
+    sb = getServiceClient();
+  } catch (err) {
+    console.warn("[send-email] supabase client init failed for log:", err);
+    return;
+  }
+  const { data: row } = await sb
+    .from("vehicle_inquiries")
+    .select("emails")
+    .eq("id", bookingId)
+    .single();
+  const existing = Array.isArray(row?.emails) ? (row!.emails as unknown[]) : [];
+  const sentAt = new Date().toISOString();
+  const next = [...existing, ...entries.map((e) => ({ ...e, sentAt }))];
+  await sb.from("vehicle_inquiries").update({ emails: next }).eq("id", bookingId);
 }
 
 export async function POST(req: Request) {
@@ -136,11 +161,8 @@ export async function POST(req: Request) {
       console.error("Webspires copy email failed (non-critical):", copyErr);
     }
 
-    await transporter.sendMail({
-      from: adminFrom,
-      to: email,
-      subject: `[No Reply] Your Car Valuation Request - ${registrationNumber}`,
-      html: `
+    const userSubject = `[No Reply] Your Car Valuation Request - ${registrationNumber}`;
+    const userHtml = `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
           <div style="background:#000;color:#fff;padding:20px;border-radius:12px 12px 0 0;text-align:center;">
             <h1 style="margin:0;font-size:22px;">Thank You, ${name.split(" ")[0]}!</h1>
@@ -155,8 +177,25 @@ export async function POST(req: Request) {
             <p style="color:#999;font-size:12px;text-align:center;margin:16px 0 0;">Sell My Car Newcastle &copy; ${new Date().getFullYear()}</p>
           </div>
         </div>
-      `,
+      `;
+
+    await transporter.sendMail({
+      from: adminFrom,
+      to: email,
+      subject: userSubject,
+      html: userHtml,
     });
+
+    if (body.bookingId) {
+      try {
+        await logEmailsToBooking(body.bookingId, [
+          { type: "admin", to: "Group961sales@gmail.com", subject: adminSubject, body: htmlContent },
+          { type: "user", to: email, subject: userSubject, body: userHtml },
+        ]);
+      } catch (logErr) {
+        console.error("Email log failed (non-critical):", logErr);
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

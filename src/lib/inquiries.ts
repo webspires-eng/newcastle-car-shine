@@ -1,6 +1,6 @@
 import "server-only";
 import { getServiceClient } from "@/lib/supabase-server";
-import type { Booking, BookingStatus } from "@/types";
+import type { Booking, BookingEmail, BookingStatus } from "@/types";
 
 interface InquiryRow {
   id: string;
@@ -25,6 +25,7 @@ interface InquiryRow {
   fuel_type: string | null;
   engine_capacity: number | null;
   body_type: string | null;
+  emails: BookingEmail[] | null;
 }
 
 function mapRow(row: InquiryRow): Booking {
@@ -58,7 +59,7 @@ function mapRow(row: InquiryRow): Booking {
     estimatedValue: 0,
     offeredPrice: row.offered_price ?? undefined,
     notes: row.internal_notes ?? "",
-    emails: [],
+    emails: Array.isArray(row.emails) ? row.emails : [],
   };
 }
 

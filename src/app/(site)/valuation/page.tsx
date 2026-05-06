@@ -169,30 +169,34 @@ export default function ValuationPage() {
       const yearNum = dvlaData?.year ? Number(dvlaData.year) : null;
       const engineNum = dvlaData?.engineCapacity ? Number(dvlaData.engineCapacity) : null;
 
-      const { error } = await getSupabase().from("vehicle_inquiries").insert({
-        name: validated.name,
-        email: validated.email,
-        phone: validated.phone,
-        postcode: validated.postcode,
-        registration_number: registrationNumber,
-        make: dvlaData?.make || "",
-        model: dvlaData?.model || "",
-        mileage: mileageInt,
-        transmission: validated.transmission,
-        year: Number.isFinite(yearNum) ? yearNum : null,
-        colour: dvlaData?.colour || null,
-        fuel_type: dvlaData?.fuelType || null,
-        engine_capacity: Number.isFinite(engineNum) ? engineNum : null,
-        body_type: dvlaData?.bodyType || null,
-        hpi_clear:
-          validated.hpiClear === "yes"
-            ? true
-            : validated.hpiClear === "no"
-            ? false
-            : null,
-        condition: validated.condition,
-        notes: formData.notes || null,
-      });
+      const { data: inserted, error } = await getSupabase()
+        .from("vehicle_inquiries")
+        .insert({
+          name: validated.name,
+          email: validated.email,
+          phone: validated.phone,
+          postcode: validated.postcode,
+          registration_number: registrationNumber,
+          make: dvlaData?.make || "",
+          model: dvlaData?.model || "",
+          mileage: mileageInt,
+          transmission: validated.transmission,
+          year: Number.isFinite(yearNum) ? yearNum : null,
+          colour: dvlaData?.colour || null,
+          fuel_type: dvlaData?.fuelType || null,
+          engine_capacity: Number.isFinite(engineNum) ? engineNum : null,
+          body_type: dvlaData?.bodyType || null,
+          hpi_clear:
+            validated.hpiClear === "yes"
+              ? true
+              : validated.hpiClear === "no"
+              ? false
+              : null,
+          condition: validated.condition,
+          notes: formData.notes || null,
+        })
+        .select("id")
+        .single();
       if (error) {
         console.error("Supabase insert error:", error);
         toast.error(`Database error: ${error.message}`);
@@ -200,11 +204,14 @@ export default function ValuationPage() {
         return;
       }
 
+      const bookingId = inserted?.id as string | undefined;
+
       try {
         await fetch("/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            bookingId,
             name: validated.name,
             email: validated.email,
             phone: validated.phone,

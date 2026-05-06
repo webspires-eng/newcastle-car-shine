@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +19,7 @@ export const ManualEntryDialog = ({
   onOpenChange,
   onSubmit
 }: ManualEntryDialogProps) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [mileage, setMileage] = useState("");
   const [errors, setErrors] = useState<{ reg?: string; mileage?: string }>({});
@@ -87,13 +89,17 @@ export const ManualEntryDialog = ({
     onOpenChange(false);
 
     // Navigate to valuation page with data
-    navigate("/valuation", {
-      state: {
-        registrationNumber: cleanedReg,
-        mileage: cleanedMileage,
-        dvlaData
-      }
-    });
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(
+        "valuationState",
+        JSON.stringify({
+          registrationNumber: cleanedReg,
+          mileage: cleanedMileage,
+          dvlaData,
+        })
+      );
+    }
+    router.push("/valuation");
   };
 
   return <Dialog open={open} onOpenChange={onOpenChange}>

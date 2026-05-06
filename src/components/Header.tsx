@@ -1,6 +1,9 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu } from "lucide-react";
 import logo from "@/assets/sell-my-car-newcastle-logo.png";
 import {
   Sheet,
@@ -27,12 +30,10 @@ export const Header = () => {
     <header className="bg-background/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center h-16">
-          {/* Logo - Centered */}
-          <Link to="/" className="absolute left-4 sm:left-6 lg:left-8">
-            <img src={logo} alt="Sell My Car Newcastle" className="h-10 w-auto" />
+          <Link href="/" className="absolute left-4 sm:left-6 lg:left-8">
+            <Image src={logo} alt="Sell My Car Newcastle" className="h-10 w-auto" height={40} width={140} priority />
           </Link>
 
-          {/* Desktop Navigation - Centered */}
           <nav className="hidden md:flex items-center space-x-8 font-montserrat">
             {navItems.map((item) =>
               item.href ? (
@@ -46,7 +47,7 @@ export const Header = () => {
               ) : (
                 <Link
                   key={item.label}
-                  to={item.to!}
+                  href={item.to!}
                   className="text-foreground/80 hover:text-foreground transition-colors font-medium text-sm uppercase tracking-wider"
                 >
                   {item.label}
@@ -55,7 +56,6 @@ export const Header = () => {
             )}
           </nav>
 
-          {/* Instant Valuation Button - Desktop */}
           <div className="hidden md:block absolute right-4 sm:right-6 lg:right-8">
             <Button
               onClick={() => setDialogOpen(true)}
@@ -65,7 +65,6 @@ export const Header = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden absolute right-4">
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -91,7 +90,7 @@ export const Header = () => {
                   ) : (
                     <Link
                       key={item.label}
-                      to={item.to!}
+                      href={item.to!}
                       onClick={() => setOpen(false)}
                       className="text-lg font-medium text-foreground/80 hover:text-foreground transition-colors py-2 uppercase tracking-wide"
                     >
@@ -108,7 +107,7 @@ export const Header = () => {
       <ManualEntryDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        onSubmit={() => { }}
+        onSubmit={() => {}}
       />
     </header>
   );

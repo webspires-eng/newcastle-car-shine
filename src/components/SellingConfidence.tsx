@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import carAppPhone from "@/assets/car-app-phone.jpg";
@@ -59,9 +60,11 @@ export const SellingConfidence = () => {
                 <CarouselItem key={index} className="pl-4 md:pl-6 basis-full md:basis-1/3">
                   <div className="bg-card rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full">
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img
+                      <Image
                         src={card.image}
                         alt={card.title}
+                        width={600}
+                        height={450}
                         className="w-full h-full object-cover"
                       />
                     </div>

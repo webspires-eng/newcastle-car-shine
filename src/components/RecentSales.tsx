@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -53,9 +54,11 @@ export const RecentSales = () => {
                     <CardContent className="p-6">
                       {/* Car Image with slide animation */}
                       <div className="w-full h-40 bg-gradient-to-br from-muted to-muted/50 rounded-xl mb-4 flex items-center justify-center overflow-hidden relative group">
-                        <img
+                        <Image
                           src={sale.image}
                           alt={sale.car}
+                          width={192}
+                          height={128}
                           className="w-48 h-auto object-contain transform transition-all duration-700 group-hover:scale-110 group-hover:translate-x-2 animate-slide-in-right"
                           style={{
                             animationDelay: `${index * 0.15}s`,

@@ -2,7 +2,11 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./src/pages/**/*.{ts,tsx}",
+    "./src/components/**/*.{ts,tsx}",
+    "./src/app/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -11,9 +15,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        montserrat: ['Montserrat', 'sans-serif'],
+        sans: ["var(--font-montserrat)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-outfit)", "ui-sans-serif", "system-ui", "sans-serif"],
+        montserrat: ["var(--font-montserrat)", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -65,60 +69,20 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
         "fade-in": {
-          "0%": {
-            opacity: "0",
-            transform: "translateY(10px)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
-          "0%": {
-            transform: "scale(0.9)",
-            opacity: "0",
-          },
-          "100%": {
-            transform: "scale(1)",
-            opacity: "1",
-          },
-        },
-        "slideInRight": {
-          "0%": {
-            transform: "translateX(30px)",
-            opacity: "0",
-          },
-          "100%": {
-            transform: "translateX(0)",
-            opacity: "1",
-          },
-        },
-        "slideInLeft": {
-          "0%": {
-            transform: "translateX(-30px)",
-            opacity: "0",
-          },
-          "100%": {
-            transform: "translateX(0)",
-            opacity: "1",
-          },
+          "0%": { transform: "scale(0.9)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
       animation: {
@@ -129,5 +93,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

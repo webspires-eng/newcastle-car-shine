@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import luxuryCarsRow from "@/assets/luxury-cars-row.jpg";
 export const CtaSection = () => {
   return <section className="py-10 bg-background">
@@ -8,10 +6,12 @@ export const CtaSection = () => {
       <div className="max-w-7xl mx-auto rounded-[4rem] overflow-hidden relative">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src={luxuryCarsRow}
             alt="Luxury cars ready for sale"
             className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 1280px) 100vw, 1280px"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 to-foreground/50"></div>
         </div>

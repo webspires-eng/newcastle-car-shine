@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import anthoniaImg from "@/assets/testimonial-anthonia.jpg";
@@ -61,9 +62,11 @@ export const Testimonials = () => {
                       {/* Avatar */}
                       <div className="flex justify-center mb-6">
                         <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-background shadow-lg">
-                          <img
+                          <Image
                             src={testimonial.image}
                             alt={testimonial.author}
+                            width={96}
+                            height={96}
                             className="w-full h-full object-cover"
                           />
                         </div>

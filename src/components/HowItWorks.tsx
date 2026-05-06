@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import carAppPhone from "@/assets/car-app-phone.jpg";
 import womanPhoneGreen from "@/assets/woman-phone-green.jpg";
@@ -50,7 +51,7 @@ export const HowItWorks = () => {
               {/* Image Card */}
               <Card className="relative overflow-hidden rounded-3xl border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative aspect-square md:aspect-[4/5]">
-                  <img src={step.image} alt={step.title} className="w-full h-full object-cover" />
+                  <Image src={step.image} alt={step.title} className="w-full h-full object-cover" width={600} height={750} />
                   {/* Overlay Badge */}
                   <div className="absolute bottom-6 left-6 right-6 bg-foreground/90 backdrop-blur-sm text-background rounded-2xl p-4">
                     {step.price && (

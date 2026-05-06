@@ -24,7 +24,7 @@ export const Hero = ({ headline, subheadline }: HeroProps = {}) => {
           <div className="relative rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] lg:rounded-[4rem] overflow-hidden bg-hero-yellow px-4 py-6 sm:px-6 sm:py-8 md:p-8 lg:p-12 xl:p-16">
             <div className="flex flex-col-reverse lg:flex-row gap-8 sm:gap-10 md:gap-12 lg:gap-16 xl:gap-20 items-center lg:items-center min-h-[420px] sm:min-h-[480px] lg:min-h-[600px] xl:min-h-[650px]">
               <div className="space-y-6 flex-col relative z-10 order-2 lg:order-1 w-full lg:w-[52%] lg:text-left lg:px-8 xl:px-12 px-0 flex items-center lg:items-start justify-center">
-                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight md:leading-[1.1] drop-shadow-sm">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight md:leading-[1.1] drop-shadow-sm">
                   {headline ? headline : "Sell My Car in Newcastle."}
                 </h1>
 

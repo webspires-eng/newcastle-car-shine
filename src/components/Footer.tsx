@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="bg-hero-yellow text-foreground py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 lg:gap-12 mb-16">
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <Image src={logo} alt="Sell My Car Newcastle" className="h-12 w-auto" height={48} width={170} />

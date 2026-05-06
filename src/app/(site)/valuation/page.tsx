@@ -304,8 +304,8 @@ export default function ValuationPage() {
           Back
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12">
+          <div className="md:col-span-2 space-y-8">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Your details</h1>
               <p className="text-sm text-muted-foreground mt-1">Step 2 of 2</p>
@@ -582,7 +582,7 @@ export default function ValuationPage() {
             </form>
           </div>
 
-          <div className="lg:col-span-1 order-first lg:order-last">
+          <div className="md:col-span-1 order-first md:order-last">
             <div className="sticky top-24">
               <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
                 <div className="flex items-stretch rounded-md border-2 border-foreground overflow-hidden mb-4 mx-auto max-w-[200px]">

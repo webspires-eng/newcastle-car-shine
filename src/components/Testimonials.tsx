@@ -56,7 +56,7 @@ export const Testimonials = () => {
           >
             <CarouselContent className="-ml-4 md:-ml-8 items-stretch">
               {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="pl-4 md:pl-8 md:basis-1/3 h-auto">
+                <CarouselItem key={index} className="pl-4 sm:pl-6 md:pl-8 sm:basis-1/2 lg:basis-1/3 h-auto">
                   <Card className="relative overflow-hidden hover:shadow-xl transition-all duration-300 border-0 rounded-3xl bg-card flex flex-col h-full">
                     <CardContent className="p-8 flex flex-col h-full">
                       {/* Avatar */}

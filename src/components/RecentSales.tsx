@@ -43,7 +43,7 @@ export const RecentSales = () => {
           >
             <CarouselContent className="-ml-4 md:-ml-6">
               {sales.map((sale, index) => (
-                <CarouselItem key={index} className="pl-4 md:pl-6 basis-full sm:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={index} className="pl-4 md:pl-6 basis-full sm:basis-1/2 md:basis-1/3 xl:basis-1/4">
                   <Card
                     className="hover:shadow-xl transition-all duration-500 rounded-2xl border-2 animate-fade-in hover:scale-105"
                     style={{

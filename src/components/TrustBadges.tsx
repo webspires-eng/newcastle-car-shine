@@ -44,7 +44,7 @@ export const TrustBadges = () => {
         >
           <CarouselContent className="-ml-4 md:-ml-6">
             {reviews.map((review, index) => (
-              <CarouselItem key={index} className="pl-4 md:pl-6 basis-full md:basis-1/2 lg:basis-1/4">
+              <CarouselItem key={index} className="pl-4 md:pl-6 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/4">
                 <div className="bg-card border border-border rounded-lg p-6 h-full">
                   <div className="flex items-center gap-1 mb-3">
                     {[1, 2, 3, 4, 5].map(star => <Star key={star} className="w-4 h-4 fill-[#00b67a] text-[#00b67a]" />)}

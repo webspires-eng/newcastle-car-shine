@@ -20,11 +20,19 @@ interface InquiryRow {
   notes: string | null;
   internal_notes: string | null;
   offered_price: number | null;
+  year: number | null;
+  colour: string | null;
+  fuel_type: string | null;
+  engine_capacity: number | null;
+  body_type: string | null;
 }
 
 function mapRow(row: InquiryRow): Booking {
   const [firstName, ...rest] = (row.name || "").trim().split(/\s+/);
   const lastName = rest.join(" ");
+
+  const hpi: Booking["hpiClear"] =
+    row.hpi_clear === true ? "yes" : row.hpi_clear === false ? "no" : row.hpi_clear === null ? "" : "";
 
   return {
     id: row.id,
@@ -33,12 +41,15 @@ function mapRow(row: InquiryRow): Booking {
     reg: (row.registration_number || "").toUpperCase(),
     make: row.make ?? "",
     model: row.model ?? "",
-    year: "",
+    year: row.year ?? "",
     mileage: row.mileage ?? "",
     condition: row.condition ?? "",
-    colour: "",
-    serviceHistory:
-      row.hpi_clear === true ? "HPI clear" : row.hpi_clear === false ? "HPI flagged" : "",
+    colour: row.colour ?? "",
+    fuelType: row.fuel_type ?? "",
+    engineCapacity: row.engine_capacity ?? "",
+    bodyType: row.body_type ?? "",
+    transmission: row.transmission ?? "",
+    hpiClear: hpi,
     firstName: firstName ?? "",
     lastName,
     email: row.email ?? "",

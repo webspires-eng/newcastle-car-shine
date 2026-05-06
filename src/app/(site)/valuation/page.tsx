@@ -166,6 +166,9 @@ export default function ValuationPage() {
       const validated = contactSchema.parse(formData);
       const mileageInt = parseInt(mileage.replace(/,/g, ""), 10);
 
+      const yearNum = dvlaData?.year ? Number(dvlaData.year) : null;
+      const engineNum = dvlaData?.engineCapacity ? Number(dvlaData.engineCapacity) : null;
+
       const { error } = await getSupabase().from("vehicle_inquiries").insert({
         name: validated.name,
         email: validated.email,
@@ -176,6 +179,11 @@ export default function ValuationPage() {
         model: dvlaData?.model || "",
         mileage: mileageInt,
         transmission: validated.transmission,
+        year: Number.isFinite(yearNum) ? yearNum : null,
+        colour: dvlaData?.colour || null,
+        fuel_type: dvlaData?.fuelType || null,
+        engine_capacity: Number.isFinite(engineNum) ? engineNum : null,
+        body_type: dvlaData?.bodyType || null,
         hpi_clear:
           validated.hpiClear === "yes"
             ? true

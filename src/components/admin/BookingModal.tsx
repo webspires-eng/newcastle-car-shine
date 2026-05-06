@@ -155,11 +155,40 @@ export function BookingModal({ booking, onClose, onUpdated }: Props) {
                   <Field label="Registration" value={booking.reg} />
                   <Field label="Make" value={booking.make} />
                   <Field label="Model" value={booking.model} />
-                  <Field label="Year" value={String(booking.year)} />
-                  <Field label="Mileage" value={String(booking.mileage)} />
-                  <Field label="Condition" value={booking.condition} />
-                  <Field label="Colour" value={booking.colour} />
-                  <Field label="Service history" value={booking.serviceHistory} />
+                  <Field label="Year" value={booking.year ? String(booking.year) : ""} />
+                  <Field
+                    label="Mileage"
+                    value={booking.mileage ? `${Number(booking.mileage).toLocaleString("en-GB")} mi` : ""}
+                  />
+                  <Field label="Colour" value={booking.colour ? booking.colour.toUpperCase() : ""} />
+                  <Field label="Fuel" value={booking.fuelType ? booking.fuelType.toUpperCase() : ""} />
+                  <Field
+                    label="Engine"
+                    value={booking.engineCapacity ? `${booking.engineCapacity}cc` : ""}
+                  />
+                  <Field label="Body type" value={booking.bodyType} />
+                  <Field
+                    label="Transmission"
+                    value={booking.transmission ? booking.transmission.charAt(0).toUpperCase() + booking.transmission.slice(1) : ""}
+                  />
+                  <Field
+                    label="Condition"
+                    value={booking.condition ? booking.condition.charAt(0).toUpperCase() + booking.condition.slice(1) : ""}
+                  />
+                  <Field
+                    label="HPI clear"
+                    value={
+                      booking.hpiClear === "yes" ? (
+                        <span className="text-green-400">Yes</span>
+                      ) : booking.hpiClear === "no" ? (
+                        <span className="text-red-400">No</span>
+                      ) : booking.hpiClear === "unsure" ? (
+                        <span className="text-gray-400">Not sure</span>
+                      ) : (
+                        ""
+                      )
+                    }
+                  />
                 </dl>
               </section>
 

@@ -19,7 +19,11 @@ export interface Booking {
   mileage: string | number;
   condition: string;
   colour: string;
-  serviceHistory: string;
+  fuelType: string;
+  engineCapacity: string | number;
+  bodyType: string;
+  transmission: string;
+  hpiClear: "yes" | "no" | "unsure" | "";
   firstName: string;
   lastName: string;
   email: string;

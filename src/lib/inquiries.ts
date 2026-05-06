@@ -52,7 +52,13 @@ function mapRow(row: InquiryRow): Booking {
 }
 
 export async function getAllInquiries(): Promise<Booking[]> {
-  const sb = getServiceClient();
+  let sb;
+  try {
+    sb = getServiceClient();
+  } catch (err) {
+    console.error("[inquiries] supabase client init failed:", err);
+    return [];
+  }
   const { data, error } = await sb
     .from("vehicle_inquiries")
     .select("*")
@@ -69,7 +75,13 @@ export async function updateInquiry(
   id: string,
   updates: Partial<Pick<Booking, "status" | "offeredPrice" | "notes">>
 ): Promise<Booking | null> {
-  const sb = getServiceClient();
+  let sb;
+  try {
+    sb = getServiceClient();
+  } catch (err) {
+    console.error("[inquiries] supabase client init failed:", err);
+    return null;
+  }
 
   const patch: Record<string, unknown> = {};
   if (updates.status) patch.status = updates.status;

@@ -17,9 +17,10 @@ const statusBadge: Record<BookingStatus, string> = {
 
 interface Props {
   initialBookings: Booking[];
+  envOk?: boolean;
 }
 
-export function AdminDashboardClient({ initialBookings }: Props) {
+export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
   const [search, setSearch] = useState("");
@@ -81,8 +82,18 @@ export function AdminDashboardClient({ initialBookings }: Props) {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {!envOk && (
+          <div className="mb-6 rounded-xl bg-red-500/10 ring-1 ring-red-500/30 px-4 py-3 text-sm text-red-200">
+            <p className="font-semibold mb-1">Supabase env vars missing on server.</p>
+            <p>
+              Set <code className="font-mono text-red-100">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+              <code className="font-mono text-red-100">SUPABASE_SERVICE_ROLE_KEY</code> in your
+              Vercel project settings, then redeploy.
+            </p>
+          </div>
+        )}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <StatCard label="Total Bookings" value={counts.total} colour="text-white" />
           <StatCard label="New" value={counts.new} colour="text-blue-400" />
           <StatCard label="Contacted" value={counts.contacted} colour="text-amber-400" />
@@ -123,13 +134,13 @@ export function AdminDashboardClient({ initialBookings }: Props) {
               <table className="min-w-full divide-y divide-gray-800 text-sm">
                 <thead className="bg-gray-900/80 text-xs uppercase tracking-wider text-gray-400">
                   <tr>
-                    <th className="px-4 py-3 text-left">Booking ID</th>
+                    <th className="px-4 py-3 text-left hidden lg:table-cell">Booking ID</th>
                     <th className="px-4 py-3 text-left">Vehicle</th>
                     <th className="px-4 py-3 text-left">Customer</th>
-                    <th className="px-4 py-3 text-left">Estimated</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Estimated</th>
                     <th className="px-4 py-3 text-left">Status</th>
-                    <th className="px-4 py-3 text-left">Submitted</th>
-                    <th className="px-4 py-3" />
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Submitted</th>
+                    <th className="px-4 py-3 hidden sm:table-cell" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
@@ -139,7 +150,7 @@ export function AdminDashboardClient({ initialBookings }: Props) {
                       onClick={() => setSelected(b)}
                       className="hover:bg-gray-800/40 cursor-pointer"
                     >
-                      <td className="px-4 py-3 font-mono text-amber-400 whitespace-nowrap">{b.id}</td>
+                      <td className="px-4 py-3 font-mono text-amber-400 whitespace-nowrap hidden lg:table-cell">{b.id}</td>
                       <td className="px-4 py-3">
                         <div className="font-bold text-white">{b.reg}</div>
                         <div className="text-xs text-gray-400">
@@ -148,10 +159,10 @@ export function AdminDashboardClient({ initialBookings }: Props) {
                       </td>
                       <td className="px-4 py-3">
                         <div className="text-white">{`${b.firstName} ${b.lastName}`.trim()}</div>
-                        <div className="text-xs text-gray-400">{b.email}</div>
+                        <div className="text-xs text-gray-400 truncate max-w-[180px]">{b.email}</div>
                         <div className="text-xs text-gray-400">{b.phone}</div>
                       </td>
-                      <td className="px-4 py-3 text-green-400 whitespace-nowrap">
+                      <td className="px-4 py-3 text-green-400 whitespace-nowrap hidden md:table-cell">
                         £{Number(b.estimatedValue || 0).toLocaleString("en-GB")}
                       </td>
                       <td className="px-4 py-3">
@@ -159,14 +170,14 @@ export function AdminDashboardClient({ initialBookings }: Props) {
                           {b.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-400 whitespace-nowrap">
+                      <td className="px-4 py-3 text-gray-400 whitespace-nowrap hidden md:table-cell">
                         {new Date(b.createdAt).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-4 py-3 text-right hidden sm:table-cell">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();

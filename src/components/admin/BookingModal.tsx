@@ -90,14 +90,14 @@ export function BookingModal({ booking, onClose, onUpdated }: Props) {
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden
       />
-      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-gray-900 ring-1 ring-gray-800 rounded-2xl shadow-2xl text-white flex flex-col">
-        <div className="flex items-start justify-between gap-4 p-6 border-b border-gray-800">
+      <div className="relative w-full max-w-2xl xl:max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden bg-gray-900 ring-1 ring-gray-800 rounded-2xl shadow-2xl text-white flex flex-col">
+        <div className="flex items-start justify-between gap-3 sm:gap-4 p-4 sm:p-6 border-b border-gray-800">
           <div className="flex flex-col gap-1 min-w-0">
             <span className="font-mono text-xs text-amber-400 tracking-wider">{booking.id}</span>
             <h2 className="text-xl font-bold truncate">

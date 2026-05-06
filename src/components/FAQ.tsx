@@ -60,7 +60,7 @@ export const FAQ = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {faqs.map((faq, index) => (
               <Accordion key={index} type="single" collapsible className="h-full">
                 <AccordionItem

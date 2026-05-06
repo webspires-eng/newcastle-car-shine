@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAllBookings, getBookingById, saveBooking } from "@/lib/db";
+import { getAllInquiries, updateInquiry } from "@/lib/inquiries";
 
 export async function GET() {
-  const bookings = await getAllBookings();
+  const bookings = await getAllInquiries();
   return NextResponse.json(bookings);
 }
 
@@ -13,16 +13,14 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
   }
 
-  const booking = await getBookingById(id);
-  if (!booking) {
+  const updated = await updateInquiry(id, {
+    status: body.status,
+    offeredPrice: body.offeredPrice,
+    notes: body.notes,
+  });
+
+  if (!updated) {
     return NextResponse.json({ success: false, error: "Booking not found" }, { status: 404 });
   }
-
-  const { id: _ignored, createdAt: _ignored2, ...updates } = body;
-  void _ignored;
-  void _ignored2;
-
-  const updated = { ...booking, ...updates };
-  await saveBooking(updated);
   return NextResponse.json(updated);
 }

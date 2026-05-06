@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import {
   Car,
   Mail,
@@ -166,7 +166,7 @@ export default function ValuationPage() {
       const validated = contactSchema.parse(formData);
       const mileageInt = parseInt(mileage.replace(/,/g, ""), 10);
 
-      const { error } = await supabase.from("vehicle_inquiries").insert({
+      const { error } = await getSupabase().from("vehicle_inquiries").insert({
         name: validated.name,
         email: validated.email,
         phone: validated.phone,

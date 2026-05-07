@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getSupabase } from "@/lib/supabase";
 import {
   Car,
   Mail,
@@ -169,9 +168,10 @@ export default function ValuationPage() {
       const yearNum = dvlaData?.year ? Number(dvlaData.year) : null;
       const engineNum = dvlaData?.engineCapacity ? Number(dvlaData.engineCapacity) : null;
 
-      const { data: inserted, error } = await getSupabase()
-        .from("vehicle_inquiries")
-        .insert({
+      const inquiryRes = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: validated.name,
           email: validated.email,
           phone: validated.phone,
@@ -194,17 +194,18 @@ export default function ValuationPage() {
               : null,
           condition: validated.condition,
           notes: formData.notes || null,
-        })
-        .select("id")
-        .single();
-      if (error) {
-        console.error("Supabase insert error:", error);
-        toast.error(`Database error: ${error.message}`);
+        }),
+      });
+
+      if (!inquiryRes.ok) {
+        const { error: errMsg } = (await inquiryRes.json().catch(() => ({}))) as { error?: string };
+        console.error("Inquiry submit error:", errMsg);
+        toast.error(errMsg ? `Submission failed: ${errMsg}` : "Submission failed. Please try again.");
         setIsSubmitting(false);
         return;
       }
 
-      const bookingId = inserted?.id as string | undefined;
+      const { id: bookingId } = (await inquiryRes.json()) as { id?: string };
 
       try {
         await fetch("/api/send-email", {

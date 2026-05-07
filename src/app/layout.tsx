@@ -88,12 +88,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-GB" className={`${outfit.variable} ${montserrat.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
-        />
-      </head>
-      <body className="font-sans">
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-16752004182"
           strategy="afterInteractive"
@@ -106,8 +100,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', 'AW-16752004182');
           `}
         </Script>
-        {children}
-      </body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
+      </head>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }

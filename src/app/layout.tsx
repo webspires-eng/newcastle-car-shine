@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Montserrat } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -92,7 +93,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-16752004182"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-16752004182');
+          `}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_KEY;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) {
       return NextResponse.json({ error: "Supabase env not configured" }, { status: 500 });
     }

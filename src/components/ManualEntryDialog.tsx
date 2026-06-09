@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -55,9 +55,13 @@ export const ManualEntryDialog = ({
   const [cachedDvla, setCachedDvla] = useState<DvlaData | null>(null);
   const [lookupAttempted, setLookupAttempted] = useState(false);
 
-  // Reset transient state each time the dialog is opened so a fresh entry
-  // (e.g. via "Change car") doesn't inherit a previous rejection/year prompt.
-  useEffect(() => {
+  // Reset transient state each time the dialog transitions to open, so a fresh
+  // entry (e.g. via "Change car") doesn't inherit a previous rejection/year
+  // prompt. Adjusting state during render on a prop change is the recommended
+  // React pattern here (no effect / cascading renders).
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
     if (open) {
       setRegistrationNumber("");
       setMileage("");
@@ -69,7 +73,7 @@ export const ManualEntryDialog = ({
       setCachedDvla(null);
       setLookupAttempted(false);
     }
-  }, [open]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

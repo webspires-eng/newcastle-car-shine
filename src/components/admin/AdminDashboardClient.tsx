@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, LogOut, Search } from "lucide-react";
 import type { Booking, BookingStatus } from "@/types";
 import { BookingModal } from "@/components/admin/BookingModal";
 
 const STATUSES: ("all" | BookingStatus)[] = ["all", "new", "contacted", "completed", "cancelled"];
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 const statusBadge: Record<BookingStatus, string> = {
   new: "bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30",
@@ -15,47 +16,113 @@ const statusBadge: Record<BookingStatus, string> = {
   cancelled: "bg-red-500/20 text-red-300 ring-1 ring-red-400/30",
 };
 
+interface Stats {
+  total: number;
+  new: number;
+  contacted: number;
+  completed: number;
+}
+
 interface Props {
   initialBookings: Booking[];
+  initialTotal: number;
+  initialStats: Stats;
+  initialPageSize: number;
   envOk?: boolean;
 }
 
-export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
+/** Build a compact page-number list with ellipsis sentinels (-1). */
+function pageItems(current: number, totalPages: number): number[] {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+  const items = new Set<number>([1, totalPages, current, current - 1, current + 1]);
+  const sorted = [...items].filter((p) => p >= 1 && p <= totalPages).sort((a, b) => a - b);
+  const out: number[] = [];
+  let prev = 0;
+  for (const p of sorted) {
+    if (prev && p - prev > 1) out.push(-1); // ellipsis
+    out.push(p);
+    prev = p;
+  }
+  return out;
+}
+
+export function AdminDashboardClient({
+  initialBookings,
+  initialTotal,
+  initialStats,
+  initialPageSize,
+  envOk = true,
+}: Props) {
   const router = useRouter();
+
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
-  const [search, setSearch] = useState("");
+  const [total, setTotal] = useState(initialTotal);
+  const [stats, setStats] = useState<Stats>(initialStats);
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(initialPageSize);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState(""); // debounced value used for fetching
   const [statusFilter, setStatusFilter] = useState<"all" | BookingStatus>("all");
+
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Booking | null>(null);
 
-  const counts = useMemo(() => {
-    return {
-      total: bookings.length,
-      new: bookings.filter((b) => b.status === "new").length,
-      contacted: bookings.filter((b) => b.status === "contacted").length,
-      completed: bookings.filter((b) => b.status === "completed").length,
-    };
-  }, [bookings]);
+  // Debounce the search box; reset to page 1 whenever the term changes.
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(id);
+  }, [searchInput]);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return bookings.filter((b) => {
-      if (statusFilter !== "all" && b.status !== statusFilter) return false;
-      if (!q) return true;
-      const haystack = [
-        b.id,
-        b.reg,
-        `${b.firstName} ${b.lastName}`,
-        b.email,
-      ]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [bookings, search, statusFilter]);
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: String(page),
+        pageSize: String(pageSize),
+      });
+      const q = search.trim();
+      if (q) params.set("search", q);
+      if (statusFilter !== "all") params.set("status", statusFilter);
+
+      const res = await fetch(`/api/admin/bookings?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to load bookings");
+      const data = (await res.json()) as { rows: Booking[]; total: number; stats: Stats };
+      setBookings(data.rows);
+      setTotal(data.total);
+      setStats(data.stats);
+      // If the result set shrank below the current page (e.g. a status change
+      // moved rows out of the filter), step back to the last valid page.
+      const lastPage = Math.max(1, Math.ceil(data.total / pageSize));
+      if (page > lastPage) setPage(lastPage);
+    } catch (err) {
+      console.error("[admin] load failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, search, statusFilter]);
+
+  // Skip the very first run — the initial page is supplied by the server render.
+  const didMount = useRef(false);
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+    load();
+  }, [load]);
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   function updateBooking(updated: Booking) {
     setBookings((prev) => prev.map((b) => (b.id === updated.id ? updated : b)));
     setSelected(updated);
+    // A status change can move the row in/out of the current filter and shifts
+    // the global counts — re-sync the visible page and stat cards.
+    load();
   }
 
   async function logOut() {
@@ -63,6 +130,9 @@ export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
     router.push("/admin/login");
     router.refresh();
   }
+
+  const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, total);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -94,25 +164,28 @@ export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
           </div>
         )}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <StatCard label="Total Bookings" value={counts.total} colour="text-white" />
-          <StatCard label="New" value={counts.new} colour="text-blue-400" />
-          <StatCard label="Contacted" value={counts.contacted} colour="text-amber-400" />
-          <StatCard label="Completed" value={counts.completed} colour="text-green-400" />
+          <StatCard label="Total Bookings" value={stats.total} colour="text-white" />
+          <StatCard label="New" value={stats.new} colour="text-blue-400" />
+          <StatCard label="Contacted" value={stats.contacted} colour="text-amber-400" />
+          <StatCard label="Completed" value={stats.completed} colour="text-green-400" />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
             <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search by ID, reg, name, email…"
               className="w-full bg-gray-900 ring-1 ring-gray-800 rounded-lg pl-10 pr-3 py-2.5 text-sm text-white focus:outline-none focus:ring-amber-400/40"
             />
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as "all" | BookingStatus)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value as "all" | BookingStatus);
+              setPage(1);
+            }}
             className="bg-gray-900 ring-1 ring-gray-800 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none capitalize"
           >
             {STATUSES.map((s) => (
@@ -124,13 +197,21 @@ export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
         </div>
 
         <div className="bg-gray-900/50 ring-1 ring-gray-800 rounded-xl overflow-hidden">
-          {filtered.length === 0 ? (
+          {bookings.length === 0 ? (
             <div className="p-12 text-center text-gray-400">
-              <p className="text-lg mb-1">No bookings match your filters.</p>
-              <p className="text-sm">Try clearing the search or status filter.</p>
+              {loading ? (
+                <p className="text-lg flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" /> Loading…
+                </p>
+              ) : (
+                <>
+                  <p className="text-lg mb-1">No bookings match your filters.</p>
+                  <p className="text-sm">Try clearing the search or status filter.</p>
+                </>
+              )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className={`overflow-x-auto transition-opacity ${loading ? "opacity-50" : ""}`}>
               <table className="min-w-full divide-y divide-gray-800 text-sm">
                 <thead className="bg-gray-900/80 text-xs uppercase tracking-wider text-gray-400">
                   <tr>
@@ -144,7 +225,7 @@ export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
-                  {filtered.map((b) => (
+                  {bookings.map((b) => (
                     <tr
                       key={b.id}
                       onClick={() => setSelected(b)}
@@ -194,6 +275,74 @@ export function AdminDashboardClient({ initialBookings, envOk = true }: Props) {
               </table>
             </div>
           )}
+        </div>
+
+        {/* Pagination footer */}
+        <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-sm text-gray-400">
+            <span>
+              {total === 0 ? "No results" : `Showing ${from}–${to} of ${total}`}
+            </span>
+            <label className="flex items-center gap-2">
+              <span className="hidden sm:inline">Rows per page</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="bg-gray-900 ring-1 ring-gray-800 rounded-lg px-2 py-1.5 text-sm text-white focus:outline-none"
+              >
+                {PAGE_SIZE_OPTIONS.map((n) => (
+                  <option key={n} value={n} className="bg-gray-900">
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1 || loading}
+              className="flex items-center gap-1 text-sm bg-gray-800 hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed px-3 py-1.5 rounded-md"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Prev
+            </button>
+
+            {pageItems(page, totalPages).map((p, i) =>
+              p === -1 ? (
+                <span key={`gap-${i}`} className="px-2 text-gray-500 select-none">
+                  …
+                </span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  disabled={loading}
+                  aria-current={p === page ? "page" : undefined}
+                  className={`min-w-[2rem] text-sm px-2.5 py-1.5 rounded-md disabled:cursor-not-allowed ${
+                    p === page
+                      ? "bg-amber-500 text-gray-950 font-semibold"
+                      : "bg-gray-800 hover:bg-gray-700 text-white"
+                  }`}
+                >
+                  {p}
+                </button>
+              )
+            )}
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages || loading}
+              className="flex items-center gap-1 text-sm bg-gray-800 hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed px-3 py-1.5 rounded-md"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </main>
 

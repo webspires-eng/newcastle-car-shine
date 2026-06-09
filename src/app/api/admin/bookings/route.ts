@@ -1,9 +1,26 @@
 import { NextResponse } from "next/server";
-import { getAllInquiries, updateInquiry } from "@/lib/inquiries";
+import {
+  getInquiriesPage,
+  getInquiryStats,
+  DEFAULT_PAGE_SIZE,
+  updateInquiry,
+} from "@/lib/inquiries";
+import type { BookingStatus } from "@/types";
 
-export async function GET() {
-  const bookings = await getAllInquiries();
-  return NextResponse.json(bookings);
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const page = parseInt(url.searchParams.get("page") || "1", 10);
+  const pageSize = parseInt(url.searchParams.get("pageSize") || String(DEFAULT_PAGE_SIZE), 10);
+  const search = url.searchParams.get("search") || "";
+  const statusParam = url.searchParams.get("status") || "all";
+  const status = statusParam as "all" | BookingStatus;
+
+  const [{ rows, total }, stats] = await Promise.all([
+    getInquiriesPage({ page, pageSize, search, status }),
+    getInquiryStats(),
+  ]);
+
+  return NextResponse.json({ rows, total, stats });
 }
 
 export async function PATCH(req: Request) {

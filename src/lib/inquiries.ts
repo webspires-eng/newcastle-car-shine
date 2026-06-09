@@ -83,6 +83,120 @@ export async function getAllInquiries(): Promise<Booking[]> {
   return (data as InquiryRow[]).map(mapRow);
 }
 
+export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+export const DEFAULT_PAGE_SIZE = 25;
+
+const VALID_STATUSES: BookingStatus[] = ["new", "contacted", "completed", "cancelled"];
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export interface InquiryStats {
+  total: number;
+  new: number;
+  contacted: number;
+  completed: number;
+}
+
+export interface InquiryPage {
+  rows: Booking[];
+  total: number;
+}
+
+export interface GetInquiriesPageOptions {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: "all" | BookingStatus;
+}
+
+/**
+ * Server-side paginated, filtered fetch of inquiries. Only the requested page
+ * of rows is read from the database (via .range), and `total` reflects the
+ * full filtered count so the client can render page numbers and a count
+ * indicator without loading every row.
+ */
+export async function getInquiriesPage(opts: GetInquiriesPageOptions): Promise<InquiryPage> {
+  let sb;
+  try {
+    sb = getServiceClient();
+  } catch (err) {
+    console.error("[inquiries] supabase client init failed:", err);
+    return { rows: [], total: 0 };
+  }
+
+  const pageSize = (PAGE_SIZE_OPTIONS as readonly number[]).includes(opts.pageSize ?? NaN)
+    ? (opts.pageSize as number)
+    : DEFAULT_PAGE_SIZE;
+  const page = Number.isInteger(opts.page) && (opts.page as number) > 0 ? (opts.page as number) : 1;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = sb.from("vehicle_inquiries").select("*", { count: "exact" });
+
+  if (opts.status && opts.status !== "all" && VALID_STATUSES.includes(opts.status)) {
+    query = query.eq("status", opts.status);
+  }
+
+  // Strip characters that have special meaning in PostgREST's `or` filter
+  // syntax so a free-text search can't break the query.
+  const q = (opts.search || "").trim().replace(/[%,()]/g, " ").trim();
+  if (q) {
+    const like = `%${q}%`;
+    const parts = [
+      `registration_number.ilike.${like}`,
+      `name.ilike.${like}`,
+      `email.ilike.${like}`,
+    ];
+    // `id` is a uuid column — ilike isn't valid on it, so only match when the
+    // query is a complete UUID (the realistic "pasted a booking ID" case).
+    if (UUID_RE.test(q)) parts.push(`id.eq.${q}`);
+    query = query.or(parts.join(","));
+  }
+
+  const { data, error, count } = await query
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    console.error("[inquiries] paged fetch failed:", error.message);
+    return { rows: [], total: 0 };
+  }
+  return { rows: (data as InquiryRow[]).map(mapRow), total: count ?? 0 };
+}
+
+/**
+ * Global (unfiltered) status counts for the dashboard stat cards. Uses
+ * head-only count queries so no row data is transferred.
+ */
+export async function getInquiryStats(): Promise<InquiryStats> {
+  let sb;
+  try {
+    sb = getServiceClient();
+  } catch (err) {
+    console.error("[inquiries] supabase client init failed:", err);
+    return { total: 0, new: 0, contacted: 0, completed: 0 };
+  }
+
+  const countFor = (status?: BookingStatus) => {
+    let q = sb.from("vehicle_inquiries").select("*", { count: "exact", head: true });
+    if (status) q = q.eq("status", status);
+    return q;
+  };
+
+  const [total, neu, contacted, completed] = await Promise.all([
+    countFor(),
+    countFor("new"),
+    countFor("contacted"),
+    countFor("completed"),
+  ]);
+
+  return {
+    total: total.count ?? 0,
+    new: neu.count ?? 0,
+    contacted: contacted.count ?? 0,
+    completed: completed.count ?? 0,
+  };
+}
+
 export async function updateInquiry(
   id: string,
   updates: Partial<Pick<Booking, "status" | "offeredPrice" | "notes">>

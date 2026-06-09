@@ -61,6 +61,51 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
+  // ---- Deduplication / rapid-repeat guard ----
+  // If a booking with the same registration AND a matching email or phone was
+  // created within the dedup window, update that record instead of inserting a
+  // duplicate. This collapses rapid repeat submissions of the same vehicle.
+  const windowHours = Number(process.env.DEDUP_WINDOW_HOURS) || 24;
+  const since = new Date(Date.now() - windowHours * 60 * 60 * 1000).toISOString();
+  const emailNorm = payload.email.trim().toLowerCase();
+  const phoneNorm = payload.phone.replace(/\D/g, "");
+
+  try {
+    const { data: recent } = await sb
+      .from("vehicle_inquiries")
+      .select("id, email, phone")
+      .eq("registration_number", payload.registration_number)
+      .gte("created_at", since)
+      .order("created_at", { ascending: false });
+
+    const dup = (recent ?? []).find(
+      (r: { id: string; email: string | null; phone: string | null }) => {
+        const sameEmail = emailNorm !== "" && (r.email || "").trim().toLowerCase() === emailNorm;
+        const samePhone = phoneNorm !== "" && (r.phone || "").replace(/\D/g, "") === phoneNorm;
+        return sameEmail || samePhone;
+      }
+    );
+
+    if (dup) {
+      // Refresh vehicle/contact details; leave status, offered_price,
+      // internal_notes and the email log untouched (payload has no such keys).
+      const { data: updated, error: updateError } = await sb
+        .from("vehicle_inquiries")
+        .update(payload)
+        .eq("id", dup.id)
+        .select("id")
+        .single();
+      if (!updateError && updated) {
+        return NextResponse.json({ id: updated.id, deduped: true });
+      }
+      if (updateError) {
+        console.error("[inquiries] dedup update failed, inserting instead:", updateError.message);
+      }
+    }
+  } catch (err) {
+    console.error("[inquiries] dedup check failed (continuing to insert):", err);
+  }
+
   const { data, error } = await sb
     .from("vehicle_inquiries")
     .insert(payload)

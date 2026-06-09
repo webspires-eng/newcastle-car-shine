@@ -33,6 +33,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
+  // Lead qualification gate (defensive — the form also enforces this client-side).
+  // Accept ONLY IF mileage < 100,000 AND year of manufacture <= 2017.
+  const MAX_MILEAGE = 100000;
+  const MAX_YEAR = 2017;
+  const mileageNum = Number(payload.mileage);
+  const yearNum = payload.year != null ? Number(payload.year) : null;
+  const qualifies =
+    Number.isFinite(mileageNum) &&
+    mileageNum > 0 &&
+    mileageNum < MAX_MILEAGE &&
+    yearNum != null &&
+    Number.isFinite(yearNum) &&
+    yearNum <= MAX_YEAR;
+  if (!qualifies) {
+    return NextResponse.json(
+      { error: "We're not buying vehicles of this age or mileage right now." },
+      { status: 422 }
+    );
+  }
+
   let sb;
   try {
     sb = getServiceClient();
